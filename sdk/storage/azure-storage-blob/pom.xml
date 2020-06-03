@@ -265,6 +265,59 @@
               </dependency>
             </dependencies>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <shadedArtifactAttached>true</shadedArtifactAttached>
+                  <shadedClassifierName>SHADED</shadedClassifierName>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                        <exclude>META-INF/*.SF</exclude>
+                        <exclude>META-INF/*.DSA</exclude>
+                        <exclude>META-INF/*.RSA</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
+                  <relocations>
+                    <relocation>
+                      <pattern>io.netty</pattern>
+                      <shadedPattern>com.azure.shaded.io.netty</shadedPattern>
+                    </relocation>
+                    <relocation>
+                      <pattern>com.fasterxml</pattern>
+                      <shadedPattern>com.azure.shaded.com.fasterxml</shadedPattern>
+                    </relocation>
+                    <relocation>
+                      <pattern>org.codehaus</pattern>
+                      <shadedPattern>com.azure.shaded.org.codehaus</shadedPattern>
+                    </relocation>
+                    <relocation>
+                      <pattern>com.ctc</pattern>
+                      <shadedPattern>com.azure.shaded.com.ctc</shadedPattern>
+                    </relocation>
+                    <relocation>
+                      <pattern>reactor</pattern>
+                      <shadedPattern>com.azure.shaded.reactor</shadedPattern>
+                    </relocation>
+                    <relocation>
+                      <pattern>org.reactivestreams</pattern>
+                      <shadedPattern>com.azure.shaded.org.reactivestreams</shadedPattern>
+                    </relocation>
+                  </relocations>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
