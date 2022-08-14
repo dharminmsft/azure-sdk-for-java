@@ -3,6 +3,7 @@
 
 package com.azure.storage.file.datalake;
 
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.Context;
 import com.azure.storage.common.ParallelTransferOptions;
 import com.azure.storage.file.datalake.models.DataLakeRequestConditions;
@@ -10,6 +11,7 @@ import com.azure.storage.file.datalake.models.DownloadRetryOptions;
 import com.azure.storage.file.datalake.models.FileQueryDelimitedSerialization;
 import com.azure.storage.file.datalake.models.FileQueryError;
 import com.azure.storage.file.datalake.models.FileQueryJsonSerialization;
+import com.azure.storage.file.datalake.options.DataLakePathDeleteOptions;
 import com.azure.storage.file.datalake.options.FileParallelUploadOptions;
 import com.azure.storage.file.datalake.options.FileQueryOptions;
 import com.azure.storage.file.datalake.models.FileQueryProgress;
@@ -197,7 +199,7 @@ public class DataLakeFileAsyncClientJavaDocSamples {
             .setIfUnmodifiedSince(OffsetDateTime.now().minusDays(3));
         ParallelTransferOptions pto = new ParallelTransferOptions()
             .setBlockSizeLong(blockSize)
-            .setProgressReceiver(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
+            .setProgressListener(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
 
         client.uploadWithResponse(data, pto, httpHeaders, metadataMap, conditions)
             .subscribe(response -> System.out.println("Uploaded file %n"));
@@ -240,7 +242,7 @@ public class DataLakeFileAsyncClientJavaDocSamples {
             .setIfUnmodifiedSince(OffsetDateTime.now().minusDays(3));
         ParallelTransferOptions pto = new ParallelTransferOptions()
             .setBlockSizeLong(blockSize)
-            .setProgressReceiver(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
+            .setProgressListener(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
 
         client.uploadWithResponse(new FileParallelUploadOptions(data)
             .setParallelTransferOptions(parallelTransferOptions).setHeaders(headers)
@@ -248,6 +250,40 @@ public class DataLakeFileAsyncClientJavaDocSamples {
             .setPermissions("permissions").setUmask("umask"))
             .subscribe(response -> System.out.println("Uploaded file %n"));
         // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.uploadWithResponse#FileParallelUploadOptions.ProgressReporter
+    }
+
+    /**
+     * Code snippets for {@link DataLakeFileAsyncClient#upload(BinaryData, ParallelTransferOptions)}
+     */
+    public void uploadBinaryDataCodeSnippets() {
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileAsyncClient.upload#BinaryData-ParallelTransferOptions
+        Long blockSize = 100L * 1024L * 1024L; // 100 MB;
+        ParallelTransferOptions pto = new ParallelTransferOptions()
+            .setBlockSizeLong(blockSize)
+            .setProgressListener(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
+
+        BinaryData.fromFlux(data, length, false)
+            .flatMap(binaryData -> client.upload(binaryData, pto))
+            .doOnError(throwable -> System.err.printf("Failed to upload %s%n", throwable.getMessage()))
+            .subscribe(completion -> System.out.println("Upload succeeded"));
+        // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.upload#BinaryData-ParallelTransferOptions
+    }
+
+    /**
+     * Code snippets for {@link DataLakeFileAsyncClient#upload(BinaryData, ParallelTransferOptions, boolean)}
+     */
+    public void uploadBinaryDataCodeSnippets2() {
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileAsyncClient.upload#BinaryData-ParallelTransferOptions-boolean
+        Long blockSize = 100L * 1024L * 1024L; // 100 MB;
+        ParallelTransferOptions pto = new ParallelTransferOptions()
+            .setBlockSizeLong(blockSize)
+            .setProgressListener(bytesTransferred -> System.out.printf("Upload progress: %s bytes sent", bytesTransferred));
+
+        BinaryData.fromFlux(data, length, false)
+            .flatMap(binaryData -> client.upload(binaryData, pto, true))
+            .doOnError(throwable -> System.err.printf("Failed to upload %s%n", throwable.getMessage()))
+            .subscribe(completion -> System.out.println("Upload succeeded"));
+        // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.upload#BinaryData-ParallelTransferOptions-boolean
     }
 
     /**
@@ -424,6 +460,37 @@ public class DataLakeFileAsyncClientJavaDocSamples {
         client.scheduleDeletionWithResponse(options)
             .subscribe(r -> System.out.println("File deletion has been scheduled"));
         // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.scheduleDeletionWithResponse#FileScheduleDeletionOptions
+    }
+
+    /**
+     * Code snippets for {@link DataLakeFileAsyncClient#deleteIfExists()} and
+     * {@link DataLakeFileAsyncClient#deleteIfExistsWithResponse(DataLakePathDeleteOptions)}
+     */
+    public void deleteIfExistsCodeSnippets() {
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileAsyncClient.deleteIfExists
+        client.deleteIfExists().subscribe(deleted -> {
+            if (deleted) {
+                System.out.println("Successfully deleted.");
+            } else {
+                System.out.println("Does not exist.");
+            }
+        });
+        // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.deleteIfExists
+
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileAsyncClient.deleteIfExistsWithResponse#DataLakePathDeleteOptions
+        DataLakeRequestConditions requestConditions = new DataLakeRequestConditions()
+            .setLeaseId(leaseId);
+        DataLakePathDeleteOptions options = new DataLakePathDeleteOptions().setIsRecursive(false)
+            .setRequestConditions(requestConditions);
+
+        client.deleteIfExistsWithResponse(options).subscribe(response -> {
+            if (response.getStatusCode() == 404) {
+                System.out.println("Does not exist.");
+            } else {
+                System.out.println("successfully deleted.");
+            }
+        });
+        // END: com.azure.storage.file.datalake.DataLakeFileAsyncClient.deleteIfExistsWithResponse#DataLakePathDeleteOptions
     }
 
 }

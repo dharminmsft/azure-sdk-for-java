@@ -124,7 +124,10 @@ public class ReactorNettyClient implements HttpClient {
 
         if (this.httpClientConfig.getProxy() != null) {
             this.httpClient = this.httpClient.proxy(typeSpec -> typeSpec.type(ProxyProvider.Proxy.HTTP)
-                .address(this.httpClientConfig.getProxy().getAddress()));
+                .address(this.httpClientConfig.getProxy().getAddress())
+                .username(this.httpClientConfig.getProxy().getUsername())
+                .password(userName -> this.httpClientConfig.getProxy().getPassword())
+            );
         }
 
         if (LoggerFactory.getLogger(REACTOR_NETWORK_LOG_CATEGORY).isTraceEnabled()) {
@@ -390,10 +393,10 @@ public class ReactorNettyClient implements HttpClient {
         Logger logger = LoggerFactory.getLogger(REACTOR_NETWORK_LOG_CATEGORY);
         if (logger.isTraceEnabled()) {
             this.httpClient = this.httpClient.wiretap(REACTOR_NETWORK_LOG_CATEGORY, LogLevel.TRACE);
-        } else if (logger.isInfoEnabled()) {
-            this.httpClient = this.httpClient.wiretap(REACTOR_NETWORK_LOG_CATEGORY, LogLevel.INFO);
         } else if (logger.isDebugEnabled()) {
             this.httpClient = this.httpClient.wiretap(REACTOR_NETWORK_LOG_CATEGORY, LogLevel.DEBUG);
+        } else if (logger.isInfoEnabled()) {
+            this.httpClient = this.httpClient.wiretap(REACTOR_NETWORK_LOG_CATEGORY, LogLevel.INFO);
         } else if (logger.isWarnEnabled()) {
             this.httpClient = this.httpClient.wiretap(REACTOR_NETWORK_LOG_CATEGORY, LogLevel.WARN);
         } else if (logger.isErrorEnabled()) {

@@ -5,16 +5,12 @@
 package com.azure.resourcemanager.netapp.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** One property of operation, include metric specifications. */
 @Fluent
 public final class ServiceSpecification {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ServiceSpecification.class);
-
     /*
      * Metric specifications of operation.
      */
@@ -22,7 +18,7 @@ public final class ServiceSpecification {
     private List<MetricSpecification> metricSpecifications;
 
     /*
-     * The logSpecifications property.
+     * Log specification of operation.
      */
     @JsonProperty(value = "logSpecifications")
     private List<LogSpecification> logSpecifications;
@@ -48,7 +44,7 @@ public final class ServiceSpecification {
     }
 
     /**
-     * Get the logSpecifications property: The logSpecifications property.
+     * Get the logSpecifications property: Log specification of operation.
      *
      * @return the logSpecifications value.
      */
@@ -57,7 +53,7 @@ public final class ServiceSpecification {
     }
 
     /**
-     * Set the logSpecifications property: The logSpecifications property.
+     * Set the logSpecifications property: Log specification of operation.
      *
      * @param logSpecifications the logSpecifications value to set.
      * @return the ServiceSpecification object itself.

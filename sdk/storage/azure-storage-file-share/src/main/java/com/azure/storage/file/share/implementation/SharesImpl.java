@@ -18,31 +18,33 @@ import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceInterface;
 import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.annotation.UnexpectedResponseExceptionType;
+import com.azure.core.http.rest.ResponseBase;
 import com.azure.core.http.rest.RestProxy;
 import com.azure.core.util.Context;
 import com.azure.storage.file.share.implementation.models.DeleteSnapshotsOptionType;
 import com.azure.storage.file.share.implementation.models.SharePermission;
-import com.azure.storage.file.share.implementation.models.SharesAcquireLeaseResponse;
-import com.azure.storage.file.share.implementation.models.SharesBreakLeaseResponse;
-import com.azure.storage.file.share.implementation.models.SharesChangeLeaseResponse;
-import com.azure.storage.file.share.implementation.models.SharesCreatePermissionResponse;
-import com.azure.storage.file.share.implementation.models.SharesCreateResponse;
-import com.azure.storage.file.share.implementation.models.SharesCreateSnapshotResponse;
-import com.azure.storage.file.share.implementation.models.SharesDeleteResponse;
-import com.azure.storage.file.share.implementation.models.SharesGetAccessPolicyResponse;
-import com.azure.storage.file.share.implementation.models.SharesGetPermissionResponse;
-import com.azure.storage.file.share.implementation.models.SharesGetPropertiesResponse;
-import com.azure.storage.file.share.implementation.models.SharesGetStatisticsResponse;
-import com.azure.storage.file.share.implementation.models.SharesReleaseLeaseResponse;
-import com.azure.storage.file.share.implementation.models.SharesRenewLeaseResponse;
-import com.azure.storage.file.share.implementation.models.SharesRestoreResponse;
-import com.azure.storage.file.share.implementation.models.SharesSetAccessPolicyResponse;
-import com.azure.storage.file.share.implementation.models.SharesSetMetadataResponse;
-import com.azure.storage.file.share.implementation.models.SharesSetPropertiesResponse;
-import com.azure.storage.file.share.implementation.models.StorageErrorException;
+import com.azure.storage.file.share.implementation.models.ShareStats;
+import com.azure.storage.file.share.implementation.models.SharesAcquireLeaseHeaders;
+import com.azure.storage.file.share.implementation.models.SharesBreakLeaseHeaders;
+import com.azure.storage.file.share.implementation.models.SharesChangeLeaseHeaders;
+import com.azure.storage.file.share.implementation.models.SharesCreateHeaders;
+import com.azure.storage.file.share.implementation.models.SharesCreatePermissionHeaders;
+import com.azure.storage.file.share.implementation.models.SharesCreateSnapshotHeaders;
+import com.azure.storage.file.share.implementation.models.SharesDeleteHeaders;
+import com.azure.storage.file.share.implementation.models.SharesGetAccessPolicyHeaders;
+import com.azure.storage.file.share.implementation.models.SharesGetPermissionHeaders;
+import com.azure.storage.file.share.implementation.models.SharesGetPropertiesHeaders;
+import com.azure.storage.file.share.implementation.models.SharesGetStatisticsHeaders;
+import com.azure.storage.file.share.implementation.models.SharesReleaseLeaseHeaders;
+import com.azure.storage.file.share.implementation.models.SharesRenewLeaseHeaders;
+import com.azure.storage.file.share.implementation.models.SharesRestoreHeaders;
+import com.azure.storage.file.share.implementation.models.SharesSetAccessPolicyHeaders;
+import com.azure.storage.file.share.implementation.models.SharesSetMetadataHeaders;
+import com.azure.storage.file.share.implementation.models.SharesSetPropertiesHeaders;
 import com.azure.storage.file.share.models.ShareAccessTier;
 import com.azure.storage.file.share.models.ShareRootSquash;
 import com.azure.storage.file.share.models.ShareSignedIdentifier;
+import com.azure.storage.file.share.models.ShareStorageException;
 import java.util.List;
 import java.util.Map;
 import reactor.core.publisher.Mono;
@@ -74,8 +76,8 @@ public final class SharesImpl {
     public interface SharesService {
         @Put("/{shareName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesCreateResponse> create(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesCreateHeaders, Void>> create(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -91,8 +93,8 @@ public final class SharesImpl {
 
         @Get("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesGetPropertiesResponse> getProperties(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesGetPropertiesHeaders, Void>> getProperties(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -105,8 +107,8 @@ public final class SharesImpl {
 
         @Delete("/{shareName}")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesDeleteResponse> delete(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesDeleteHeaders, Void>> delete(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -120,8 +122,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesAcquireLeaseResponse> acquireLease(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesAcquireLeaseHeaders, Void>> acquireLease(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("comp") String comp,
@@ -138,8 +140,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesReleaseLeaseResponse> releaseLease(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesReleaseLeaseHeaders, Void>> releaseLease(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("comp") String comp,
@@ -155,8 +157,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesChangeLeaseResponse> changeLease(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesChangeLeaseHeaders, Void>> changeLease(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("comp") String comp,
@@ -173,8 +175,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesRenewLeaseResponse> renewLease(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesRenewLeaseHeaders, Void>> renewLease(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("comp") String comp,
@@ -190,8 +192,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesBreakLeaseResponse> breakLease(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesBreakLeaseHeaders, Void>> breakLease(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("comp") String comp,
@@ -208,8 +210,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesCreateSnapshotResponse> createSnapshot(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesCreateSnapshotHeaders, Void>> createSnapshot(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -222,8 +224,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesCreatePermissionResponse> createPermission(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesCreatePermissionHeaders, Void>> createPermission(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -236,8 +238,8 @@ public final class SharesImpl {
 
         @Get("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesGetPermissionResponse> getPermission(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesGetPermissionHeaders, SharePermission>> getPermission(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -250,8 +252,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesSetPropertiesResponse> setProperties(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesSetPropertiesHeaders, Void>> setProperties(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -267,8 +269,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesSetMetadataResponse> setMetadata(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesSetMetadataHeaders, Void>> setMetadata(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -282,8 +284,8 @@ public final class SharesImpl {
 
         @Get("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesGetAccessPolicyResponse> getAccessPolicy(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesGetAccessPolicyHeaders, List<ShareSignedIdentifier>>> getAccessPolicy(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -296,8 +298,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesSetAccessPolicyResponse> setAccessPolicy(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesSetAccessPolicyHeaders, Void>> setAccessPolicy(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -311,8 +313,8 @@ public final class SharesImpl {
 
         @Get("/{shareName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesGetStatisticsResponse> getStatistics(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesGetStatisticsHeaders, ShareStats>> getStatistics(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -325,8 +327,8 @@ public final class SharesImpl {
 
         @Put("/{shareName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.file.share.models.ShareStorageException.class)
-        Mono<SharesRestoreResponse> restore(
+        @UnexpectedResponseExceptionType(ShareStorageException.class)
+        Mono<ResponseBase<SharesRestoreHeaders, Void>> restore(
                 @HostParam("url") String url,
                 @PathParam("shareName") String shareName,
                 @QueryParam("restype") String restype,
@@ -355,12 +357,12 @@ public final class SharesImpl {
      * @param rootSquash Root squash to set on the share. Only valid for NFS shares.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesCreateResponse> createWithResponseAsync(
+    public Mono<ResponseBase<SharesCreateHeaders, Void>> createWithResponseAsync(
             String shareName,
             Integer timeout,
             Map<String, String> metadata,
@@ -399,12 +401,12 @@ public final class SharesImpl {
      * @param leaseId If specified, the operation only succeeds if the resource's lease is active and matches this ID.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesGetPropertiesResponse> getPropertiesWithResponseAsync(
+    public Mono<ResponseBase<SharesGetPropertiesHeaders, Void>> getPropertiesWithResponseAsync(
             String shareName, String sharesnapshot, Integer timeout, String leaseId, Context context) {
         final String restype = "share";
         final String accept = "application/xml";
@@ -434,12 +436,12 @@ public final class SharesImpl {
      * @param leaseId If specified, the operation only succeeds if the resource's lease is active and matches this ID.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesDeleteResponse> deleteWithResponseAsync(
+    public Mono<ResponseBase<SharesDeleteHeaders, Void>> deleteWithResponseAsync(
             String shareName,
             String sharesnapshot,
             Integer timeout,
@@ -481,12 +483,12 @@ public final class SharesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesAcquireLeaseResponse> acquireLeaseWithResponseAsync(
+    public Mono<ResponseBase<SharesAcquireLeaseHeaders, Void>> acquireLeaseWithResponseAsync(
             String shareName,
             Integer timeout,
             Integer duration,
@@ -529,12 +531,12 @@ public final class SharesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesReleaseLeaseResponse> releaseLeaseWithResponseAsync(
+    public Mono<ResponseBase<SharesReleaseLeaseHeaders, Void>> releaseLeaseWithResponseAsync(
             String shareName,
             String leaseId,
             Integer timeout,
@@ -578,12 +580,12 @@ public final class SharesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesChangeLeaseResponse> changeLeaseWithResponseAsync(
+    public Mono<ResponseBase<SharesChangeLeaseHeaders, Void>> changeLeaseWithResponseAsync(
             String shareName,
             String leaseId,
             Integer timeout,
@@ -626,12 +628,12 @@ public final class SharesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesRenewLeaseResponse> renewLeaseWithResponseAsync(
+    public Mono<ResponseBase<SharesRenewLeaseHeaders, Void>> renewLeaseWithResponseAsync(
             String shareName,
             String leaseId,
             Integer timeout,
@@ -678,12 +680,12 @@ public final class SharesImpl {
      *     snapshot to query.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesBreakLeaseResponse> breakLeaseWithResponseAsync(
+    public Mono<ResponseBase<SharesBreakLeaseHeaders, Void>> breakLeaseWithResponseAsync(
             String shareName,
             Integer timeout,
             Integer breakPeriod,
@@ -721,12 +723,12 @@ public final class SharesImpl {
      * @param metadata A name-value pair to associate with a file storage object.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesCreateSnapshotResponse> createSnapshotWithResponseAsync(
+    public Mono<ResponseBase<SharesCreateSnapshotHeaders, Void>> createSnapshotWithResponseAsync(
             String shareName, Integer timeout, Map<String, String> metadata, Context context) {
         final String restype = "share";
         final String comp = "snapshot";
@@ -753,12 +755,12 @@ public final class SharesImpl {
      *     Timeouts for File Service Operations.&lt;/a&gt;.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesCreatePermissionResponse> createPermissionWithResponseAsync(
+    public Mono<ResponseBase<SharesCreatePermissionHeaders, Void>> createPermissionWithResponseAsync(
             String shareName, SharePermission sharePermission, Integer timeout, Context context) {
         final String restype = "share";
         final String comp = "filepermission";
@@ -785,12 +787,13 @@ public final class SharesImpl {
      *     Timeouts for File Service Operations.&lt;/a&gt;.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a permission (a security descriptor) at the share level.
+     * @return a permission (a security descriptor) at the share level along with {@link ResponseBase} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesGetPermissionResponse> getPermissionWithResponseAsync(
+    public Mono<ResponseBase<SharesGetPermissionHeaders, SharePermission>> getPermissionWithResponseAsync(
             String shareName, String filePermissionKey, Integer timeout, Context context) {
         final String restype = "share";
         final String comp = "filepermission";
@@ -820,12 +823,12 @@ public final class SharesImpl {
      * @param rootSquash Root squash to set on the share. Only valid for NFS shares.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesSetPropertiesResponse> setPropertiesWithResponseAsync(
+    public Mono<ResponseBase<SharesSetPropertiesHeaders, Void>> setPropertiesWithResponseAsync(
             String shareName,
             Integer timeout,
             Integer quota,
@@ -862,12 +865,12 @@ public final class SharesImpl {
      * @param leaseId If specified, the operation only succeeds if the resource's lease is active and matches this ID.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesSetMetadataResponse> setMetadataWithResponseAsync(
+    public Mono<ResponseBase<SharesSetMetadataHeaders, Void>> setMetadataWithResponseAsync(
             String shareName, Integer timeout, Map<String, String> metadata, String leaseId, Context context) {
         final String restype = "share";
         final String comp = "metadata";
@@ -895,13 +898,14 @@ public final class SharesImpl {
      * @param leaseId If specified, the operation only succeeds if the resource's lease is active and matches this ID.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a collection of signed identifiers.
+     * @return a collection of signed identifiers along with {@link ResponseBase} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesGetAccessPolicyResponse> getAccessPolicyWithResponseAsync(
-            String shareName, Integer timeout, String leaseId, Context context) {
+    public Mono<ResponseBase<SharesGetAccessPolicyHeaders, List<ShareSignedIdentifier>>>
+            getAccessPolicyWithResponseAsync(String shareName, Integer timeout, String leaseId, Context context) {
         final String restype = "share";
         final String comp = "acl";
         final String accept = "application/xml";
@@ -928,12 +932,12 @@ public final class SharesImpl {
      * @param shareAcl The ACL for the share.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesSetAccessPolicyResponse> setAccessPolicyWithResponseAsync(
+    public Mono<ResponseBase<SharesSetAccessPolicyHeaders, Void>> setAccessPolicyWithResponseAsync(
             String shareName, Integer timeout, String leaseId, List<ShareSignedIdentifier> shareAcl, Context context) {
         final String restype = "share";
         final String comp = "acl";
@@ -962,12 +966,12 @@ public final class SharesImpl {
      * @param leaseId If specified, the operation only succeeds if the resource's lease is active and matches this ID.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return stats for the share.
+     * @return stats for the share along with {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesGetStatisticsResponse> getStatisticsWithResponseAsync(
+    public Mono<ResponseBase<SharesGetStatisticsHeaders, ShareStats>> getStatisticsWithResponseAsync(
             String shareName, Integer timeout, String leaseId, Context context) {
         final String restype = "share";
         final String comp = "stats";
@@ -997,12 +1001,12 @@ public final class SharesImpl {
      * @param deletedShareVersion Specifies the version of the previously-deleted share.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws ShareStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<SharesRestoreResponse> restoreWithResponseAsync(
+    public Mono<ResponseBase<SharesRestoreHeaders, Void>> restoreWithResponseAsync(
             String shareName,
             Integer timeout,
             String requestId,

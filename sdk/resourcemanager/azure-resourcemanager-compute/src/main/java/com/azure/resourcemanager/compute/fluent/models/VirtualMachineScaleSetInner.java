@@ -7,7 +7,6 @@ package com.azure.resourcemanager.compute.fluent.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.compute.models.AdditionalCapabilities;
 import com.azure.resourcemanager.compute.models.AutomaticRepairsPolicy;
 import com.azure.resourcemanager.compute.models.ExtendedLocation;
@@ -19,16 +18,14 @@ import com.azure.resourcemanager.compute.models.SpotRestorePolicy;
 import com.azure.resourcemanager.compute.models.UpgradePolicy;
 import com.azure.resourcemanager.compute.models.VirtualMachineScaleSetIdentity;
 import com.azure.resourcemanager.compute.models.VirtualMachineScaleSetVMProfile;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
 /** Describes a Virtual Machine Scale Set. */
 @Fluent
 public final class VirtualMachineScaleSetInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualMachineScaleSetInner.class);
-
     /*
      * The virtual machine scale set sku.
      */
@@ -36,13 +33,10 @@ public final class VirtualMachineScaleSetInner extends Resource {
     private Sku sku;
 
     /*
-     * Specifies information about the marketplace image used to create the
-     * virtual machine. This element is only used for marketplace images.
-     * Before you can use a marketplace image from an API, you must enable the
-     * image for programmatic use.  In the Azure portal, find the marketplace
-     * image that you want to use and then click **Want to deploy
-     * programmatically, Get Started ->**. Enter any required information and
-     * then click **Save**.
+     * Specifies information about the marketplace image used to create the virtual machine. This element is only used
+     * for marketplace images. Before you can use a marketplace image from an API, you must enable the image for
+     * programmatic use.  In the Azure portal, find the marketplace image that you want to use and then click **Want to
+     * deploy programmatically, Get Started ->**. Enter any required information and then click **Save**.
      */
     @JsonProperty(value = "plan")
     private Plan plan;
@@ -60,8 +54,7 @@ public final class VirtualMachineScaleSetInner extends Resource {
     private VirtualMachineScaleSetIdentity identity;
 
     /*
-     * The virtual machine scale set zones. NOTE: Availability zones can only
-     * be set when you create the scale set
+     * The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set
      */
     @JsonProperty(value = "zones")
     private List<String> zones;
@@ -567,6 +560,16 @@ public final class VirtualMachineScaleSetInner extends Resource {
         }
         this.innerProperties().withSpotRestorePolicy(spotRestorePolicy);
         return this;
+    }
+
+    /**
+     * Get the timeCreated property: Specifies the time at which the Virtual Machine Scale Set resource was
+     * created.&lt;br&gt;&lt;br&gt;Minimum api-version: 2022-03-01.
+     *
+     * @return the timeCreated value.
+     */
+    public OffsetDateTime timeCreated() {
+        return this.innerProperties() == null ? null : this.innerProperties().timeCreated();
     }
 
     /**

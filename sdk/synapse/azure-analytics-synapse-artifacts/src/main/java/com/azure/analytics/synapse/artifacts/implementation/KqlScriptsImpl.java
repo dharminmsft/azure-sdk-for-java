@@ -53,7 +53,7 @@ public final class KqlScriptsImpl {
      */
     @Host("{endpoint}")
     @ServiceInterface(name = "ArtifactsClientKqlSc")
-    private interface KqlScriptsService {
+    public interface KqlScriptsService {
         @Get("/kqlScripts")
         @ExpectedResponses({200})
         @UnexpectedResponseExceptionType(ErrorContractException.class)
@@ -78,11 +78,11 @@ public final class KqlScriptsImpl {
      *
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<KqlScriptResource>> getAllSinglePageAsync() {
-        final String apiVersion = "2021-06-01-preview";
+        final String apiVersion = "2021-11-01-preview";
         final String accept = "application/json";
         return FluxUtil.withContext(context -> service.getAll(this.client.getEndpoint(), apiVersion, accept, context))
                 .map(
@@ -103,11 +103,11 @@ public final class KqlScriptsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<KqlScriptResource>> getAllSinglePageAsync(Context context) {
-        final String apiVersion = "2021-06-01-preview";
+        final String apiVersion = "2021-11-01-preview";
         final String accept = "application/json";
         return service.getAll(this.client.getEndpoint(), apiVersion, accept, context)
                 .map(
@@ -126,7 +126,7 @@ public final class KqlScriptsImpl {
      *
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<KqlScriptResource> getAllAsync() {
@@ -140,7 +140,7 @@ public final class KqlScriptsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<KqlScriptResource> getAllAsync(Context context) {
@@ -153,7 +153,7 @@ public final class KqlScriptsImpl {
      *
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<KqlScriptResource> getAll() {
@@ -167,7 +167,7 @@ public final class KqlScriptsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all KQL scripts.
+     * @return all KQL scripts as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<KqlScriptResource> getAll(Context context) {
@@ -181,7 +181,7 @@ public final class KqlScriptsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<KqlScriptResource>> getAllNextSinglePageAsync(String nextLink) {
@@ -206,7 +206,7 @@ public final class KqlScriptsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ErrorContractException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<KqlScriptResource>> getAllNextSinglePageAsync(String nextLink, Context context) {

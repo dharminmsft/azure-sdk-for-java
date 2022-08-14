@@ -1,14 +1,100 @@
 # Release History
 
-## 1.1.0-beta.1 (Unreleased)
-
-### Features Added
-
-### Breaking Changes
-
-### Bugs Fixed
+## 1.1.0-beta.9 (2022-08-11)
 
 ### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.30.0` to version `1.31.0`
+- Upgraded `azure-communication-common` from `1.1.5` to version `1.2.0`
+
+## 1.1.0-beta.8 (2022-07-18)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.29.1` to version `1.30.0`
+- Upgraded `azure-communication-common` from `1.1.4` to version `1.1.5`
+
+## 1.1.0-beta.7 (2022-06-13)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.28.0` to version `1.29.1`
+- Upgraded `azure-communication-common` from `1.1.3` to version `1.1.4`
+- Upgraded `azure-identity` from `1.5.1` to `1.5.2`
+
+## 1.0.12 (2022-06-13)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.28.0` to version `1.29.1`
+- Upgraded `azure-communication-common` from `1.1.3` to version `1.1.4`
+
+## 1.0.11 (2022-05-17)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.27.0` to version `1.28.0`.
+- Upgraded `azure-communication-common` from `1.1.2` to version `1.1.3`.
+
+## 1.1.0-beta.5 (2022-05-11)
+
+### Other Changes
+
+#### Dependency updates
+- Upgraded `azure-communication-common` to 1.1.3
+- Upgraded `azure-core` to 1.28.0
+
+## 1.1.0-beta.4 (2022-04-11)
+
+### Other Changes
+
+#### Dependency updates
+- Upgraded `azure-communication-common` to 1.1.2
+- Upgraded `azure-core` to 1.27.0
+- Upgraded `azure-identity` to 1.5.0
+
+## 1.1.0-beta.3 (2022-03-15)
+
+### Features Added
+- Added interfaces from `com.azure.core.client.traits` to `PhoneNumbersClientBuilder`
+- Added `retryOptions` to `PhoneNumbersClientBuilder`
+- Added environment variable `AZURE_USERAGENT_OVERRIDE`, that overrides the HTTP header `x-ms-useragent` on the tests
+- Upgraded `azure-communication-common` to 1.1.1
+- Upgraded `azure-identity` to 1.4.6
+
+## 1.1.0-beta.2 (2022-02-17)
+
+### Other Changes
+
+#### Dependency updates
+- Upgraded `azure-communication-common` to 1.0.8
+- Upgraded `azure-core` to 1.25.0
+- Upgraded `azure-identity` to 1.4.4
+
+## 1.1.0-beta.1 (2022-01-24)
+
+### Features Added
+- Users can now purchase United Kingdom (GB) toll free and geographic phone numbers for PSTN Calling
+- Users can now purchase Denmark (DK) toll free and geographic phone numbers for PSTN Calling
+
+## 1.0.6 (2021-11-18)
+
+### Other Changes
+
+#### Dependency updates
+- Upgraded `azure-communication-common` to 1.0.6
+- Upgraded `azure-core` to 1.22.0
+- Upgraded `azure-identity` to 1.4.1
 
 ## 1.0.5 (2021-10-06)
 

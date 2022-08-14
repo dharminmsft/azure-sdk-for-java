@@ -5,10 +5,8 @@
 package com.azure.resourcemanager.synapse.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.synapse.fluent.models.DataConnectionInner;
 import com.azure.resourcemanager.synapse.fluent.models.EventHubConnectionProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -19,8 +17,6 @@ import java.util.List;
 @JsonTypeName("EventHub")
 @Fluent
 public final class EventHubDataConnection extends DataConnectionInner {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(EventHubDataConnection.class);
-
     /*
      * The Event Hub data connection properties to validate.
      */
@@ -217,6 +213,31 @@ public final class EventHubDataConnection extends DataConnectionInner {
      */
     public ResourceProvisioningState provisioningState() {
         return this.innerProperties() == null ? null : this.innerProperties().provisioningState();
+    }
+
+    /**
+     * Get the managedIdentityResourceId property: The resource ID of a managed identity (system or user assigned) to be
+     * used to authenticate with event hub.
+     *
+     * @return the managedIdentityResourceId value.
+     */
+    public String managedIdentityResourceId() {
+        return this.innerProperties() == null ? null : this.innerProperties().managedIdentityResourceId();
+    }
+
+    /**
+     * Set the managedIdentityResourceId property: The resource ID of a managed identity (system or user assigned) to be
+     * used to authenticate with event hub.
+     *
+     * @param managedIdentityResourceId the managedIdentityResourceId value to set.
+     * @return the EventHubDataConnection object itself.
+     */
+    public EventHubDataConnection withManagedIdentityResourceId(String managedIdentityResourceId) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new EventHubConnectionProperties();
+        }
+        this.innerProperties().withManagedIdentityResourceId(managedIdentityResourceId);
+        return this;
     }
 
     /**

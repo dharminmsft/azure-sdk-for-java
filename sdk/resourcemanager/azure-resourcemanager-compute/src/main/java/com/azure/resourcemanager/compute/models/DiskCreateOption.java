@@ -8,7 +8,7 @@ import com.azure.core.util.ExpandableStringEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Collection;
 
-/** Defines values for DiskCreateOption. */
+/** This enumerates the possible sources of a disk's creation. */
 public final class DiskCreateOption extends ExpandableStringEnum<DiskCreateOption> {
     /** Static value Empty for DiskCreateOption. */
     public static final DiskCreateOption EMPTY = fromString("Empty");
@@ -34,6 +34,12 @@ public final class DiskCreateOption extends ExpandableStringEnum<DiskCreateOptio
     /** Static value CopyStart for DiskCreateOption. */
     public static final DiskCreateOption COPY_START = fromString("CopyStart");
 
+    /** Static value ImportSecure for DiskCreateOption. */
+    public static final DiskCreateOption IMPORT_SECURE = fromString("ImportSecure");
+
+    /** Static value UploadPreparedSecure for DiskCreateOption. */
+    public static final DiskCreateOption UPLOAD_PREPARED_SECURE = fromString("UploadPreparedSecure");
+
     /**
      * Creates or finds a DiskCreateOption from its string representation.
      *
@@ -45,7 +51,11 @@ public final class DiskCreateOption extends ExpandableStringEnum<DiskCreateOptio
         return fromString(name, DiskCreateOption.class);
     }
 
-    /** @return known DiskCreateOption values. */
+    /**
+     * Gets known DiskCreateOption values.
+     *
+     * @return known DiskCreateOption values.
+     */
     public static Collection<DiskCreateOption> values() {
         return values(DiskCreateOption.class);
     }

@@ -4,7 +4,6 @@
 
 package com.azure.resourcemanager.netapp.models;
 
-import com.azure.core.management.SystemData;
 import com.azure.resourcemanager.netapp.fluent.models.SubscriptionQuotaItemInner;
 
 /** An immutable client-side representation of SubscriptionQuotaItem. */
@@ -29,20 +28,6 @@ public interface SubscriptionQuotaItem {
      * @return the type value.
      */
     String type();
-
-    /**
-     * Gets the systemData property: The system meta data relating to this resource.
-     *
-     * @return the systemData value.
-     */
-    SystemData systemData();
-
-    /**
-     * Gets the namePropertiesName property: Quota Item name.
-     *
-     * @return the namePropertiesName value.
-     */
-    String namePropertiesName();
 
     /**
      * Gets the current property: The current quota value.

@@ -5,20 +5,15 @@
 package com.azure.resourcemanager.compute.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Describes the properties of a Virtual Machine Scale Set Extension. */
 @Fluent
 public final class VirtualMachineScaleSetExtensionProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualMachineScaleSetExtensionProperties.class);
-
     /*
-     * If a value is provided and is different from the previous value, the
-     * extension handler will be forced to update even if the extension
-     * configuration has not changed.
+     * If a value is provided and is different from the previous value, the extension handler will be forced to update
+     * even if the extension configuration has not changed.
      */
     @JsonProperty(value = "forceUpdateTag")
     private String forceUpdateTag;
@@ -30,8 +25,7 @@ public final class VirtualMachineScaleSetExtensionProperties {
     private String publisher;
 
     /*
-     * Specifies the type of the extension; an example is
-     * "CustomScriptExtension".
+     * Specifies the type of the extension; an example is "CustomScriptExtension".
      */
     @JsonProperty(value = "type")
     private String type;
@@ -43,17 +37,16 @@ public final class VirtualMachineScaleSetExtensionProperties {
     private String typeHandlerVersion;
 
     /*
-     * Indicates whether the extension should use a newer minor version if one
-     * is available at deployment time. Once deployed, however, the extension
-     * will not upgrade minor versions unless redeployed, even with this
-     * property set to true.
+     * Indicates whether the extension should use a newer minor version if one is available at deployment time. Once
+     * deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set
+     * to true.
      */
     @JsonProperty(value = "autoUpgradeMinorVersion")
     private Boolean autoUpgradeMinorVersion;
 
     /*
-     * Indicates whether the extension should be automatically upgraded by the
-     * platform if there is a newer version of the extension available.
+     * Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of
+     * the extension available.
      */
     @JsonProperty(value = "enableAutomaticUpgrade")
     private Boolean enableAutomaticUpgrade;
@@ -65,8 +58,8 @@ public final class VirtualMachineScaleSetExtensionProperties {
     private Object settings;
 
     /*
-     * The extension can contain either protectedSettings or
-     * protectedSettingsFromKeyVault or no protected settings at all.
+     * The extension can contain either protectedSettings or protectedSettingsFromKeyVault or no protected settings at
+     * all.
      */
     @JsonProperty(value = "protectedSettings")
     private Object protectedSettings;
@@ -78,19 +71,23 @@ public final class VirtualMachineScaleSetExtensionProperties {
     private String provisioningState;
 
     /*
-     * Collection of extension names after which this extension needs to be
-     * provisioned.
+     * Collection of extension names after which this extension needs to be provisioned.
      */
     @JsonProperty(value = "provisionAfterExtensions")
     private List<String> provisionAfterExtensions;
 
     /*
-     * Indicates whether failures stemming from the extension will be
-     * suppressed (Operational failures such as not connecting to the VM will
-     * not be suppressed regardless of this value). The default is false.
+     * Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not
+     * connecting to the VM will not be suppressed regardless of this value). The default is false.
      */
     @JsonProperty(value = "suppressFailures")
     private Boolean suppressFailures;
+
+    /*
+     * The extensions protected settings that are passed by reference, and consumed from key vault
+     */
+    @JsonProperty(value = "protectedSettingsFromKeyVault")
+    private Object protectedSettingsFromKeyVault;
 
     /**
      * Get the forceUpdateTag property: If a value is provided and is different from the previous value, the extension
@@ -315,6 +312,29 @@ public final class VirtualMachineScaleSetExtensionProperties {
      */
     public VirtualMachineScaleSetExtensionProperties withSuppressFailures(Boolean suppressFailures) {
         this.suppressFailures = suppressFailures;
+        return this;
+    }
+
+    /**
+     * Get the protectedSettingsFromKeyVault property: The extensions protected settings that are passed by reference,
+     * and consumed from key vault.
+     *
+     * @return the protectedSettingsFromKeyVault value.
+     */
+    public Object protectedSettingsFromKeyVault() {
+        return this.protectedSettingsFromKeyVault;
+    }
+
+    /**
+     * Set the protectedSettingsFromKeyVault property: The extensions protected settings that are passed by reference,
+     * and consumed from key vault.
+     *
+     * @param protectedSettingsFromKeyVault the protectedSettingsFromKeyVault value to set.
+     * @return the VirtualMachineScaleSetExtensionProperties object itself.
+     */
+    public VirtualMachineScaleSetExtensionProperties withProtectedSettingsFromKeyVault(
+        Object protectedSettingsFromKeyVault) {
+        this.protectedSettingsFromKeyVault = protectedSettingsFromKeyVault;
         return this;
     }
 

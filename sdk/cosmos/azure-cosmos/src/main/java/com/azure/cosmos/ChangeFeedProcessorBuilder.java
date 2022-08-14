@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 package com.azure.cosmos;
 
-import com.azure.cosmos.implementation.changefeed.implementation.ChangeFeedProcessorBuilderImpl;
+import com.azure.cosmos.implementation.changefeed.incremental.ChangeFeedProcessorBuilderImpl;
 import com.azure.cosmos.models.ChangeFeedProcessorOptions;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -12,14 +12,27 @@ import java.util.function.Consumer;
 /**
  * Helper class to build a {@link ChangeFeedProcessor} instance.
  *
- * {@codesnippet com.azure.cosmos.changeFeedProcessor.builder}
+ * <!-- src_embed com.azure.cosmos.changeFeedProcessor.builder -->
+ * <pre>
+ * ChangeFeedProcessor changeFeedProcessor = new ChangeFeedProcessorBuilder&#40;&#41;
+ *     .hostName&#40;hostName&#41;
+ *     .feedContainer&#40;feedContainer&#41;
+ *     .leaseContainer&#40;leaseContainer&#41;
+ *     .handleChanges&#40;docs -&gt; &#123;
+ *         for &#40;JsonNode item : docs&#41; &#123;
+ *             &#47;&#47; Implementation for handling and processing of each JsonNode item goes here
+ *         &#125;
+ *     &#125;&#41;
+ *     .buildChangeFeedProcessor&#40;&#41;;
+ * </pre>
+ * <!-- end com.azure.cosmos.changeFeedProcessor.builder -->
  */
 public class ChangeFeedProcessorBuilder {
     private String hostName;
     private CosmosAsyncContainer feedContainer;
     private CosmosAsyncContainer leaseContainer;
     private ChangeFeedProcessorOptions changeFeedProcessorOptions;
-    private Consumer<List<JsonNode>> consumer;
+    private Consumer<List<JsonNode>> partitionKeyBasedLeaseConsumer;
 
     /**
      * Instantiates a new Cosmos a new ChangeFeedProcessor builder.
@@ -66,13 +79,21 @@ public class ChangeFeedProcessorBuilder {
     /**
      * Sets a consumer function which will be called to process changes.
      *
-     * {@codesnippet com.azure.cosmos.changeFeedProcessor.handleChanges}
+     * <!-- src_embed com.azure.cosmos.changeFeedProcessor.handleChanges -->
+     * <pre>
+     * .handleChanges&#40;docs -&gt; &#123;
+     *     for &#40;JsonNode item : docs&#41; &#123;
+     *         &#47;&#47; Implementation for handling and processing of each JsonNode item goes here
+     *     &#125;
+     * &#125;&#41;
+     * </pre>
+     * <!-- end com.azure.cosmos.changeFeedProcessor.handleChanges -->
      *
      * @param consumer the {@link Consumer} to call for handling the feeds.
      * @return current Builder.
      */
     public ChangeFeedProcessorBuilder handleChanges(Consumer<List<JsonNode>> consumer) {
-        this.consumer = consumer;
+        this.partitionKeyBasedLeaseConsumer = consumer;
 
         return this;
     }
@@ -104,35 +125,42 @@ public class ChangeFeedProcessorBuilder {
      * @return an instance of {@link ChangeFeedProcessor}.
      */
     public ChangeFeedProcessor buildChangeFeedProcessor() {
-        if (hostName == null || hostName.isEmpty()) {
-            throw new IllegalArgumentException("hostName");
-        }
-        if (feedContainer == null) {
-            throw new IllegalArgumentException("feedContainer");
-        }
-        if (leaseContainer == null) {
-            throw new IllegalArgumentException("leaseContainer");
-        }
-        if (consumer == null) {
-            throw new IllegalArgumentException("consumer");
-        }
+        validateChangeFeedProcessorBuilder();
 
         ChangeFeedProcessorBuilderImpl builder = new ChangeFeedProcessorBuilderImpl()
             .hostName(this.hostName)
             .feedContainer(this.feedContainer)
             .leaseContainer(this.leaseContainer)
-            .handleChanges(this.consumer);
+            .handleChanges(this.partitionKeyBasedLeaseConsumer);
 
         if (this.changeFeedProcessorOptions != null) {
-            if (this.changeFeedProcessorOptions.getLeaseRenewInterval().compareTo(this.changeFeedProcessorOptions.getLeaseExpirationInterval()) >= 0) {
-                // Lease renewer task must execute at a faster frequency than expiration setting; otherwise this will
-                //  force a lot of resets and lead to a poor overall performance of ChangeFeedProcessor.
-                throw new IllegalArgumentException("changeFeedProcessorOptions: expecting leaseRenewInterval less than leaseExpirationInterval");
-            }
-
             builder.options(this.changeFeedProcessorOptions);
         }
 
         return builder.build();
+    }
+
+    private void validateChangeFeedProcessorBuilder() {
+        if (hostName == null || hostName.isEmpty()) {
+            throw new IllegalArgumentException("hostName cannot be null or empty");
+        }
+        if (feedContainer == null) {
+            throw new IllegalArgumentException("feedContainer cannot be null");
+        }
+        if (leaseContainer == null) {
+            throw new IllegalArgumentException("leaseContainer cannot be null");
+        }
+        validateChangeFeedProcessorOptions();
+    }
+
+    private void validateChangeFeedProcessorOptions() {
+        if (this.changeFeedProcessorOptions == null) {
+            return;
+        }
+        if (this.changeFeedProcessorOptions.getLeaseRenewInterval().compareTo(this.changeFeedProcessorOptions.getLeaseExpirationInterval()) >= 0) {
+            // Lease renewer task must execute at a faster frequency than expiration setting; otherwise this will
+            //  force a lot of resets and lead to a poor overall performance of ChangeFeedProcessor.
+            throw new IllegalArgumentException("changeFeedProcessorOptions: expecting leaseRenewInterval less than leaseExpirationInterval");
+        }
     }
 }

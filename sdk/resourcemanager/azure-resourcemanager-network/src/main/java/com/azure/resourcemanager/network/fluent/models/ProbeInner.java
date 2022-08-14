@@ -6,18 +6,14 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ProbeProtocol;
 import com.azure.resourcemanager.network.models.ProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** A load balancer probe. */
 @Fluent
 public final class ProbeInner extends SubResource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ProbeInner.class);
-
     /*
      * Properties of load balancer probe.
      */
@@ -25,8 +21,8 @@ public final class ProbeInner extends SubResource {
     private ProbePropertiesFormat innerProperties;
 
     /*
-     * The name of the resource that is unique within the set of probes used by
-     * the load balancer. This name can be used to access the resource.
+     * The name of the resource that is unique within the set of probes used by the load balancer. This name can be
+     * used to access the resource.
      */
     @JsonProperty(value = "name")
     private String name;

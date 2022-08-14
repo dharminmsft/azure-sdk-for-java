@@ -5,9 +5,7 @@
 package com.azure.resourcemanager.netapp.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.fluent.models.BackupProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
@@ -16,8 +14,6 @@ import java.util.Map;
 /** Backup patch. */
 @Fluent
 public final class BackupPatch {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(BackupPatch.class);
-
     /*
      * Resource tags
      */
@@ -70,7 +66,7 @@ public final class BackupPatch {
     }
 
     /**
-     * Get the creationDate property: name The creation date of the backup.
+     * Get the creationDate property: creationDate The creation date of the backup.
      *
      * @return the creationDate value.
      */

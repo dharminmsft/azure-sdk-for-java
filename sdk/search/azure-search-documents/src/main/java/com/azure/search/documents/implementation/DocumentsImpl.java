@@ -44,13 +44,11 @@ import com.azure.search.documents.models.QueryType;
 import com.azure.search.documents.models.ScoringStatistics;
 import com.azure.search.documents.models.SearchMode;
 import com.azure.search.documents.models.SuggestOptions;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in Documents. */
@@ -108,6 +106,7 @@ public final class DocumentsImpl {
                 @QueryParam("queryType") QueryType queryType,
                 @QueryParam(value = "scoringParameter", multipleQueryParams = true) List<String> scoringParameters,
                 @QueryParam("scoringProfile") String scoringProfile,
+                @QueryParam("semanticConfiguration") String semanticConfiguration,
                 @QueryParam("searchFields") String searchFields,
                 @QueryParam("queryLanguage") QueryLanguage queryLanguage,
                 @QueryParam("speller") QuerySpellerType speller,
@@ -238,7 +237,7 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Long>> countWithResponseAsync(RequestOptions requestOptions, Context context) {
@@ -267,7 +266,8 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing search results from an index.
+     * @return response containing search results from an index along with {@link Response} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SearchDocumentsResult>> searchGetWithResponseAsync(
@@ -328,6 +328,11 @@ public final class DocumentsImpl {
             scoringProfileInternal = searchOptions.getScoringProfile();
         }
         String scoringProfile = scoringProfileInternal;
+        String semanticConfigurationInternal = null;
+        if (searchOptions != null) {
+            semanticConfigurationInternal = searchOptions.getSemanticConfiguration();
+        }
+        String semanticConfiguration = semanticConfigurationInternal;
         List<String> searchFieldsInternal = null;
         if (searchOptions != null) {
             searchFieldsInternal = searchOptions.getSearchFields();
@@ -394,21 +399,19 @@ public final class DocumentsImpl {
         }
         UUID xMsClientRequestId = xMsClientRequestIdInternal;
         List<String> facetsConverted =
-                Optional.ofNullable(facets)
-                        .map(Collection::stream)
-                        .orElseGet(Stream::empty)
-                        .map((item) -> Objects.toString(item, ""))
-                        .collect(Collectors.toList());
+                (facets == null)
+                        ? new ArrayList<>()
+                        : facets.stream().map(item -> Objects.toString(item, "")).collect(Collectors.toList());
         String highlightFieldsConverted =
                 JacksonAdapter.createDefaultSerializerAdapter().serializeList(highlightFields, CollectionFormat.CSV);
         String orderByConverted =
                 JacksonAdapter.createDefaultSerializerAdapter().serializeList(orderBy, CollectionFormat.CSV);
         List<String> scoringParametersConverted =
-                Optional.ofNullable(scoringParameters)
-                        .map(Collection::stream)
-                        .orElseGet(Stream::empty)
-                        .map((item) -> Objects.toString(item, ""))
-                        .collect(Collectors.toList());
+                (scoringParameters == null)
+                        ? new ArrayList<>()
+                        : scoringParameters.stream()
+                                .map(item -> Objects.toString(item, ""))
+                                .collect(Collectors.toList());
         String searchFieldsConverted =
                 JacksonAdapter.createDefaultSerializerAdapter().serializeList(searchFields, CollectionFormat.CSV);
         String selectConverted =
@@ -430,6 +433,7 @@ public final class DocumentsImpl {
                 queryType,
                 scoringParametersConverted,
                 scoringProfile,
+                semanticConfiguration,
                 searchFieldsConverted,
                 queryLanguage,
                 speller,
@@ -457,7 +461,8 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing search results from an index.
+     * @return response containing search results from an index along with {@link Response} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SearchDocumentsResult>> searchPostWithResponseAsync(
@@ -489,7 +494,7 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return any object.
+     * @return any object along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Object>> getWithResponseAsync(
@@ -526,7 +531,8 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing suggestion query results from an index.
+     * @return response containing suggestion query results from an index along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SuggestDocumentsResult>> suggestGetWithResponseAsync(
@@ -621,7 +627,8 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing suggestion query results from an index.
+     * @return response containing suggestion query results from an index along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SuggestDocumentsResult>> suggestPostWithResponseAsync(
@@ -651,7 +658,8 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing the status of operations for all documents in the indexing request.
+     * @return response containing the status of operations for all documents in the indexing request along with {@link
+     *     Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<IndexDocumentsResult>> indexWithResponseAsync(
@@ -684,7 +692,7 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the result of Autocomplete query.
+     * @return the result of Autocomplete query along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<AutocompleteResult>> autocompleteGetWithResponseAsync(
@@ -769,7 +777,7 @@ public final class DocumentsImpl {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws SearchErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the result of Autocomplete query.
+     * @return the result of Autocomplete query along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<AutocompleteResult>> autocompletePostWithResponseAsync(

@@ -50,11 +50,11 @@ public interface Domain {
     Map<String, String> tags();
 
     /**
-     * Gets the sku property: The Sku pricing tier for the Event Grid Domain resource.
+     * Gets the systemData property: The system metadata relating to the Event Grid Domain resource.
      *
-     * @return the sku value.
+     * @return the systemData value.
      */
-    ResourceSku sku();
+    SystemData systemData();
 
     /**
      * Gets the identity property: Identity information for the Event Grid Domain resource.
@@ -62,13 +62,6 @@ public interface Domain {
      * @return the identity value.
      */
     IdentityInfo identity();
-
-    /**
-     * Gets the systemData property: The system metadata relating to the Event Grid Domain resource.
-     *
-     * @return the systemData value.
-     */
-    SystemData systemData();
 
     /**
      * Gets the privateEndpointConnections property: List of private endpoint connections.
@@ -171,6 +164,13 @@ public interface Domain {
     Boolean autoDeleteTopicWithLastSubscription();
 
     /**
+     * Gets the dataResidencyBoundary property: Data Residency Boundary of the resource.
+     *
+     * @return the dataResidencyBoundary value.
+     */
+    DataResidencyBoundary dataResidencyBoundary();
+
+    /**
      * Gets the region of the resource.
      *
      * @return the region of the resource.
@@ -183,6 +183,13 @@ public interface Domain {
      * @return the name of the resource region.
      */
     String regionName();
+
+    /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
 
     /**
      * Gets the inner com.azure.resourcemanager.eventgrid.fluent.models.DomainInner object.
@@ -237,7 +244,6 @@ public interface Domain {
          */
         interface WithCreate
             extends DefinitionStages.WithTags,
-                DefinitionStages.WithSku,
                 DefinitionStages.WithIdentity,
                 DefinitionStages.WithInputSchema,
                 DefinitionStages.WithInputSchemaMapping,
@@ -245,7 +251,8 @@ public interface Domain {
                 DefinitionStages.WithInboundIpRules,
                 DefinitionStages.WithDisableLocalAuth,
                 DefinitionStages.WithAutoCreateTopicWithFirstSubscription,
-                DefinitionStages.WithAutoDeleteTopicWithLastSubscription {
+                DefinitionStages.WithAutoDeleteTopicWithLastSubscription,
+                DefinitionStages.WithDataResidencyBoundary {
             /**
              * Executes the create request.
              *
@@ -270,16 +277,6 @@ public interface Domain {
              * @return the next definition stage.
              */
             WithCreate withTags(Map<String, String> tags);
-        }
-        /** The stage of the Domain definition allowing to specify sku. */
-        interface WithSku {
-            /**
-             * Specifies the sku property: The Sku pricing tier for the Event Grid Domain resource..
-             *
-             * @param sku The Sku pricing tier for the Event Grid Domain resource.
-             * @return the next definition stage.
-             */
-            WithCreate withSku(ResourceSku sku);
         }
         /** The stage of the Domain definition allowing to specify identity. */
         interface WithIdentity {
@@ -412,6 +409,16 @@ public interface Domain {
              */
             WithCreate withAutoDeleteTopicWithLastSubscription(Boolean autoDeleteTopicWithLastSubscription);
         }
+        /** The stage of the Domain definition allowing to specify dataResidencyBoundary. */
+        interface WithDataResidencyBoundary {
+            /**
+             * Specifies the dataResidencyBoundary property: Data Residency Boundary of the resource..
+             *
+             * @param dataResidencyBoundary Data Residency Boundary of the resource.
+             * @return the next definition stage.
+             */
+            WithCreate withDataResidencyBoundary(DataResidencyBoundary dataResidencyBoundary);
+        }
     }
     /**
      * Begins update for the Domain resource.
@@ -424,12 +431,12 @@ public interface Domain {
     interface Update
         extends UpdateStages.WithTags,
             UpdateStages.WithIdentity,
-            UpdateStages.WithSku,
             UpdateStages.WithPublicNetworkAccess,
             UpdateStages.WithInboundIpRules,
             UpdateStages.WithDisableLocalAuth,
             UpdateStages.WithAutoCreateTopicWithFirstSubscription,
-            UpdateStages.WithAutoDeleteTopicWithLastSubscription {
+            UpdateStages.WithAutoDeleteTopicWithLastSubscription,
+            UpdateStages.WithDataResidencyBoundary {
         /**
          * Executes the update request.
          *
@@ -466,16 +473,6 @@ public interface Domain {
              * @return the next definition stage.
              */
             Update withIdentity(IdentityInfo identity);
-        }
-        /** The stage of the Domain update allowing to specify sku. */
-        interface WithSku {
-            /**
-             * Specifies the sku property: The Sku pricing tier for the domain..
-             *
-             * @param sku The Sku pricing tier for the domain.
-             * @return the next definition stage.
-             */
-            Update withSku(ResourceSku sku);
         }
         /** The stage of the Domain update allowing to specify publicNetworkAccess. */
         interface WithPublicNetworkAccess {
@@ -577,6 +574,16 @@ public interface Domain {
              */
             Update withAutoDeleteTopicWithLastSubscription(Boolean autoDeleteTopicWithLastSubscription);
         }
+        /** The stage of the Domain update allowing to specify dataResidencyBoundary. */
+        interface WithDataResidencyBoundary {
+            /**
+             * Specifies the dataResidencyBoundary property: The data residency boundary for the domain..
+             *
+             * @param dataResidencyBoundary The data residency boundary for the domain.
+             * @return the next definition stage.
+             */
+            Update withDataResidencyBoundary(DataResidencyBoundary dataResidencyBoundary);
+        }
     }
     /**
      * Refreshes the resource to sync with Azure.
@@ -609,7 +616,7 @@ public interface Domain {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return shared access keys of the Domain.
+     * @return shared access keys of the Domain along with {@link Response}.
      */
     Response<DomainSharedAccessKeys> listSharedAccessKeysWithResponse(Context context);
 
@@ -632,7 +639,7 @@ public interface Domain {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return shared access keys of the Domain.
+     * @return shared access keys of the Domain along with {@link Response}.
      */
     Response<DomainSharedAccessKeys> regenerateKeyWithResponse(
         DomainRegenerateKeyRequest regenerateKeyRequest, Context context);

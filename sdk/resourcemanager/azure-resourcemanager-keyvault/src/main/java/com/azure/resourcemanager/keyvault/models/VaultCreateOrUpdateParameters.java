@@ -6,15 +6,13 @@ package com.azure.resourcemanager.keyvault.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 /** Parameters for creating or updating a vault. */
 @Fluent
 public final class VaultCreateOrUpdateParameters {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VaultCreateOrUpdateParameters.class);
-
     /*
      * The supported Azure location where the key vault should be created.
      */
@@ -25,6 +23,7 @@ public final class VaultCreateOrUpdateParameters {
      * The tags that will be assigned to the key vault.
      */
     @JsonProperty(value = "tags")
+    @JsonInclude(value = JsonInclude.Include.NON_NULL, content = JsonInclude.Include.ALWAYS)
     private Map<String, String> tags;
 
     /*
@@ -100,13 +99,13 @@ public final class VaultCreateOrUpdateParameters {
      */
     public void validate() {
         if (location() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property location in model VaultCreateOrUpdateParameters"));
         }
         if (properties() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property properties in model VaultCreateOrUpdateParameters"));
@@ -114,4 +113,6 @@ public final class VaultCreateOrUpdateParameters {
             properties().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(VaultCreateOrUpdateParameters.class);
 }

@@ -5,29 +5,25 @@
 package com.azure.resourcemanager.netapp.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Log Definition of a single resource metric. */
 @Fluent
 public final class LogSpecification {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(LogSpecification.class);
-
     /*
-     * The name property.
+     * Name of log specification.
      */
     @JsonProperty(value = "name")
     private String name;
 
     /*
-     * The displayName property.
+     * Display name of log specification.
      */
     @JsonProperty(value = "displayName")
     private String displayName;
 
     /**
-     * Get the name property: The name property.
+     * Get the name property: Name of log specification.
      *
      * @return the name value.
      */
@@ -36,7 +32,7 @@ public final class LogSpecification {
     }
 
     /**
-     * Set the name property: The name property.
+     * Set the name property: Name of log specification.
      *
      * @param name the name value to set.
      * @return the LogSpecification object itself.
@@ -47,7 +43,7 @@ public final class LogSpecification {
     }
 
     /**
-     * Get the displayName property: The displayName property.
+     * Get the displayName property: Display name of log specification.
      *
      * @return the displayName value.
      */
@@ -56,7 +52,7 @@ public final class LogSpecification {
     }
 
     /**
-     * Set the displayName property: The displayName property.
+     * Set the displayName property: Display name of log specification.
      *
      * @param displayName the displayName value to set.
      * @return the LogSpecification object itself.

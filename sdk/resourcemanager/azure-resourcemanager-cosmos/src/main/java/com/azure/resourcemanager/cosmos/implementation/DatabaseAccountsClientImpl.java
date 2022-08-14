@@ -65,8 +65,6 @@ public final class DatabaseAccountsClientImpl
         InnerSupportsListing<DatabaseAccountGetResultsInner>,
         InnerSupportsDelete<Void>,
         DatabaseAccountsClient {
-    private final ClientLogger logger = new ClientLogger(DatabaseAccountsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final DatabaseAccountsService service;
 
@@ -365,7 +363,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<DatabaseAccountGetResultsInner>> getByResourceGroupWithResponseAsync(
@@ -414,7 +412,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<DatabaseAccountGetResultsInner>> getByResourceGroupWithResponseAsync(
@@ -459,19 +457,12 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountGetResultsInner> getByResourceGroupAsync(String resourceGroupName, String accountName) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<DatabaseAccountGetResultsInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -498,7 +489,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<DatabaseAccountGetResultsInner> getByResourceGroupWithResponse(
@@ -515,7 +506,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
@@ -572,7 +563,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
@@ -628,9 +619,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginUpdateAsync(
         String resourceGroupName, String accountName, DatabaseAccountUpdateParameters updateParameters) {
         Mono<Response<Flux<ByteBuffer>>> mono =
@@ -642,7 +633,7 @@ public final class DatabaseAccountsClientImpl
                 this.client.getHttpPipeline(),
                 DatabaseAccountGetResultsInner.class,
                 DatabaseAccountGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -655,9 +646,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginUpdateAsync(
         String resourceGroupName,
         String accountName,
@@ -685,9 +676,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginUpdate(
         String resourceGroupName, String accountName, DatabaseAccountUpdateParameters updateParameters) {
         return beginUpdateAsync(resourceGroupName, accountName, updateParameters).getSyncPoller();
@@ -703,9 +694,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginUpdate(
         String resourceGroupName,
         String accountName,
@@ -723,7 +714,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountGetResultsInner> updateAsync(
@@ -743,7 +734,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<DatabaseAccountGetResultsInner> updateAsync(
@@ -804,7 +795,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -863,7 +854,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -921,9 +912,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner>
         beginCreateOrUpdateAsync(
             String resourceGroupName,
@@ -938,7 +929,7 @@ public final class DatabaseAccountsClientImpl
                 this.client.getHttpPipeline(),
                 DatabaseAccountGetResultsInner.class,
                 DatabaseAccountGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -952,9 +943,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner>
         beginCreateOrUpdateAsync(
             String resourceGroupName,
@@ -984,9 +975,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginCreateOrUpdate(
         String resourceGroupName, String accountName, DatabaseAccountCreateUpdateParameters createUpdateParameters) {
         return beginCreateOrUpdateAsync(resourceGroupName, accountName, createUpdateParameters).getSyncPoller();
@@ -1003,9 +994,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB database account.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<DatabaseAccountGetResultsInner>, DatabaseAccountGetResultsInner> beginCreateOrUpdate(
         String resourceGroupName,
         String accountName,
@@ -1025,7 +1016,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountGetResultsInner> createOrUpdateAsync(
@@ -1046,7 +1037,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB database account.
+     * @return an Azure Cosmos DB database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<DatabaseAccountGetResultsInner> createOrUpdateAsync(
@@ -1107,7 +1098,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(String resourceGroupName, String accountName) {
@@ -1153,7 +1144,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -1196,14 +1187,15 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteAsync(String resourceGroupName, String accountName) {
         Mono<Response<Flux<ByteBuffer>>> mono = deleteWithResponseAsync(resourceGroupName, accountName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -1215,9 +1207,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String resourceGroupName, String accountName, Context context) {
         context = this.client.mergeContext(context);
@@ -1235,9 +1227,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(String resourceGroupName, String accountName) {
         return beginDeleteAsync(resourceGroupName, accountName).getSyncPoller();
     }
@@ -1251,9 +1243,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(
         String resourceGroupName, String accountName, Context context) {
         return beginDeleteAsync(resourceGroupName, accountName, context).getSyncPoller();
@@ -1267,7 +1259,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String accountName) {
@@ -1283,7 +1275,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String accountName, Context context) {
@@ -1332,7 +1324,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> failoverPriorityChangeWithResponseAsync(
@@ -1389,7 +1381,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> failoverPriorityChangeWithResponseAsync(
@@ -1442,16 +1434,17 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginFailoverPriorityChangeAsync(
         String resourceGroupName, String accountName, FailoverPolicies failoverParameters) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             failoverPriorityChangeWithResponseAsync(resourceGroupName, accountName, failoverParameters);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -1466,9 +1459,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginFailoverPriorityChangeAsync(
         String resourceGroupName, String accountName, FailoverPolicies failoverParameters, Context context) {
         context = this.client.mergeContext(context);
@@ -1490,9 +1483,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginFailoverPriorityChange(
         String resourceGroupName, String accountName, FailoverPolicies failoverParameters) {
         return beginFailoverPriorityChangeAsync(resourceGroupName, accountName, failoverParameters).getSyncPoller();
@@ -1510,9 +1503,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginFailoverPriorityChange(
         String resourceGroupName, String accountName, FailoverPolicies failoverParameters, Context context) {
         return beginFailoverPriorityChangeAsync(resourceGroupName, accountName, failoverParameters, context)
@@ -1530,7 +1523,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> failoverPriorityChangeAsync(
@@ -1552,7 +1545,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> failoverPriorityChangeAsync(
@@ -1604,7 +1597,8 @@ public final class DatabaseAccountsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<DatabaseAccountGetResultsInner>> listSinglePageAsync() {
@@ -1645,7 +1639,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<DatabaseAccountGetResultsInner>> listSinglePageAsync(Context context) {
@@ -1681,7 +1676,8 @@ public final class DatabaseAccountsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<DatabaseAccountGetResultsInner> listAsync() {
@@ -1695,7 +1691,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<DatabaseAccountGetResultsInner> listAsync(Context context) {
@@ -1707,7 +1704,8 @@ public final class DatabaseAccountsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<DatabaseAccountGetResultsInner> list() {
@@ -1721,7 +1719,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<DatabaseAccountGetResultsInner> list(Context context) {
@@ -1735,7 +1734,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<DatabaseAccountGetResultsInner>> listByResourceGroupSinglePageAsync(
@@ -1783,7 +1783,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<DatabaseAccountGetResultsInner>> listByResourceGroupSinglePageAsync(
@@ -1827,7 +1828,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<DatabaseAccountGetResultsInner> listByResourceGroupAsync(String resourceGroupName) {
@@ -1842,7 +1844,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<DatabaseAccountGetResultsInner> listByResourceGroupAsync(
@@ -1857,7 +1860,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<DatabaseAccountGetResultsInner> listByResourceGroup(String resourceGroupName) {
@@ -1872,7 +1876,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the database accounts and their properties.
+     * @return the List operation response, that contains the database accounts and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<DatabaseAccountGetResultsInner> listByResourceGroup(
@@ -1888,7 +1893,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the access keys for the given database account.
+     * @return the access keys for the given database account along with {@link Response} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<DatabaseAccountListKeysResultInner>> listKeysWithResponseAsync(
@@ -1937,7 +1943,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the access keys for the given database account.
+     * @return the access keys for the given database account along with {@link Response} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<DatabaseAccountListKeysResultInner>> listKeysWithResponseAsync(
@@ -1982,19 +1989,12 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the access keys for the given database account.
+     * @return the access keys for the given database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountListKeysResultInner> listKeysAsync(String resourceGroupName, String accountName) {
         return listKeysWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<DatabaseAccountListKeysResultInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -2021,7 +2021,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the access keys for the given database account.
+     * @return the access keys for the given database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<DatabaseAccountListKeysResultInner> listKeysWithResponse(
@@ -2037,7 +2037,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the connection strings for the given database account.
+     * @return the connection strings for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<DatabaseAccountListConnectionStringsResultInner>> listConnectionStringsWithResponseAsync(
@@ -2086,7 +2087,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the connection strings for the given database account.
+     * @return the connection strings for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<DatabaseAccountListConnectionStringsResultInner>> listConnectionStringsWithResponseAsync(
@@ -2131,20 +2133,13 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the connection strings for the given database account.
+     * @return the connection strings for the given database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountListConnectionStringsResultInner> listConnectionStringsAsync(
         String resourceGroupName, String accountName) {
         return listConnectionStringsWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<DatabaseAccountListConnectionStringsResultInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -2172,7 +2167,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the connection strings for the given database account.
+     * @return the connection strings for the given database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<DatabaseAccountListConnectionStringsResultInner> listConnectionStringsWithResponse(
@@ -2189,7 +2184,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> offlineRegionWithResponseAsync(
@@ -2248,7 +2243,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> offlineRegionWithResponseAsync(
@@ -2306,16 +2301,17 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginOfflineRegionAsync(
         String resourceGroupName, String accountName, RegionForOnlineOffline regionParameterForOffline) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             offlineRegionWithResponseAsync(resourceGroupName, accountName, regionParameterForOffline);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -2328,9 +2324,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginOfflineRegionAsync(
         String resourceGroupName,
         String accountName,
@@ -2353,9 +2349,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginOfflineRegion(
         String resourceGroupName, String accountName, RegionForOnlineOffline regionParameterForOffline) {
         return beginOfflineRegionAsync(resourceGroupName, accountName, regionParameterForOffline).getSyncPoller();
@@ -2371,9 +2367,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginOfflineRegion(
         String resourceGroupName,
         String accountName,
@@ -2392,7 +2388,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> offlineRegionAsync(
@@ -2412,7 +2408,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> offlineRegionAsync(
@@ -2470,7 +2466,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> onlineRegionWithResponseAsync(
@@ -2528,7 +2524,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> onlineRegionWithResponseAsync(
@@ -2585,16 +2581,17 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginOnlineRegionAsync(
         String resourceGroupName, String accountName, RegionForOnlineOffline regionParameterForOnline) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             onlineRegionWithResponseAsync(resourceGroupName, accountName, regionParameterForOnline);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -2607,9 +2604,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginOnlineRegionAsync(
         String resourceGroupName,
         String accountName,
@@ -2632,9 +2629,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginOnlineRegion(
         String resourceGroupName, String accountName, RegionForOnlineOffline regionParameterForOnline) {
         return beginOnlineRegionAsync(resourceGroupName, accountName, regionParameterForOnline).getSyncPoller();
@@ -2650,9 +2647,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginOnlineRegion(
         String resourceGroupName,
         String accountName,
@@ -2671,7 +2668,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> onlineRegionAsync(
@@ -2691,7 +2688,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> onlineRegionAsync(
@@ -2748,7 +2745,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<DatabaseAccountListReadOnlyKeysResultInner>> getReadOnlyKeysWithResponseAsync(
@@ -2797,7 +2795,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<DatabaseAccountListReadOnlyKeysResultInner>> getReadOnlyKeysWithResponseAsync(
@@ -2842,20 +2841,13 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountListReadOnlyKeysResultInner> getReadOnlyKeysAsync(
         String resourceGroupName, String accountName) {
         return getReadOnlyKeysWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<DatabaseAccountListReadOnlyKeysResultInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -2882,7 +2874,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<DatabaseAccountListReadOnlyKeysResultInner> getReadOnlyKeysWithResponse(
@@ -2898,7 +2890,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<DatabaseAccountListReadOnlyKeysResultInner>> listReadOnlyKeysWithResponseAsync(
@@ -2947,7 +2940,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<DatabaseAccountListReadOnlyKeysResultInner>> listReadOnlyKeysWithResponseAsync(
@@ -2992,20 +2986,13 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<DatabaseAccountListReadOnlyKeysResultInner> listReadOnlyKeysAsync(
         String resourceGroupName, String accountName) {
         return listReadOnlyKeysWithResponseAsync(resourceGroupName, accountName)
-            .flatMap(
-                (Response<DatabaseAccountListReadOnlyKeysResultInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3032,7 +3019,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the read-only access keys for the given database account.
+     * @return the read-only access keys for the given database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<DatabaseAccountListReadOnlyKeysResultInner> listReadOnlyKeysWithResponse(
@@ -3049,7 +3036,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> regenerateKeyWithResponseAsync(
@@ -3104,7 +3091,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> regenerateKeyWithResponseAsync(
@@ -3158,16 +3145,17 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginRegenerateKeyAsync(
         String resourceGroupName, String accountName, DatabaseAccountRegenerateKeyParameters keyToRegenerate) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             regenerateKeyWithResponseAsync(resourceGroupName, accountName, keyToRegenerate);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -3180,9 +3168,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginRegenerateKeyAsync(
         String resourceGroupName,
         String accountName,
@@ -3205,9 +3193,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginRegenerateKey(
         String resourceGroupName, String accountName, DatabaseAccountRegenerateKeyParameters keyToRegenerate) {
         return beginRegenerateKeyAsync(resourceGroupName, accountName, keyToRegenerate).getSyncPoller();
@@ -3223,9 +3211,9 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginRegenerateKey(
         String resourceGroupName,
         String accountName,
@@ -3243,7 +3231,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> regenerateKeyAsync(
@@ -3263,7 +3251,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> regenerateKeyAsync(
@@ -3320,7 +3308,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return whether resource exists.
+     * @return whether resource exists along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Boolean>> checkNameExistsWithResponseAsync(String accountName) {
@@ -3350,7 +3338,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return whether resource exists.
+     * @return whether resource exists along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Boolean>> checkNameExistsWithResponseAsync(String accountName, Context context) {
@@ -3375,19 +3363,11 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return whether resource exists.
+     * @return whether resource exists on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Boolean> checkNameExistsAsync(String accountName) {
-        return checkNameExistsWithResponseAsync(accountName)
-            .flatMap(
-                (Response<Boolean> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return checkNameExistsWithResponseAsync(accountName).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3406,7 +3386,7 @@ public final class DatabaseAccountsClientImpl
         if (value != null) {
             return value;
         } else {
-            throw logger.logExceptionAsError(new NullPointerException());
+            throw LOGGER.logExceptionAsError(new NullPointerException());
         }
     }
 
@@ -3419,7 +3399,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return whether resource exists along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Boolean> checkNameExistsWithResponse(String accountName, Context context) {
@@ -3437,7 +3417,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request along with {@link PagedResponse} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MetricInner>> listMetricsSinglePageAsync(
@@ -3497,7 +3478,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request along with {@link PagedResponse} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MetricInner>> listMetricsSinglePageAsync(
@@ -3553,7 +3535,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<MetricInner> listMetricsAsync(String resourceGroupName, String accountName, String filter) {
@@ -3572,7 +3554,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MetricInner> listMetricsAsync(
@@ -3591,7 +3573,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MetricInner> listMetrics(String resourceGroupName, String accountName, String filter) {
@@ -3610,7 +3592,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metrics request.
+     * @return the response to a list metrics request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MetricInner> listMetrics(
@@ -3628,7 +3610,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<UsageInner>> listUsagesSinglePageAsync(
@@ -3684,7 +3667,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<UsageInner>> listUsagesSinglePageAsync(
@@ -3736,7 +3720,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<UsageInner> listUsagesAsync(String resourceGroupName, String accountName, String filter) {
@@ -3751,7 +3735,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<UsageInner> listUsagesAsync(String resourceGroupName, String accountName) {
@@ -3770,7 +3754,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<UsageInner> listUsagesAsync(
@@ -3786,7 +3770,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<UsageInner> listUsages(String resourceGroupName, String accountName) {
@@ -3805,7 +3789,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list usage request.
+     * @return the response to a list usage request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<UsageInner> listUsages(
@@ -3821,7 +3805,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MetricDefinitionInner>> listMetricDefinitionsSinglePageAsync(
@@ -3874,7 +3859,8 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<MetricDefinitionInner>> listMetricDefinitionsSinglePageAsync(
@@ -3923,7 +3909,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<MetricDefinitionInner> listMetricDefinitionsAsync(String resourceGroupName, String accountName) {
@@ -3939,7 +3925,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<MetricDefinitionInner> listMetricDefinitionsAsync(
@@ -3955,7 +3941,7 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MetricDefinitionInner> listMetricDefinitions(String resourceGroupName, String accountName) {
@@ -3971,11 +3957,13 @@ public final class DatabaseAccountsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response to a list metric definitions request.
+     * @return the response to a list metric definitions request as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<MetricDefinitionInner> listMetricDefinitions(
         String resourceGroupName, String accountName, Context context) {
         return new PagedIterable<>(listMetricDefinitionsAsync(resourceGroupName, accountName, context));
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(DatabaseAccountsClientImpl.class);
 }

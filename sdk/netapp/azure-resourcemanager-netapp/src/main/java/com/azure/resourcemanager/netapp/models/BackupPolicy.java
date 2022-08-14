@@ -5,6 +5,7 @@
 package com.azure.resourcemanager.netapp.models;
 
 import com.azure.core.management.Region;
+import com.azure.core.management.SystemData;
 import com.azure.core.util.Context;
 import com.azure.resourcemanager.netapp.fluent.models.BackupPolicyInner;
 import java.util.List;
@@ -55,11 +56,11 @@ public interface BackupPolicy {
     String etag();
 
     /**
-     * Gets the namePropertiesName property: Name of backup policy.
+     * Gets the systemData property: Azure Resource Manager metadata containing createdBy and modifiedBy information.
      *
-     * @return the namePropertiesName value.
+     * @return the systemData value.
      */
-    String namePropertiesName();
+    SystemData systemData();
 
     /**
      * Gets the backupPolicyId property: Backup Policy Resource ID.
@@ -130,6 +131,13 @@ public interface BackupPolicy {
      * @return the name of the resource region.
      */
     String regionName();
+
+    /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
 
     /**
      * Gets the inner com.azure.resourcemanager.netapp.fluent.models.BackupPolicyInner object.

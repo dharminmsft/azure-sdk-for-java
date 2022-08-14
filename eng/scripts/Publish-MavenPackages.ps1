@@ -192,7 +192,7 @@ foreach ($packageDetail in $packageDetails) {
 
     Write-Information "Release attempt $attemt exited with code $LASTEXITCODE"
     Write-Information "Checking Azure DevOps to see if release was successful"
-    if (Test-ReleasedPackage -RepositoryUrl $packageReposityUrl -PackageDetail $packageDetail) {
+    if (Test-ReleasedPackage -RepositoryUrl $packageReposityUrl -PackageDetail $packageDetail -BearerToken $RepositoryPassword) {
       Write-Information "Package $($packageDetail.FullyQualifiedName) deployed despite non-zero exit code."
       continue
     }
@@ -216,10 +216,23 @@ foreach ($packageDetail in $packageDetails) {
     $stagingDescriptionOption = "-DstagingDescription=$($packageDetail.FullyQualifiedName)"
     Write-Information "Staging Description Option is: $stagingDescriptionOption"
 
+    $nexusPluginVersion = . $PSScriptRoot\Get-ExternalDependencyVersion.ps1 -GroupId 'org.sonatype.plugins' -ArtifactId 'nexus-staging-maven-plugin'
+    if ($LASTEXITCODE) {
+      Write-Information "##vso[task.logissue type=error]Unable to resolve version of external dependency 'org.sonatype.plugins:nexus-staging-maven-plugin'"
+      exit $LASTEXITCODE
+    }
+
+    $stagingGoal = "org.sonatype.plugins:nexus-staging-maven-plugin:$nexusPluginVersion`:deploy-staged-repository"
+    $releaseGoal = "org.sonatype.plugins:nexus-staging-maven-plugin:$nexusPluginVersion`:rc-release"
+
     Write-Information "Staging package to Maven Central"
-    Write-Information "mvn org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged-repository `"--batch-mode`" `"-DnexusUrl=https://oss.sonatype.org`" `"$repositoryDirectoryOption`" `"$stagingProfileIdOption`" `"$stagingDescriptionOption`" `"-DrepositoryId=target-repo`" `"-DserverId=target-repo`" `"-Drepo.username=$RepositoryUsername`" `"-Drepo.password=`"[redacted]`"`" `"--settings=$PSScriptRoot\..\maven.publish.settings.xml`""
-    mvn org.sonatype.plugins:nexus-staging-maven-plugin:deploy-staged-repository "--batch-mode" "-DnexusUrl=https://oss.sonatype.org" "$repositoryDirectoryOption" "$stagingProfileIdOption" "$stagingDescriptionOption" "-DrepositoryId=target-repo" "-DserverId=target-repo" "-Drepo.username=$RepositoryUsername" "-Drepo.password=""$RepositoryPassword""" "--settings=$PSScriptRoot\..\maven.publish.settings.xml"
-    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    Write-Information "mvn $stagingGoal `"--batch-mode`" `"-DnexusUrl=https://oss.sonatype.org`" `"$repositoryDirectoryOption`" `"$stagingProfileIdOption`" `"$stagingDescriptionOption`" `"-DrepositoryId=target-repo`" `"-DserverId=target-repo`" `"-Drepo.username=$RepositoryUsername`" `"-Drepo.password=`"[redacted]`"`" `"--settings=$PSScriptRoot\..\maven.publish.settings.xml`""
+    mvn $stagingGoal "--batch-mode" "-DnexusUrl=https://oss.sonatype.org" "$repositoryDirectoryOption" "$stagingProfileIdOption" "$stagingDescriptionOption" "-DrepositoryId=target-repo" "-DserverId=target-repo" "-Drepo.username=$RepositoryUsername" "-Drepo.password=""$RepositoryPassword""" "--settings=$PSScriptRoot\..\maven.publish.settings.xml"
+
+    if ($LASTEXITCODE) {
+      Write-Information '##vso[task.logissue type=error]Staging to Maven Central failed. For troubleshooting, see https://aka.ms/azsdk/maven-central-tsg'
+      exit $LASTEXITCODE
+    }
 
     Write-Information "Reading staging properties."
     $stagedRepositoryProperties = ConvertFrom-StringData (Get-Content "$localRepositoryDirectory\$($packageDetail.SonaTypeProfileID).properties" -Raw)
@@ -236,27 +249,34 @@ foreach ($packageDetail in $packageDetails) {
     }
 
     $attempt = 0
+    $success = $false;
+
     while ($attempt++ -lt 3) {
       Write-Information "Releasing staging repostiory $stagedRepositoryId, attempt $attempt"
-      Write-Information "mvn org.sonatype.plugins:nexus-staging-maven-plugin:rc-release `"-DstagingRepositoryId=$stagedRepositoryId`" `"-DnexusUrl=https://oss.sonatype.org`" `"-DrepositoryId=target-repo`" `"-DserverId=target-repo`" `"-Drepo.username=$RepositoryUsername`" `"-Drepo.password=`"`"[redacted]`"`"`" `"--settings=$PSScriptRoot\..\maven.publish.settings.xml`""
-      mvn org.sonatype.plugins:nexus-staging-maven-plugin:rc-release "-DstagingRepositoryId=$stagedRepositoryId" "-DnexusUrl=https://oss.sonatype.org" "-DrepositoryId=target-repo" "-DserverId=target-repo" "-Drepo.username=$RepositoryUsername" "-Drepo.password=""$RepositoryPassword""" "--settings=$PSScriptRoot\..\maven.publish.settings.xml"
+      Write-Information "mvn $releaseGoal `"-DstagingRepositoryId=$stagedRepositoryId`" `"-DnexusUrl=https://oss.sonatype.org`" `"-DrepositoryId=target-repo`" `"-DserverId=target-repo`" `"-Drepo.username=$RepositoryUsername`" `"-Drepo.password=`"`"[redacted]`"`"`" `"--settings=$PSScriptRoot\..\maven.publish.settings.xml`""
+      mvn $releaseGoal "-DstagingRepositoryId=$stagedRepositoryId" "-DnexusUrl=https://oss.sonatype.org" "-DrepositoryId=target-repo" "-DserverId=target-repo" "-Drepo.username=$RepositoryUsername" "-Drepo.password=""$RepositoryPassword""" "--settings=$PSScriptRoot\..\maven.publish.settings.xml"
 
       if ($LASTEXITCODE -eq 0) {
         Write-Information "Package $($packageDetail.FullyQualifiedName) deployed"
+        $success = $true
         break
       }
 
-      Write-Information "Release attempt $attemt exited with code $LASTEXITCODE"
+      Write-Information "Release attempt $attempt exited with code $LASTEXITCODE"
       Write-Information "Checking Maven Central to see if release was successful"
 
       if (Test-ReleasedPackage -RepositoryUrl $packageReposityUrl -PackageDetail $packageDetail) {
         Write-Information "Package $($packageDetail.FullyQualifiedName) deployed despite non-zero exit code."
+        $success = $true
         break
       }
+    }
 
-      if ($attempt -ge 3) {
-        exit $LASTEXITCODE
-      }
+    if (!$success) {
+      Write-Information '##vso[task.logissue type=error]Release to Maven Central failed. For troubleshooting, see https://aka.ms/azsdk/maven-central-tsg'
+      exit 1
     }
   }
 }
+
+exit 0

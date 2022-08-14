@@ -6,15 +6,18 @@ package com.azure.resourcemanager.netapp.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
+import com.azure.core.management.SystemData;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.AvsDataStore;
+import com.azure.resourcemanager.netapp.models.EnableSubvolumes;
+import com.azure.resourcemanager.netapp.models.EncryptionKeySource;
 import com.azure.resourcemanager.netapp.models.NetworkFeatures;
+import com.azure.resourcemanager.netapp.models.PlacementKeyValuePairs;
 import com.azure.resourcemanager.netapp.models.SecurityStyle;
 import com.azure.resourcemanager.netapp.models.ServiceLevel;
 import com.azure.resourcemanager.netapp.models.VolumePropertiesDataProtection;
 import com.azure.resourcemanager.netapp.models.VolumePropertiesExportPolicy;
 import com.azure.resourcemanager.netapp.models.VolumeStorageToNetworkProximity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +25,6 @@ import java.util.Map;
 /** Volume resource. */
 @Fluent
 public final class VolumeInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VolumeInner.class);
-
     /*
      * A unique read-only string that changes whenever the resource is updated.
      */
@@ -31,10 +32,23 @@ public final class VolumeInner extends Resource {
     private String etag;
 
     /*
+     * Availability Zone
+     */
+    @JsonProperty(value = "zones")
+    private List<String> zones;
+
+    /*
      * Volume properties
      */
     @JsonProperty(value = "properties", required = true)
     private VolumeProperties innerProperties = new VolumeProperties();
+
+    /*
+     * Azure Resource Manager metadata containing createdBy and modifiedBy
+     * information.
+     */
+    @JsonProperty(value = "systemData", access = JsonProperty.Access.WRITE_ONLY)
+    private SystemData systemData;
 
     /**
      * Get the etag property: A unique read-only string that changes whenever the resource is updated.
@@ -46,12 +60,41 @@ public final class VolumeInner extends Resource {
     }
 
     /**
+     * Get the zones property: Availability Zone.
+     *
+     * @return the zones value.
+     */
+    public List<String> zones() {
+        return this.zones;
+    }
+
+    /**
+     * Set the zones property: Availability Zone.
+     *
+     * @param zones the zones value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withZones(List<String> zones) {
+        this.zones = zones;
+        return this;
+    }
+
+    /**
      * Get the innerProperties property: Volume properties.
      *
      * @return the innerProperties value.
      */
     private VolumeProperties innerProperties() {
         return this.innerProperties;
+    }
+
+    /**
+     * Get the systemData property: Azure Resource Manager metadata containing createdBy and modifiedBy information.
+     *
+     * @return the systemData value.
+     */
+    public SystemData systemData() {
+        return this.systemData;
     }
 
     /** {@inheritDoc} */
@@ -536,7 +579,8 @@ public final class VolumeInner extends Resource {
     }
 
     /**
-     * Get the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Get the throughputMibps property: Maximum throughput in MiB/s that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @return the throughputMibps value.
      */
@@ -545,7 +589,8 @@ public final class VolumeInner extends Resource {
     }
 
     /**
-     * Set the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Set the throughputMibps property: Maximum throughput in MiB/s that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @param throughputMibps the throughputMibps value to set.
      * @return the VolumeInner object itself.
@@ -559,25 +604,54 @@ public final class VolumeInner extends Resource {
     }
 
     /**
-     * Get the encryptionKeySource property: Encryption Key Source. Possible values are: 'Microsoft.NetApp'.
+     * Get the encryptionKeySource property: Source of key used to encrypt data in volume. Applicable if NetApp account
+     * has encryption.keySource = 'Microsoft.KeyVault'. Possible values (case-insensitive) are: 'Microsoft.NetApp,
+     * Microsoft.KeyVault'.
      *
      * @return the encryptionKeySource value.
      */
-    public String encryptionKeySource() {
+    public EncryptionKeySource encryptionKeySource() {
         return this.innerProperties() == null ? null : this.innerProperties().encryptionKeySource();
     }
 
     /**
-     * Set the encryptionKeySource property: Encryption Key Source. Possible values are: 'Microsoft.NetApp'.
+     * Set the encryptionKeySource property: Source of key used to encrypt data in volume. Applicable if NetApp account
+     * has encryption.keySource = 'Microsoft.KeyVault'. Possible values (case-insensitive) are: 'Microsoft.NetApp,
+     * Microsoft.KeyVault'.
      *
      * @param encryptionKeySource the encryptionKeySource value to set.
      * @return the VolumeInner object itself.
      */
-    public VolumeInner withEncryptionKeySource(String encryptionKeySource) {
+    public VolumeInner withEncryptionKeySource(EncryptionKeySource encryptionKeySource) {
         if (this.innerProperties() == null) {
             this.innerProperties = new VolumeProperties();
         }
         this.innerProperties().withEncryptionKeySource(encryptionKeySource);
+        return this;
+    }
+
+    /**
+     * Get the keyVaultPrivateEndpointResourceId property: The resource ID of private endpoint for KeyVault. It must
+     * reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.
+     *
+     * @return the keyVaultPrivateEndpointResourceId value.
+     */
+    public String keyVaultPrivateEndpointResourceId() {
+        return this.innerProperties() == null ? null : this.innerProperties().keyVaultPrivateEndpointResourceId();
+    }
+
+    /**
+     * Set the keyVaultPrivateEndpointResourceId property: The resource ID of private endpoint for KeyVault. It must
+     * reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.
+     *
+     * @param keyVaultPrivateEndpointResourceId the keyVaultPrivateEndpointResourceId value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withKeyVaultPrivateEndpointResourceId(String keyVaultPrivateEndpointResourceId) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withKeyVaultPrivateEndpointResourceId(keyVaultPrivateEndpointResourceId);
         return this;
     }
 
@@ -793,17 +867,176 @@ public final class VolumeInner extends Resource {
     }
 
     /**
+     * Get the maximumNumberOfFiles property: Maximum number of files allowed. Needs a service request in order to be
+     * changed. Only allowed to be changed if volume quota is more than 4TiB.
+     *
+     * @return the maximumNumberOfFiles value.
+     */
+    public Long maximumNumberOfFiles() {
+        return this.innerProperties() == null ? null : this.innerProperties().maximumNumberOfFiles();
+    }
+
+    /**
+     * Get the volumeGroupName property: Volume Group Name.
+     *
+     * @return the volumeGroupName value.
+     */
+    public String volumeGroupName() {
+        return this.innerProperties() == null ? null : this.innerProperties().volumeGroupName();
+    }
+
+    /**
+     * Get the capacityPoolResourceId property: Pool Resource Id used in case of creating a volume through volume group.
+     *
+     * @return the capacityPoolResourceId value.
+     */
+    public String capacityPoolResourceId() {
+        return this.innerProperties() == null ? null : this.innerProperties().capacityPoolResourceId();
+    }
+
+    /**
+     * Set the capacityPoolResourceId property: Pool Resource Id used in case of creating a volume through volume group.
+     *
+     * @param capacityPoolResourceId the capacityPoolResourceId value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withCapacityPoolResourceId(String capacityPoolResourceId) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withCapacityPoolResourceId(capacityPoolResourceId);
+        return this;
+    }
+
+    /**
+     * Get the proximityPlacementGroup property: Proximity placement group associated with the volume.
+     *
+     * @return the proximityPlacementGroup value.
+     */
+    public String proximityPlacementGroup() {
+        return this.innerProperties() == null ? null : this.innerProperties().proximityPlacementGroup();
+    }
+
+    /**
+     * Set the proximityPlacementGroup property: Proximity placement group associated with the volume.
+     *
+     * @param proximityPlacementGroup the proximityPlacementGroup value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withProximityPlacementGroup(String proximityPlacementGroup) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withProximityPlacementGroup(proximityPlacementGroup);
+        return this;
+    }
+
+    /**
+     * Get the t2Network property: T2 network information.
+     *
+     * @return the t2Network value.
+     */
+    public String t2Network() {
+        return this.innerProperties() == null ? null : this.innerProperties().t2Network();
+    }
+
+    /**
+     * Get the volumeSpecName property: Volume spec name is the application specific designation or identifier for the
+     * particular volume in a volume group for e.g. data, log.
+     *
+     * @return the volumeSpecName value.
+     */
+    public String volumeSpecName() {
+        return this.innerProperties() == null ? null : this.innerProperties().volumeSpecName();
+    }
+
+    /**
+     * Set the volumeSpecName property: Volume spec name is the application specific designation or identifier for the
+     * particular volume in a volume group for e.g. data, log.
+     *
+     * @param volumeSpecName the volumeSpecName value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withVolumeSpecName(String volumeSpecName) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withVolumeSpecName(volumeSpecName);
+        return this;
+    }
+
+    /**
+     * Get the encrypted property: Specifies if the volume is encrypted or not. Only available on volumes created or
+     * updated after 2022-01-01.
+     *
+     * @return the encrypted value.
+     */
+    public Boolean encrypted() {
+        return this.innerProperties() == null ? null : this.innerProperties().encrypted();
+    }
+
+    /**
+     * Get the placementRules property: Volume placement rules Application specific placement rules for the particular
+     * volume.
+     *
+     * @return the placementRules value.
+     */
+    public List<PlacementKeyValuePairs> placementRules() {
+        return this.innerProperties() == null ? null : this.innerProperties().placementRules();
+    }
+
+    /**
+     * Set the placementRules property: Volume placement rules Application specific placement rules for the particular
+     * volume.
+     *
+     * @param placementRules the placementRules value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withPlacementRules(List<PlacementKeyValuePairs> placementRules) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withPlacementRules(placementRules);
+        return this;
+    }
+
+    /**
+     * Get the enableSubvolumes property: Flag indicating whether subvolume operations are enabled on the volume.
+     *
+     * @return the enableSubvolumes value.
+     */
+    public EnableSubvolumes enableSubvolumes() {
+        return this.innerProperties() == null ? null : this.innerProperties().enableSubvolumes();
+    }
+
+    /**
+     * Set the enableSubvolumes property: Flag indicating whether subvolume operations are enabled on the volume.
+     *
+     * @param enableSubvolumes the enableSubvolumes value to set.
+     * @return the VolumeInner object itself.
+     */
+    public VolumeInner withEnableSubvolumes(EnableSubvolumes enableSubvolumes) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new VolumeProperties();
+        }
+        this.innerProperties().withEnableSubvolumes(enableSubvolumes);
+        return this;
+    }
+
+    /**
      * Validates the instance.
      *
      * @throws IllegalArgumentException thrown if the instance is not valid.
      */
     public void validate() {
         if (innerProperties() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException("Missing required property innerProperties in model VolumeInner"));
         } else {
             innerProperties().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(VolumeInner.class);
 }

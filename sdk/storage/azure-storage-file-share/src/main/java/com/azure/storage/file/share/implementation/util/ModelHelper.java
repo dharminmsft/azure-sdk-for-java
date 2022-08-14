@@ -72,7 +72,7 @@ public class ModelHelper {
         return new ParallelTransferOptions()
             .setBlockSizeLong(blockSize)
             .setMaxConcurrency(maxConcurrency)
-            .setProgressReceiver(other.getProgressReceiver())
+            .setProgressListener(other.getProgressListener())
             .setMaxSingleUploadSizeLong(maxSingleUploadSize);
     }
 
@@ -139,6 +139,7 @@ public class ModelHelper {
         properties.setProtocols(parseShareProtocols(sharePropertiesInternal.getEnabledProtocols()));
         properties.setRootSquash(sharePropertiesInternal.getRootSquash());
         properties.setMetadata(sharePropertiesInternal.getMetadata());
+        properties.setProvisionedBandwidthMiBps(sharePropertiesInternal.getProvisionedBandwidthMiBps());
 
         return properties;
     }

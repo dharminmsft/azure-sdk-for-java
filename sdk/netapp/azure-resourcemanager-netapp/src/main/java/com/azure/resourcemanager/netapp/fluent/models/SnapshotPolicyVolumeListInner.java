@@ -5,28 +5,24 @@
 package com.azure.resourcemanager.netapp.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Volumes associated with snapshot policy. */
 @Fluent
 public final class SnapshotPolicyVolumeListInner {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(SnapshotPolicyVolumeListInner.class);
-
     /*
      * List of volumes
      */
     @JsonProperty(value = "value")
-    private List<Object> value;
+    private List<VolumeInner> value;
 
     /**
      * Get the value property: List of volumes.
      *
      * @return the value value.
      */
-    public List<Object> value() {
+    public List<VolumeInner> value() {
         return this.value;
     }
 
@@ -36,7 +32,7 @@ public final class SnapshotPolicyVolumeListInner {
      * @param value the value value to set.
      * @return the SnapshotPolicyVolumeListInner object itself.
      */
-    public SnapshotPolicyVolumeListInner withValue(List<Object> value) {
+    public SnapshotPolicyVolumeListInner withValue(List<VolumeInner> value) {
         this.value = value;
         return this;
     }
@@ -47,5 +43,8 @@ public final class SnapshotPolicyVolumeListInner {
      * @throws IllegalArgumentException thrown if the instance is not valid.
      */
     public void validate() {
+        if (value() != null) {
+            value().forEach(e -> e.validate());
+        }
     }
 }

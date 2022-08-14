@@ -174,16 +174,6 @@ public class ContactRepositoryIT {
     }
 
     @Test
-    @Ignore //  TODO(kuthapar): v3 doesn't support creation of items without id.
-    public void testNullIdContact() {
-        final Contact nullIdContact = new Contact(null, "testTitile");
-        final Contact savedContact = repository.save(nullIdContact);
-
-        Assert.assertNotNull(savedContact.getLogicId());
-        Assert.assertEquals(nullIdContact.getTitle(), savedContact.getTitle());
-    }
-
-    @Test
     public void testFindById() {
         final Optional<Contact> optional = repository.findById(TEST_CONTACT1.getLogicId());
 
@@ -258,6 +248,8 @@ public class ContactRepositoryIT {
     @Test
     public void testAnnotatedQueriesDistinctStatus() {
         List<Boolean> statusContacts = repository.findDistinctStatusValues();
-        assertThat(statusContacts).isEqualTo(Arrays.asList(Boolean.TRUE, Boolean.FALSE));
+
+        List<Boolean> expectedResults = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
+        assertThat(statusContacts).hasSize(expectedResults.size()).hasSameElementsAs(expectedResults);
     }
 }

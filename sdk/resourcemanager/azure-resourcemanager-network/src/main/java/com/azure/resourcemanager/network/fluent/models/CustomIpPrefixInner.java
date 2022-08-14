@@ -7,11 +7,9 @@ package com.azure.resourcemanager.network.fluent.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.CommissionedState;
 import com.azure.resourcemanager.network.models.ExtendedLocation;
 import com.azure.resourcemanager.network.models.ProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +17,6 @@ import java.util.Map;
 /** Custom IP prefix resource. */
 @Fluent
 public final class CustomIpPrefixInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(CustomIpPrefixInner.class);
-
     /*
      * The extended location of the custom IP prefix.
      */
@@ -31,7 +27,7 @@ public final class CustomIpPrefixInner extends Resource {
      * Custom IP prefix properties.
      */
     @JsonProperty(value = "properties")
-    private CustomIpPrefixPropertiesFormatInner innerProperties;
+    private CustomIpPrefixPropertiesFormat innerProperties;
 
     /*
      * A unique read-only string that changes whenever the resource is updated.
@@ -40,8 +36,7 @@ public final class CustomIpPrefixInner extends Resource {
     private String etag;
 
     /*
-     * A list of availability zones denoting the IP allocated for the resource
-     * needs to come from.
+     * A list of availability zones denoting the IP allocated for the resource needs to come from.
      */
     @JsonProperty(value = "zones")
     private List<String> zones;
@@ -77,7 +72,7 @@ public final class CustomIpPrefixInner extends Resource {
      *
      * @return the innerProperties value.
      */
-    private CustomIpPrefixPropertiesFormatInner innerProperties() {
+    private CustomIpPrefixPropertiesFormat innerProperties() {
         return this.innerProperties;
     }
 
@@ -163,7 +158,7 @@ public final class CustomIpPrefixInner extends Resource {
      */
     public CustomIpPrefixInner withCidr(String cidr) {
         if (this.innerProperties() == null) {
-            this.innerProperties = new CustomIpPrefixPropertiesFormatInner();
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
         }
         this.innerProperties().withCidr(cidr);
         return this;
@@ -186,7 +181,7 @@ public final class CustomIpPrefixInner extends Resource {
      */
     public CustomIpPrefixInner withSignedMessage(String signedMessage) {
         if (this.innerProperties() == null) {
-            this.innerProperties = new CustomIpPrefixPropertiesFormatInner();
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
         }
         this.innerProperties().withSignedMessage(signedMessage);
         return this;
@@ -209,7 +204,7 @@ public final class CustomIpPrefixInner extends Resource {
      */
     public CustomIpPrefixInner withAuthorizationMessage(String authorizationMessage) {
         if (this.innerProperties() == null) {
-            this.innerProperties = new CustomIpPrefixPropertiesFormatInner();
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
         }
         this.innerProperties().withAuthorizationMessage(authorizationMessage);
         return this;
@@ -220,7 +215,7 @@ public final class CustomIpPrefixInner extends Resource {
      *
      * @return the customIpPrefixParent value.
      */
-    public CustomIpPrefixInner customIpPrefixParent() {
+    public SubResource customIpPrefixParent() {
         return this.innerProperties() == null ? null : this.innerProperties().customIpPrefixParent();
     }
 
@@ -230,9 +225,9 @@ public final class CustomIpPrefixInner extends Resource {
      * @param customIpPrefixParent the customIpPrefixParent value to set.
      * @return the CustomIpPrefixInner object itself.
      */
-    public CustomIpPrefixInner withCustomIpPrefixParent(CustomIpPrefixInner customIpPrefixParent) {
+    public CustomIpPrefixInner withCustomIpPrefixParent(SubResource customIpPrefixParent) {
         if (this.innerProperties() == null) {
-            this.innerProperties = new CustomIpPrefixPropertiesFormatInner();
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
         }
         this.innerProperties().withCustomIpPrefixParent(customIpPrefixParent);
         return this;
@@ -243,7 +238,7 @@ public final class CustomIpPrefixInner extends Resource {
      *
      * @return the childCustomIpPrefixes value.
      */
-    public List<CustomIpPrefixInner> childCustomIpPrefixes() {
+    public List<SubResource> childCustomIpPrefixes() {
         return this.innerProperties() == null ? null : this.innerProperties().childCustomIpPrefixes();
     }
 
@@ -264,9 +259,32 @@ public final class CustomIpPrefixInner extends Resource {
      */
     public CustomIpPrefixInner withCommissionedState(CommissionedState commissionedState) {
         if (this.innerProperties() == null) {
-            this.innerProperties = new CustomIpPrefixPropertiesFormatInner();
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
         }
         this.innerProperties().withCommissionedState(commissionedState);
+        return this;
+    }
+
+    /**
+     * Get the noInternetAdvertise property: Whether to Advertise the range to Internet.
+     *
+     * @return the noInternetAdvertise value.
+     */
+    public Boolean noInternetAdvertise() {
+        return this.innerProperties() == null ? null : this.innerProperties().noInternetAdvertise();
+    }
+
+    /**
+     * Set the noInternetAdvertise property: Whether to Advertise the range to Internet.
+     *
+     * @param noInternetAdvertise the noInternetAdvertise value to set.
+     * @return the CustomIpPrefixInner object itself.
+     */
+    public CustomIpPrefixInner withNoInternetAdvertise(Boolean noInternetAdvertise) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new CustomIpPrefixPropertiesFormat();
+        }
+        this.innerProperties().withNoInternetAdvertise(noInternetAdvertise);
         return this;
     }
 

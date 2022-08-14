@@ -5,19 +5,14 @@
 package com.azure.resourcemanager.network.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** VpnClientConfiguration for P2S client. */
 @Fluent
 public final class VpnClientConfiguration {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VpnClientConfiguration.class);
-
     /*
-     * The reference to the address space resource which represents Address
-     * space for P2S VpnClient.
+     * The reference to the address space resource which represents Address space for P2S VpnClient.
      */
     @JsonProperty(value = "vpnClientAddressPool")
     private AddressSpace vpnClientAddressPool;
@@ -53,15 +48,13 @@ public final class VpnClientConfiguration {
     private List<IpsecPolicy> vpnClientIpsecPolicies;
 
     /*
-     * The radius server address property of the VirtualNetworkGateway resource
-     * for vpn client connection.
+     * The radius server address property of the VirtualNetworkGateway resource for vpn client connection.
      */
     @JsonProperty(value = "radiusServerAddress")
     private String radiusServerAddress;
 
     /*
-     * The radius secret property of the VirtualNetworkGateway resource for vpn
-     * client connection.
+     * The radius secret property of the VirtualNetworkGateway resource for vpn client connection.
      */
     @JsonProperty(value = "radiusServerSecret")
     private String radiusServerSecret;
@@ -73,22 +66,22 @@ public final class VpnClientConfiguration {
     private List<RadiusServer> radiusServers;
 
     /*
-     * The AADTenant property of the VirtualNetworkGateway resource for vpn
-     * client connection used for AAD authentication.
+     * The AADTenant property of the VirtualNetworkGateway resource for vpn client connection used for AAD
+     * authentication.
      */
     @JsonProperty(value = "aadTenant")
     private String aadTenant;
 
     /*
-     * The AADAudience property of the VirtualNetworkGateway resource for vpn
-     * client connection used for AAD authentication.
+     * The AADAudience property of the VirtualNetworkGateway resource for vpn client connection used for AAD
+     * authentication.
      */
     @JsonProperty(value = "aadAudience")
     private String aadAudience;
 
     /*
-     * The AADIssuer property of the VirtualNetworkGateway resource for vpn
-     * client connection used for AAD authentication.
+     * The AADIssuer property of the VirtualNetworkGateway resource for vpn client connection used for AAD
+     * authentication.
      */
     @JsonProperty(value = "aadIssuer")
     private String aadIssuer;

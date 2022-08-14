@@ -11,111 +11,75 @@ import com.azure.core.http.rest.Page;
 import com.azure.core.http.rest.Response;
 import com.azure.core.http.rest.ResponseBase;
 import com.azure.core.implementation.TypeUtil;
-import com.azure.core.implementation.UnixTime;
 import com.azure.core.util.Base64Url;
-import com.azure.core.util.BinaryData;
 import com.azure.core.util.DateTimeRfc1123;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.serializer.SerializerAdapter;
 import com.azure.core.util.serializer.SerializerEncoding;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-
-import static com.azure.core.implementation.TypeUtil.getRawClass;
-import static com.azure.core.implementation.TypeUtil.typeImplementsInterface;
 
 /**
  * Decoder to decode body of HTTP response.
  */
 public final class HttpResponseBodyDecoder {
-    private static final Map<Type, Boolean> RETURN_TYPE_DECODEABLE_MAP = new ConcurrentHashMap<>();
-
-    // TODO (jogiles) JavaDoc (even though it is non-public
-    static Mono<Object> decode(final String body,
-        final HttpResponse httpResponse,
-        final SerializerAdapter serializer,
-        final HttpResponseDecodeData decodeData) {
-        return decodeByteArray(body == null ? null : body.getBytes(StandardCharsets.UTF_8),
-            httpResponse, serializer, decodeData);
-    }
+    // HttpResponseBodyDecoder is a commonly used class, use a static logger.
+    private static final ClientLogger LOGGER = new ClientLogger(HttpResponseBodyDecoder.class);
 
     /**
-     * Decodes body of a http response.
+     * Decodes the body of an {@link HttpResponse} into the type returned by the called API.
+     * <p>
+     * If the response body isn't able to be decoded null will be returned.
      *
-     * The content reading and decoding happens when caller subscribe to the returned {@code Mono<Object>}, if the
-     * response body is not decodable then {@code Mono.empty()} will be returned.
-     *
-     * @param body the response body to decode, null for this parameter indicate read body from {@code httpResponse}
-     * parameter and decode it.
-     * @param httpResponse the response containing the body to be decoded
-     * @param serializer the adapter to use for decoding
-     * @param decodeData the necessary data required to decode a Http response
-     * @return publisher that emits decoded response body upon subscription if body is decodable, no emission if the
-     * body is not-decodable
+     * @param body The response body retrieved from the {@code httpResponse} to decode.
+     * @param httpResponse The {@link HttpResponse}.
+     * @param serializer The {@link SerializerAdapter} that performs decoding.
+     * @param decodeData The API method metadata used during decoding of the response.
+     * @return The decoded response body, or null if the body wasn't able to be decoded.
+     * @throws HttpResponseException If the body fails to decode.
      */
-    static Mono<Object> decodeByteArray(final byte[] body,
-        final HttpResponse httpResponse,
-        final SerializerAdapter serializer,
-        final HttpResponseDecodeData decodeData) {
+    static Object decodeByteArray(byte[] body, HttpResponse httpResponse, SerializerAdapter serializer,
+        HttpResponseDecodeData decodeData) {
         ensureRequestSet(httpResponse);
-        final ClientLogger logger = new ClientLogger(HttpResponseBodyDecoder.class);
 
-        return Mono.defer(() -> {
-            if (isErrorStatus(httpResponse, decodeData)) {
-                Mono<byte[]> bodyMono = body == null ? httpResponse.getBodyAsByteArray() : Mono.just(body);
-                return bodyMono.flatMap(bodyAsByteArray -> {
-                    try {
-                        final Object decodedErrorEntity = deserializeBody(bodyAsByteArray,
-                            decodeData.getUnexpectedException(httpResponse.getStatusCode()).getExceptionBodyType(),
-                            null, serializer, SerializerEncoding.fromHeaders(httpResponse.getHeaders()));
-
-                        return Mono.justOrEmpty(decodedErrorEntity);
-                    } catch (IOException | MalformedValueException ex) {
-                        // This translates in RestProxy as a RestException with no deserialized body.
-                        // The response content will still be accessible via the .response() member.
-                        logger.warning("Failed to deserialize the error entity.", ex);
-                        return Mono.empty();
-                    }
-                });
-            } else if (httpResponse.getRequest().getHttpMethod() == HttpMethod.HEAD) {
-                // RFC: A response to a HEAD method should not have a body. If so, it must be ignored
-                return Mono.empty();
-            } else {
-                if (!isReturnTypeDecodable(decodeData.getReturnType())) {
-                    return Mono.empty();
-                }
-
-                Mono<byte[]> bodyMono = body == null ? httpResponse.getBodyAsByteArray() : Mono.just(body);
-                return bodyMono.flatMap(bodyAsByteArray -> {
-                    try {
-                        final Object decodedSuccessEntity = deserializeBody(bodyAsByteArray,
-                            extractEntityTypeFromReturnType(decodeData), decodeData.getReturnValueWireType(),
-                            serializer, SerializerEncoding.fromHeaders(httpResponse.getHeaders()));
-
-                        return Mono.justOrEmpty(decodedSuccessEntity);
-                    } catch (MalformedValueException e) {
-                        return Mono.error(new HttpResponseException("HTTP response has a malformed body.",
-                            httpResponse, e));
-                    } catch (IOException e) {
-                        return Mono.error(new HttpResponseException("Deserialization Failed.", httpResponse, e));
-                    }
-                });
+        if (isErrorStatus(httpResponse.getStatusCode(), decodeData)) {
+            try {
+                return deserializeBody(body,
+                    decodeData.getUnexpectedException(httpResponse.getStatusCode()).getExceptionBodyType(),
+                    null, serializer, SerializerEncoding.fromHeaders(httpResponse.getHeaders()));
+            } catch (IOException | MalformedValueException ex) {
+                // This translates in RestProxy as a RestException with no deserialized body.
+                // The response content will still be accessible via the .response() member.
+                LOGGER.warning("Failed to deserialize the error entity.", ex);
+                return null;
             }
-        });
+        } else if (httpResponse.getRequest().getHttpMethod() == HttpMethod.HEAD) {
+            // RFC: A response to a HEAD method should not have a body. If so, it must be ignored
+            return null;
+        } else {
+            if (!decodeData.isReturnTypeDecodeable()) {
+                return null;
+            }
+
+            byte[] bodyAsByteArray = body == null ? httpResponse.getBodyAsBinaryData().toBytes() : body;
+            try {
+                return deserializeBody(bodyAsByteArray,
+                    extractEntityTypeFromReturnType(decodeData), decodeData.getReturnValueWireType(),
+                    serializer, SerializerEncoding.fromHeaders(httpResponse.getHeaders()));
+            } catch (MalformedValueException e) {
+                throw new HttpResponseException("HTTP response has a malformed body.", httpResponse, e);
+            } catch (IOException e) {
+                throw new HttpResponseException("Deserialization Failed.", httpResponse, e);
+            }
+        }
     }
 
     /**
@@ -124,7 +88,7 @@ public final class HttpResponseBodyDecoder {
     static Type decodedType(final HttpResponse httpResponse, final HttpResponseDecodeData decodeData) {
         ensureRequestSet(httpResponse);
 
-        if (isErrorStatus(httpResponse, decodeData)) {
+        if (isErrorStatus(httpResponse.getStatusCode(), decodeData)) {
             // For error cases we always try to decode the non-empty response body
             // either to a strongly typed exception model or to Object
             return decodeData.getUnexpectedException(httpResponse.getStatusCode()).getExceptionBodyType();
@@ -132,21 +96,19 @@ public final class HttpResponseBodyDecoder {
             // RFC: A response to a HEAD method should not have a body. If so, it must be ignored
             return null;
         } else {
-            return isReturnTypeDecodable(decodeData.getReturnType())
-                ? extractEntityTypeFromReturnType(decodeData)
-                : null;
+            return decodeData.isReturnTypeDecodeable() ? extractEntityTypeFromReturnType(decodeData) : null;
         }
     }
 
     /**
      * Checks the response status code is considered as error.
      *
-     * @param httpResponse the response to check
-     * @param decodeData the response metadata
+     * @param statusCode The status code from the response.
+     * @param decodeData Metadata about the API response.
      * @return true if the response status code is considered as error, false otherwise.
      */
-    static boolean isErrorStatus(HttpResponse httpResponse, HttpResponseDecodeData decodeData) {
-        return !decodeData.isExpectedResponseStatusCode(httpResponse.getStatusCode());
+    static boolean isErrorStatus(int statusCode, HttpResponseDecodeData decodeData) {
+        return !decodeData.isExpectedResponseStatusCode(statusCode);
     }
 
     /**
@@ -199,8 +161,6 @@ public final class HttpResponseBodyDecoder {
         } else if (resultType == OffsetDateTime.class) {
             if (wireType == DateTimeRfc1123.class) {
                 return DateTimeRfc1123.class;
-            } else if (wireType == UnixTime.class) {
-                return UnixTime.class;
             }
         } else if (TypeUtil.isTypeOrSubTypeOf(resultType, List.class)) {
             final Type resultElementType = TypeUtil.getTypeArgument(resultType);
@@ -264,8 +224,6 @@ public final class HttpResponseBodyDecoder {
         } else if (resultType == OffsetDateTime.class) {
             if (wireType == DateTimeRfc1123.class) {
                 return ((DateTimeRfc1123) wireResponse).getDateTime();
-            } else if (wireType == UnixTime.class) {
-                return ((UnixTime) wireResponse).getDateTime();
             }
         } else if (TypeUtil.isTypeOrSubTypeOf(resultType, List.class)) {
             final Type resultElementType = TypeUtil.getTypeArgument(resultType);
@@ -333,118 +291,6 @@ public final class HttpResponseBodyDecoder {
         }
 
         return token;
-    }
-
-    /**
-     * Checks if the {@code returnType} is a decode-able type.
-     * <p>
-     * Types that aren't decode-able are the following (including sub-types):
-     * <ul>
-     * <li>BinaryData</li>
-     * <li>byte[]</li>
-     * <li>ByteBuffer</li>
-     * <li>InputStream</li>
-     * <li>Void</li>
-     * <li>void</li>
-     * </ul>
-     *
-     * Reactive, {@link Mono} and {@link Flux}, and Response, {@link Response} and {@link ResponseBase}, generics are
-     * cracked open and their generic types are inspected for being one of the types above.
-     *
-     * @param returnType The return type of the method.
-     * @return Flag indicating if the return type is decode-able.
-     */
-    public static boolean isReturnTypeDecodable(Type returnType) {
-        if (returnType == null) {
-            return false;
-        }
-
-        return RETURN_TYPE_DECODEABLE_MAP.computeIfAbsent(returnType, type -> {
-            type = unwrapReturnType(type);
-
-            return !TypeUtil.isTypeOrSubTypeOf(type, BinaryData.class)
-                && !TypeUtil.isTypeOrSubTypeOf(type, byte[].class)
-                && !TypeUtil.isTypeOrSubTypeOf(type, ByteBuffer.class)
-                && !TypeUtil.isTypeOrSubTypeOf(type, InputStream.class)
-                && !TypeUtil.isTypeOrSubTypeOf(type, Void.TYPE)
-                && !TypeUtil.isTypeOrSubTypeOf(type, Void.class);
-        });
-    }
-
-    /**
-     * Checks if the network response body should be eagerly read based on its {@code returnType}.
-     * <p>
-     * The following types, including sub-types, aren't eagerly read from the network:
-     * <ul>
-     * <li>BinaryData</li>
-     * <li>byte[]</li>
-     * <li>ByteBuffer</li>
-     * <li>InputStream</li>
-     * </ul>
-     *
-     * Reactive, {@link Mono} and {@link Flux}, and Response, {@link Response} and {@link ResponseBase}, generics are
-     * cracked open and their generic types are inspected for being one of the types above.
-     *
-     * @param returnType The return type of the method.
-     * @return Flag indicating if the network response body should be eagerly read.
-     */
-    public static boolean shouldEagerlyReadResponse(Type returnType) {
-        if (returnType == null) {
-            return false;
-        }
-
-        return isReturnTypeDecodable(returnType)
-            || TypeUtil.isTypeOrSubTypeOf(returnType, Void.TYPE)
-            || TypeUtil.isTypeOrSubTypeOf(returnType, Void.class);
-    }
-
-    private static Type unwrapReturnType(Type returnType) {
-        // First check if the return type is assignable, is a sub-type, to ResponseBase.
-        // If it is begin walking up the super type hierarchy until ResponseBase is the raw type.
-        // Then unwrap the second generic type (body type).
-        if (TypeUtil.isTypeOrSubTypeOf(returnType, ResponseBase.class)) {
-            returnType = walkSuperTypesUntil(returnType, type -> getRawClass(type) == ResponseBase.class);
-
-            return unwrapReturnType(TypeUtil.getTypeArguments(returnType)[1]);
-        }
-
-        // Then, like ResponseBase, check if the return type is assignable to Response.
-        // If it is begin walking up the super type hierarchy until the raw type implements Response.
-        // Then unwrap its only generic type.
-        if (TypeUtil.isTypeOrSubTypeOf(returnType, Response.class)) {
-            // Handling for Response is slightly different as it is an interface unlike ResponseBase which is a class.
-            // The super class hierarchy needs be walked until the super class itself implements Response.
-            returnType = walkSuperTypesUntil(returnType, type -> typeImplementsInterface(type, Response.class));
-
-            return unwrapReturnType(TypeUtil.getTypeArgument(returnType));
-        }
-
-        // Then check if the return type is a Mono or Flux and unwrap its only generic type.
-        if (TypeUtil.isTypeOrSubTypeOf(returnType, Mono.class)) {
-            returnType = walkSuperTypesUntil(returnType, type -> getRawClass(type) == Mono.class);
-
-            return unwrapReturnType(TypeUtil.getTypeArgument(returnType));
-        }
-
-        if (TypeUtil.isTypeOrSubTypeOf(returnType, Flux.class)) {
-            returnType = walkSuperTypesUntil(returnType, type -> getRawClass(type) == Flux.class);
-
-            return unwrapReturnType(TypeUtil.getTypeArgument(returnType));
-        }
-
-        // Finally, there is no more unwrapping to perform and return the type as-is.
-        return returnType;
-    }
-
-    /*
-     * Helper method that walks up the super types until the type is an instance of the Class.
-     */
-    private static Type walkSuperTypesUntil(Type type, Predicate<Type> untilChecker) {
-        while (!untilChecker.test(type)) {
-            type = TypeUtil.getSuperType(type);
-        }
-
-        return type;
     }
 
     /**

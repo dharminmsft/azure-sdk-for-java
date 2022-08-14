@@ -7,7 +7,6 @@ package com.azure.resourcemanager.datafactory.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.models.ExecutePowerQueryActivityTypeProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -19,8 +18,6 @@ import java.util.Map;
 @JsonTypeName("ExecuteWranglingDataflow")
 @Fluent
 public final class ExecuteWranglingDataflowActivity extends Activity {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ExecuteWranglingDataflowActivity.class);
-
     /*
      * Execute power query activity properties.
      */
@@ -91,7 +88,8 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
     }
 
     /**
-     * Get the sinks property: List of Power Query activity sinks mapped to a queryName.
+     * Get the sinks property: (Deprecated. Please use Queries). List of Power Query activity sinks mapped to a
+     * queryName.
      *
      * @return the sinks value.
      */
@@ -100,7 +98,8 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
     }
 
     /**
-     * Set the sinks property: List of Power Query activity sinks mapped to a queryName.
+     * Set the sinks property: (Deprecated. Please use Queries). List of Power Query activity sinks mapped to a
+     * queryName.
      *
      * @param sinks the sinks value to set.
      * @return the ExecuteWranglingDataflowActivity object itself.
@@ -110,6 +109,29 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
             this.innerTypeProperties = new ExecutePowerQueryActivityTypeProperties();
         }
         this.innerTypeProperties().withSinks(sinks);
+        return this;
+    }
+
+    /**
+     * Get the queries property: List of mapping for Power Query mashup query to sink dataset(s).
+     *
+     * @return the queries value.
+     */
+    public List<PowerQuerySinkMapping> queries() {
+        return this.innerTypeProperties() == null ? null : this.innerTypeProperties().queries();
+    }
+
+    /**
+     * Set the queries property: List of mapping for Power Query mashup query to sink dataset(s).
+     *
+     * @param queries the queries value to set.
+     * @return the ExecuteWranglingDataflowActivity object itself.
+     */
+    public ExecuteWranglingDataflowActivity withQueries(List<PowerQuerySinkMapping> queries) {
+        if (this.innerTypeProperties() == null) {
+            this.innerTypeProperties = new ExecutePowerQueryActivityTypeProperties();
+        }
+        this.innerTypeProperties().withQueries(queries);
         return this;
     }
 
@@ -281,6 +303,31 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
     }
 
     /**
+     * Get the sourceStagingConcurrency property: Specify number of parallel staging for sources applicable to the sink.
+     * Type: integer (or Expression with resultType integer).
+     *
+     * @return the sourceStagingConcurrency value.
+     */
+    public Object sourceStagingConcurrency() {
+        return this.innerTypeProperties() == null ? null : this.innerTypeProperties().sourceStagingConcurrency();
+    }
+
+    /**
+     * Set the sourceStagingConcurrency property: Specify number of parallel staging for sources applicable to the sink.
+     * Type: integer (or Expression with resultType integer).
+     *
+     * @param sourceStagingConcurrency the sourceStagingConcurrency value to set.
+     * @return the ExecuteWranglingDataflowActivity object itself.
+     */
+    public ExecuteWranglingDataflowActivity withSourceStagingConcurrency(Object sourceStagingConcurrency) {
+        if (this.innerTypeProperties() == null) {
+            this.innerTypeProperties = new ExecutePowerQueryActivityTypeProperties();
+        }
+        this.innerTypeProperties().withSourceStagingConcurrency(sourceStagingConcurrency);
+        return this;
+    }
+
+    /**
      * Validates the instance.
      *
      * @throws IllegalArgumentException thrown if the instance is not valid.
@@ -289,7 +336,7 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
     public void validate() {
         super.validate();
         if (innerTypeProperties() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property innerTypeProperties in model ExecuteWranglingDataflowActivity"));
@@ -300,4 +347,6 @@ public final class ExecuteWranglingDataflowActivity extends Activity {
             policy().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(ExecuteWranglingDataflowActivity.class);
 }

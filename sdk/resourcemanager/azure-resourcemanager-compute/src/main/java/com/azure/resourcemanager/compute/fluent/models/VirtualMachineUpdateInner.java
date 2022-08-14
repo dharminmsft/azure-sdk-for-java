@@ -6,7 +6,6 @@ package com.azure.resourcemanager.compute.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.compute.models.AdditionalCapabilities;
 import com.azure.resourcemanager.compute.models.ApplicationProfile;
 import com.azure.resourcemanager.compute.models.BillingProfile;
@@ -23,24 +22,19 @@ import com.azure.resourcemanager.compute.models.UpdateResource;
 import com.azure.resourcemanager.compute.models.VirtualMachineEvictionPolicyTypes;
 import com.azure.resourcemanager.compute.models.VirtualMachineIdentity;
 import com.azure.resourcemanager.compute.models.VirtualMachinePriorityTypes;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
 /** Describes a Virtual Machine Update. */
 @Fluent
 public final class VirtualMachineUpdateInner extends UpdateResource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualMachineUpdateInner.class);
-
     /*
-     * Specifies information about the marketplace image used to create the
-     * virtual machine. This element is only used for marketplace images.
-     * Before you can use a marketplace image from an API, you must enable the
-     * image for programmatic use.  In the Azure portal, find the marketplace
-     * image that you want to use and then click **Want to deploy
-     * programmatically, Get Started ->**. Enter any required information and
-     * then click **Save**.
+     * Specifies information about the marketplace image used to create the virtual machine. This element is only used
+     * for marketplace images. Before you can use a marketplace image from an API, you must enable the image for
+     * programmatic use.  In the Azure portal, find the marketplace image that you want to use and then click **Want to
+     * deploy programmatically, Get Started ->**. Enter any required information and then click **Save**.
      */
     @JsonProperty(value = "plan")
     private Plan plan;
@@ -769,6 +763,16 @@ public final class VirtualMachineUpdateInner extends UpdateResource {
         }
         this.innerProperties().withApplicationProfile(applicationProfile);
         return this;
+    }
+
+    /**
+     * Get the timeCreated property: Specifies the time at which the Virtual Machine resource was
+     * created.&lt;br&gt;&lt;br&gt;Minimum api-version: 2022-03-01.
+     *
+     * @return the timeCreated value.
+     */
+    public OffsetDateTime timeCreated() {
+        return this.innerProperties() == null ? null : this.innerProperties().timeCreated();
     }
 
     /**

@@ -20,6 +20,7 @@ import com.azure.storage.blob.models.BlobServiceProperties
 import com.azure.storage.blob.models.BlobSignedIdentifier
 import com.azure.storage.blob.models.BlobStorageException
 import com.azure.storage.blob.models.CustomerProvidedKey
+import com.azure.storage.blob.models.GeoReplicationStatus
 import com.azure.storage.blob.models.ListBlobContainersOptions
 import com.azure.storage.blob.models.ParallelTransferOptions
 import com.azure.storage.blob.models.StaticWebsite
@@ -333,6 +334,28 @@ class ServiceAPITest extends APISpec {
         containers.each { container -> container.delete() }
     }
 
+    @RequiredServiceVersion(clazz = BlobServiceVersion.class, min = "V2020_10_02")
+    def "List system containers"() {
+        setup:
+        def retentionPolicy = new BlobRetentionPolicy().setDays(5).setEnabled(true)
+        def logging = new BlobAnalyticsLogging().setRead(true).setVersion("1.0")
+            .setRetentionPolicy(retentionPolicy)
+        def serviceProps = new BlobServiceProperties()
+            .setLogging(logging)
+
+        // Ensure $logs container exists. These will be reverted in test cleanup
+        primaryBlobServiceClient.setPropertiesWithResponse(serviceProps, null, null)
+
+        sleepIfRecord(30 * 1000) // allow the service properties to take effect
+
+        when:
+        def containers = primaryBlobServiceClient.listBlobContainers(
+            new ListBlobContainersOptions().setDetails(new BlobContainerListDetails().setRetrieveSystemContainers(true)), null)
+
+        then:
+        containers.any {item -> return item.getName() == BlobContainerClient.LOG_CONTAINER_NAME }
+    }
+
     @RequiredServiceVersion(clazz = BlobServiceVersion.class, min = "V2019_12_12")
     def "Find blobs min"() {
         when:
@@ -415,10 +438,7 @@ class ServiceAPITest extends APISpec {
         }
 
         expect:
-        for (ContinuablePage page :
-            primaryBlobServiceClient.findBlobsByTags(
-                new FindBlobsOptions(String.format("\"%s\"='%s'", tagKey, tagValue)).setMaxResultsPerPage(PAGE_RESULTS), null, Context.NONE)
-                .iterableByPage()) {
+        for (ContinuablePage page : primaryBlobServiceClient.findBlobsByTags(new FindBlobsOptions(String.format("\"%s\"='%s'", tagKey, tagValue)).setMaxResultsPerPage(PAGE_RESULTS), null, Context.NONE).iterableByPage()) {
             assert page.iterator().size() <= PAGE_RESULTS
         }
 
@@ -440,10 +460,7 @@ class ServiceAPITest extends APISpec {
         }
 
         expect:
-        for (ContinuablePage page :
-            primaryBlobServiceClient.findBlobsByTags(
-                new FindBlobsOptions(String.format("\"%s\"='%s'", tagKey, tagValue)), null, Context.NONE)
-                .iterableByPage(PAGE_RESULTS)) {
+        for (ContinuablePage page : primaryBlobServiceClient.findBlobsByTags(new FindBlobsOptions(String.format("\"%s\"='%s'", tagKey, tagValue)), null, Context.NONE).iterableByPage(PAGE_RESULTS)) {
             assert page.iterator().size() <= PAGE_RESULTS
         }
 
@@ -741,7 +758,14 @@ class ServiceAPITest extends APISpec {
         response.getHeaders().getValue("x-ms-request-id") != null
         response.getHeaders().getValue("Date") != null
         response.getValue().getGeoReplication().getStatus() != null
-        response.getValue().getGeoReplication().getLastSyncTime() != null
+
+        // The LastSyncTime will return a DateTimeRfc1123 if the replication status is LIVE
+        // but there are two other statuses, unavailable and bootstrap, which will return null.
+        if (response.getValue().getGeoReplication().getStatus() == GeoReplicationStatus.LIVE) {
+            assert response.getValue().getGeoReplication().getLastSyncTime() != null
+        } else {
+            assert response.getValue().getGeoReplication().getLastSyncTime() == null
+        }
     }
 
     def "Get stats min"() {
@@ -1080,6 +1104,68 @@ class ServiceAPITest extends APISpec {
         then:
         notThrown(BlobStorageException)
         response.getHeaders().getValue("x-ms-version") == "2017-11-09"
+    }
+
+    def "Create container if not exists"() {
+        when:
+        def containerName = generateContainerName()
+        def response = primaryBlobServiceClient.createBlobContainerIfNotExistsWithResponse(containerName, null, null)
+        def response2 = primaryBlobServiceClient.createBlobContainerIfNotExistsWithResponse(containerName, null, null)
+
+        then:
+        response.getStatusCode() == 201
+        response2.getStatusCode() == 409
+    }
+
+    def "Delete container if exists"() {
+        setup:
+        def containerName = generateContainerName()
+        primaryBlobServiceClient.createBlobContainer(containerName)
+
+        when:
+        def response = primaryBlobServiceClient.deleteBlobContainerIfExistsWithResponse(containerName, null)
+
+        then:
+        response.getValue()
+        response.getStatusCode() == 202
+    }
+
+    def "Delete container if exists min"() {
+        setup:
+        def containerName = generateContainerName()
+        primaryBlobServiceClient.createBlobContainer(containerName)
+
+        when:
+        def response = primaryBlobServiceClient.deleteBlobContainerIfExists(containerName)
+
+        then:
+        response
+    }
+
+    def "Delete container if exists container does not exist"() {
+        when:
+        def response = primaryBlobServiceClient.deleteBlobContainerIfExists(generateContainerName())
+
+        then:
+        !response
+    }
+
+    // We can't guarantee that the requests will always happen before the container is garbage collected
+    @PlaybackOnly
+    def "Delete container if exists already deleted"() {
+        setup:
+        def containerName = generateContainerName()
+        primaryBlobServiceClient.createBlobContainer(containerName)
+
+        when:
+        def response = primaryBlobServiceClient.deleteBlobContainerIfExistsWithResponse(containerName, null)
+        def response2 = primaryBlobServiceClient.deleteBlobContainerIfExistsWithResponse(containerName, null)
+
+        then:
+        response.getStatusCode() == 202
+        // Confirming the behavior of the api when the container is in the deleting state.
+        // After delete has been called once but before it has been garbage collected
+        response2.getStatusCode() == 202
     }
 
 //    def "Rename blob container"() {

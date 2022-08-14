@@ -9,15 +9,12 @@ import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.synapse.models.Compression;
 import com.azure.resourcemanager.synapse.models.EventHubDataFormat;
 import com.azure.resourcemanager.synapse.models.ResourceProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Class representing the Kusto event hub connection properties. */
 @Fluent
 public final class EventHubConnectionProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(EventHubConnectionProperties.class);
-
     /*
      * The resource ID of the event hub to be used to create a data connection.
      */
@@ -68,6 +65,13 @@ public final class EventHubConnectionProperties {
      */
     @JsonProperty(value = "provisioningState", access = JsonProperty.Access.WRITE_ONLY)
     private ResourceProvisioningState provisioningState;
+
+    /*
+     * The resource ID of a managed identity (system or user assigned) to be
+     * used to authenticate with event hub.
+     */
+    @JsonProperty(value = "managedIdentityResourceId")
+    private String managedIdentityResourceId;
 
     /**
      * Get the eventHubResourceId property: The resource ID of the event hub to be used to create a data connection.
@@ -225,22 +229,46 @@ public final class EventHubConnectionProperties {
     }
 
     /**
+     * Get the managedIdentityResourceId property: The resource ID of a managed identity (system or user assigned) to be
+     * used to authenticate with event hub.
+     *
+     * @return the managedIdentityResourceId value.
+     */
+    public String managedIdentityResourceId() {
+        return this.managedIdentityResourceId;
+    }
+
+    /**
+     * Set the managedIdentityResourceId property: The resource ID of a managed identity (system or user assigned) to be
+     * used to authenticate with event hub.
+     *
+     * @param managedIdentityResourceId the managedIdentityResourceId value to set.
+     * @return the EventHubConnectionProperties object itself.
+     */
+    public EventHubConnectionProperties withManagedIdentityResourceId(String managedIdentityResourceId) {
+        this.managedIdentityResourceId = managedIdentityResourceId;
+        return this;
+    }
+
+    /**
      * Validates the instance.
      *
      * @throws IllegalArgumentException thrown if the instance is not valid.
      */
     public void validate() {
         if (eventHubResourceId() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property eventHubResourceId in model EventHubConnectionProperties"));
         }
         if (consumerGroup() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property consumerGroup in model EventHubConnectionProperties"));
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(EventHubConnectionProperties.class);
 }

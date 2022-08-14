@@ -5,15 +5,11 @@
 package com.azure.resourcemanager.cosmos.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Configuration values for periodic mode backup. */
 @Fluent
 public final class PeriodicModeProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(PeriodicModeProperties.class);
-
     /*
      * An integer representing the interval in minutes between two backups
      */
@@ -25,6 +21,12 @@ public final class PeriodicModeProperties {
      */
     @JsonProperty(value = "backupRetentionIntervalInHours")
     private Integer backupRetentionIntervalInHours;
+
+    /*
+     * Enum to indicate type of backup residency
+     */
+    @JsonProperty(value = "backupStorageRedundancy")
+    private BackupStorageRedundancy backupStorageRedundancy;
 
     /**
      * Get the backupIntervalInMinutes property: An integer representing the interval in minutes between two backups.
@@ -65,6 +67,26 @@ public final class PeriodicModeProperties {
      */
     public PeriodicModeProperties withBackupRetentionIntervalInHours(Integer backupRetentionIntervalInHours) {
         this.backupRetentionIntervalInHours = backupRetentionIntervalInHours;
+        return this;
+    }
+
+    /**
+     * Get the backupStorageRedundancy property: Enum to indicate type of backup residency.
+     *
+     * @return the backupStorageRedundancy value.
+     */
+    public BackupStorageRedundancy backupStorageRedundancy() {
+        return this.backupStorageRedundancy;
+    }
+
+    /**
+     * Set the backupStorageRedundancy property: Enum to indicate type of backup residency.
+     *
+     * @param backupStorageRedundancy the backupStorageRedundancy value to set.
+     * @return the PeriodicModeProperties object itself.
+     */
+    public PeriodicModeProperties withBackupStorageRedundancy(BackupStorageRedundancy backupStorageRedundancy) {
+        this.backupStorageRedundancy = backupStorageRedundancy;
         return this;
     }
 

@@ -280,7 +280,7 @@ public class SearchSyncTests extends SearchTestBase {
             .count(3)
             .isEnabled(true)
             .rating(5)
-            .ratio(3.14)
+            .ratio(3.25)
             .startDate(new Date(startEpoch.getTime()))
             .endDate(new Date(startEpoch.getTime()))
             .topLevelBucket(new Bucket().bucketName("A").count(12))
@@ -972,7 +972,7 @@ public class SearchSyncTests extends SearchTestBase {
     }
 
     String createIndexWithNonNullableTypes() {
-        SearchIndex index = new SearchIndex("non-nullable-index")
+        SearchIndex index = new SearchIndex(testResourceNamer.randomName("non-nullable-index", 64))
             .setFields(Arrays.asList(
                 new SearchField("Key", SearchFieldDataType.STRING)
                     .setHidden(false)
@@ -1008,7 +1008,7 @@ public class SearchSyncTests extends SearchTestBase {
     }
 
     String createIndexWithValueTypes() {
-        SearchIndex index = new SearchIndex("testindex")
+        SearchIndex index = new SearchIndex(testResourceNamer.randomName("testindex", 64))
             .setFields(Arrays.asList(
                 new SearchField("Key", SearchFieldDataType.STRING)
                     .setKey(true)

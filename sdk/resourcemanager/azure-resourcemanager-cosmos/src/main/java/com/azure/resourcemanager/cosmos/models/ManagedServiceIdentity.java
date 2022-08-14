@@ -5,16 +5,13 @@
 package com.azure.resourcemanager.cosmos.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 /** Identity for the resource. */
 @Fluent
 public class ManagedServiceIdentity {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ManagedServiceIdentity.class);
-
     /*
      * The principal id of the system assigned identity. This property will
      * only be provided for a system assigned identity.
@@ -44,6 +41,7 @@ public class ManagedServiceIdentity {
      * '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
      */
     @JsonProperty(value = "userAssignedIdentities")
+    @JsonInclude(value = JsonInclude.Include.NON_NULL, content = JsonInclude.Include.ALWAYS)
     private Map<String, ManagedServiceIdentityUserAssignedIdentities> userAssignedIdentities;
 
     /**

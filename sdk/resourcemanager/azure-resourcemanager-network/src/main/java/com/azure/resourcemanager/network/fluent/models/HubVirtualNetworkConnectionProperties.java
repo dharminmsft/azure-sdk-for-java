@@ -6,17 +6,13 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ProvisioningState;
 import com.azure.resourcemanager.network.models.RoutingConfiguration;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Parameters for HubVirtualNetworkConnection. */
 @Fluent
 public final class HubVirtualNetworkConnectionProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(HubVirtualNetworkConnectionProperties.class);
-
     /*
      * Reference to the remote virtual network.
      */
@@ -42,8 +38,7 @@ public final class HubVirtualNetworkConnectionProperties {
     private Boolean enableInternetSecurity;
 
     /*
-     * The Routing Configuration indicating the associated and propagated route
-     * tables on this connection.
+     * The Routing Configuration indicating the associated and propagated route tables on this connection.
      */
     @JsonProperty(value = "routingConfiguration")
     private RoutingConfiguration routingConfiguration;

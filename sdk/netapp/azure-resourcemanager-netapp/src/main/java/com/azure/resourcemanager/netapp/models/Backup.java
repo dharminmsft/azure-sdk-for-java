@@ -48,7 +48,7 @@ public interface Backup {
     String backupId();
 
     /**
-     * Gets the creationDate property: name The creation date of the backup.
+     * Gets the creationDate property: creationDate The creation date of the backup.
      *
      * @return the creationDate value.
      */
@@ -117,6 +117,13 @@ public interface Backup {
      * @return the name of the resource region.
      */
     String regionName();
+
+    /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
 
     /**
      * Gets the inner com.azure.resourcemanager.netapp.fluent.models.BackupInner object.

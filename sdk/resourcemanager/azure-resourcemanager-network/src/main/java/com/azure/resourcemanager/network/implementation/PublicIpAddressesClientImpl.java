@@ -30,7 +30,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.network.fluent.PublicIpAddressesClient;
@@ -50,8 +49,6 @@ public final class PublicIpAddressesClientImpl
         InnerSupportsListing<PublicIpAddressInner>,
         InnerSupportsDelete<Void>,
         PublicIpAddressesClient {
-    private final ClientLogger logger = new ClientLogger(PublicIpAddressesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final PublicIpAddressesService service;
 
@@ -345,7 +342,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServicePublicIpAddressesSinglePageAsync(
@@ -370,7 +368,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -405,7 +403,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServicePublicIpAddressesSinglePageAsync(
@@ -430,7 +429,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -461,7 +460,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level as paginated response with {@link
+     *     PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listCloudServicePublicIpAddressesAsync(
@@ -480,7 +480,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level as paginated response with {@link
+     *     PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listCloudServicePublicIpAddressesAsync(
@@ -498,7 +499,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level as paginated response with {@link
+     *     PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listCloudServicePublicIpAddresses(
@@ -515,7 +517,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a cloud service level.
+     * @return information about all public IP addresses on a cloud service level as paginated response with {@link
+     *     PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listCloudServicePublicIpAddresses(
@@ -535,7 +538,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service along
+     *     with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServiceRoleInstancePublicIpAddressesSinglePageAsync(
@@ -576,7 +580,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -617,7 +621,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service along
+     *     with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServiceRoleInstancePublicIpAddressesSinglePageAsync(
@@ -659,7 +664,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -696,7 +701,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service as
+     *     paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listCloudServiceRoleInstancePublicIpAddressesAsync(
@@ -724,7 +730,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service as
+     *     paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listCloudServiceRoleInstancePublicIpAddressesAsync(
@@ -757,7 +764,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service as
+     *     paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listCloudServiceRoleInstancePublicIpAddresses(
@@ -783,7 +791,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses in a role instance IP configuration in a cloud service.
+     * @return information about all public IP addresses in a role instance IP configuration in a cloud service as
+     *     paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listCloudServiceRoleInstancePublicIpAddresses(
@@ -816,7 +825,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a cloud service.
+     * @return the specified public IP address in a cloud service along with {@link Response} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<PublicIpAddressInner>> getCloudServicePublicIpAddressWithResponseAsync(
@@ -863,7 +873,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -899,7 +909,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a cloud service.
+     * @return the specified public IP address in a cloud service along with {@link Response} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<PublicIpAddressInner>> getCloudServicePublicIpAddressWithResponseAsync(
@@ -947,7 +958,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -979,7 +990,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a cloud service.
+     * @return the specified public IP address in a cloud service on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getCloudServicePublicIpAddressAsync(
@@ -998,14 +1009,7 @@ public final class PublicIpAddressesClientImpl
                 ipConfigurationName,
                 publicIpAddressName,
                 expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1020,7 +1024,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a cloud service.
+     * @return the specified public IP address in a cloud service on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getCloudServicePublicIpAddressAsync(
@@ -1039,14 +1043,7 @@ public final class PublicIpAddressesClientImpl
                 ipConfigurationName,
                 publicIpAddressName,
                 expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1097,7 +1094,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a cloud service.
+     * @return the specified public IP address in a cloud service along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<PublicIpAddressInner> getCloudServicePublicIpAddressWithResponse(
@@ -1129,7 +1126,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -1154,7 +1151,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1180,7 +1177,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -1205,7 +1202,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1227,14 +1224,15 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteAsync(String resourceGroupName, String publicIpAddressName) {
         Mono<Response<Flux<ByteBuffer>>> mono = deleteWithResponseAsync(resourceGroupName, publicIpAddressName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -1246,9 +1244,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String resourceGroupName, String publicIpAddressName, Context context) {
         context = this.client.mergeContext(context);
@@ -1267,9 +1265,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(String resourceGroupName, String publicIpAddressName) {
         return beginDeleteAsync(resourceGroupName, publicIpAddressName).getSyncPoller();
     }
@@ -1283,9 +1281,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(
         String resourceGroupName, String publicIpAddressName, Context context) {
         return beginDeleteAsync(resourceGroupName, publicIpAddressName, context).getSyncPoller();
@@ -1299,7 +1297,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String publicIpAddressName) {
@@ -1317,7 +1315,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String publicIpAddressName, Context context) {
@@ -1364,7 +1362,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a specified resource group.
+     * @return the specified public IP address in a specified resource group along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<PublicIpAddressInner>> getByResourceGroupWithResponseAsync(
@@ -1389,7 +1388,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1417,7 +1416,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a specified resource group.
+     * @return the specified public IP address in a specified resource group along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<PublicIpAddressInner>> getByResourceGroupWithResponseAsync(
@@ -1442,7 +1442,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1466,20 +1466,13 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a specified resource group.
+     * @return the specified public IP address in a specified resource group on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getByResourceGroupAsync(
         String resourceGroupName, String publicIpAddressName, String expand) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, publicIpAddressName, expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1490,20 +1483,13 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a specified resource group.
+     * @return the specified public IP address in a specified resource group on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getByResourceGroupAsync(String resourceGroupName, String publicIpAddressName) {
         final String expand = null;
         return getByResourceGroupWithResponseAsync(resourceGroupName, publicIpAddressName, expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1532,7 +1518,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a specified resource group.
+     * @return the specified public IP address in a specified resource group along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<PublicIpAddressInner> getByResourceGroupWithResponse(
@@ -1549,7 +1535,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -1579,7 +1565,7 @@ public final class PublicIpAddressesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1607,7 +1593,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -1637,7 +1623,7 @@ public final class PublicIpAddressesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1661,9 +1647,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return the {@link PollerFlux} for polling of public IP address resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<PublicIpAddressInner>, PublicIpAddressInner> beginCreateOrUpdateAsync(
         String resourceGroupName, String publicIpAddressName, PublicIpAddressInner parameters) {
         Mono<Response<Flux<ByteBuffer>>> mono =
@@ -1675,7 +1661,7 @@ public final class PublicIpAddressesClientImpl
                 this.client.getHttpPipeline(),
                 PublicIpAddressInner.class,
                 PublicIpAddressInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -1688,9 +1674,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return the {@link PollerFlux} for polling of public IP address resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<PublicIpAddressInner>, PublicIpAddressInner> beginCreateOrUpdateAsync(
         String resourceGroupName, String publicIpAddressName, PublicIpAddressInner parameters, Context context) {
         context = this.client.mergeContext(context);
@@ -1711,9 +1697,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return the {@link SyncPoller} for polling of public IP address resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<PublicIpAddressInner>, PublicIpAddressInner> beginCreateOrUpdate(
         String resourceGroupName, String publicIpAddressName, PublicIpAddressInner parameters) {
         return beginCreateOrUpdateAsync(resourceGroupName, publicIpAddressName, parameters).getSyncPoller();
@@ -1729,9 +1715,9 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return the {@link SyncPoller} for polling of public IP address resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<PublicIpAddressInner>, PublicIpAddressInner> beginCreateOrUpdate(
         String resourceGroupName, String publicIpAddressName, PublicIpAddressInner parameters, Context context) {
         return beginCreateOrUpdateAsync(resourceGroupName, publicIpAddressName, parameters, context).getSyncPoller();
@@ -1746,7 +1732,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> createOrUpdateAsync(
@@ -1766,7 +1752,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PublicIpAddressInner> createOrUpdateAsync(
@@ -1820,7 +1806,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<PublicIpAddressInner>> updateTagsWithResponseAsync(
@@ -1850,7 +1836,7 @@ public final class PublicIpAddressesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -1878,7 +1864,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<PublicIpAddressInner>> updateTagsWithResponseAsync(
@@ -1908,7 +1894,7 @@ public final class PublicIpAddressesClientImpl
         } else {
             parameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1932,20 +1918,13 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> updateTagsAsync(
         String resourceGroupName, String publicIpAddressName, TagsObject parameters) {
         return updateTagsWithResponseAsync(resourceGroupName, publicIpAddressName, parameters)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1975,7 +1954,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return public IP address resource.
+     * @return public IP address resource along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<PublicIpAddressInner> updateTagsWithResponse(
@@ -1988,7 +1967,8 @@ public final class PublicIpAddressesClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listSinglePageAsync() {
@@ -2004,7 +1984,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -2030,7 +2010,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listSinglePageAsync(Context context) {
@@ -2046,7 +2027,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -2067,7 +2048,7 @@ public final class PublicIpAddressesClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listAsync() {
@@ -2081,7 +2062,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listAsync(Context context) {
@@ -2094,7 +2075,7 @@ public final class PublicIpAddressesClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> list() {
@@ -2108,7 +2089,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the public IP addresses in a subscription.
+     * @return all the public IP addresses in a subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> list(Context context) {
@@ -2122,7 +2103,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group along with {@link PagedResponse} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listByResourceGroupSinglePageAsync(String resourceGroupName) {
@@ -2142,7 +2124,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -2175,7 +2157,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group along with {@link PagedResponse} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listByResourceGroupSinglePageAsync(
@@ -2196,7 +2179,7 @@ public final class PublicIpAddressesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -2225,7 +2208,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listByResourceGroupAsync(String resourceGroupName) {
@@ -2241,7 +2224,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listByResourceGroupAsync(String resourceGroupName, Context context) {
@@ -2257,7 +2240,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listByResourceGroup(String resourceGroupName) {
@@ -2272,7 +2255,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all public IP addresses in a resource group.
+     * @return all public IP addresses in a resource group as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listByResourceGroup(String resourceGroupName, Context context) {
@@ -2287,7 +2270,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetPublicIpAddressesSinglePageAsync(
@@ -2349,7 +2333,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetPublicIpAddressesSinglePageAsync(
@@ -2407,7 +2392,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level as paginated response with
+     *     {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listVirtualMachineScaleSetPublicIpAddressesAsync(
@@ -2428,7 +2414,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level as paginated response with
+     *     {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listVirtualMachineScaleSetPublicIpAddressesAsync(
@@ -2448,7 +2435,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level as paginated response with
+     *     {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listVirtualMachineScaleSetPublicIpAddresses(
@@ -2466,7 +2454,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return information about all public IP addresses on a virtual machine scale set level.
+     * @return information about all public IP addresses on a virtual machine scale set level as paginated response with
+     *     {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listVirtualMachineScaleSetPublicIpAddresses(
@@ -2488,7 +2477,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetVMPublicIpAddressesSinglePageAsync(
@@ -2574,7 +2563,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set along with {@link PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetVMPublicIpAddressesSinglePageAsync(
@@ -2657,7 +2646,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<PublicIpAddressInner> listVirtualMachineScaleSetVMPublicIpAddressesAsync(
@@ -2691,7 +2680,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<PublicIpAddressInner> listVirtualMachineScaleSetVMPublicIpAddressesAsync(
@@ -2726,7 +2715,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listVirtualMachineScaleSetVMPublicIpAddresses(
@@ -2758,7 +2747,7 @@ public final class PublicIpAddressesClientImpl
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return information about all public IP addresses in a virtual machine IP configuration in a virtual machine
-     *     scale set.
+     *     scale set as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<PublicIpAddressInner> listVirtualMachineScaleSetVMPublicIpAddresses(
@@ -2791,7 +2780,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a virtual machine scale set.
+     * @return the specified public IP address in a virtual machine scale set along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<PublicIpAddressInner>> getVirtualMachineScaleSetPublicIpAddressWithResponseAsync(
@@ -2876,7 +2866,8 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a virtual machine scale set.
+     * @return the specified public IP address in a virtual machine scale set along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<PublicIpAddressInner>> getVirtualMachineScaleSetPublicIpAddressWithResponseAsync(
@@ -2958,7 +2949,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a virtual machine scale set.
+     * @return the specified public IP address in a virtual machine scale set on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getVirtualMachineScaleSetPublicIpAddressAsync(
@@ -2977,14 +2968,7 @@ public final class PublicIpAddressesClientImpl
                 ipConfigurationName,
                 publicIpAddressName,
                 expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -2999,7 +2983,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a virtual machine scale set.
+     * @return the specified public IP address in a virtual machine scale set on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PublicIpAddressInner> getVirtualMachineScaleSetPublicIpAddressAsync(
@@ -3018,14 +3002,7 @@ public final class PublicIpAddressesClientImpl
                 ipConfigurationName,
                 publicIpAddressName,
                 expand)
-            .flatMap(
-                (Response<PublicIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3076,7 +3053,7 @@ public final class PublicIpAddressesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified public IP address in a virtual machine scale set.
+     * @return the specified public IP address in a virtual machine scale set along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<PublicIpAddressInner> getVirtualMachineScaleSetPublicIpAddressWithResponse(
@@ -3103,11 +3080,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServicePublicIpAddressesNextSinglePageAsync(
@@ -3141,12 +3120,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServicePublicIpAddressesNextSinglePageAsync(
@@ -3178,11 +3159,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServiceRoleInstancePublicIpAddressesNextSinglePageAsync(
@@ -3218,12 +3201,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listCloudServiceRoleInstancePublicIpAddressesNextSinglePageAsync(
@@ -3255,11 +3240,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listAllNextSinglePageAsync(String nextLink) {
@@ -3290,12 +3277,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listAllNextSinglePageAsync(String nextLink, Context context) {
@@ -3326,11 +3315,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listNextSinglePageAsync(String nextLink) {
@@ -3361,12 +3352,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listNextSinglePageAsync(String nextLink, Context context) {
@@ -3397,11 +3390,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetPublicIpAddressesNextSinglePageAsync(
@@ -3437,12 +3432,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetPublicIpAddressesNextSinglePageAsync(
@@ -3474,11 +3471,13 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetVMPublicIpAddressesNextSinglePageAsync(
@@ -3514,12 +3513,14 @@ public final class PublicIpAddressesClientImpl
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListPublicIpAddresses API service call.
+     * @return response for ListPublicIpAddresses API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<PublicIpAddressInner>> listVirtualMachineScaleSetVMPublicIpAddressesNextSinglePageAsync(

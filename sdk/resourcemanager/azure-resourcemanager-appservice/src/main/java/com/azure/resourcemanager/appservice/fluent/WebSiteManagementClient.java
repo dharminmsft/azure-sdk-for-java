@@ -108,6 +108,20 @@ public interface WebSiteManagementClient {
     CertificatesClient getCertificates();
 
     /**
+     * Gets the ContainerAppsClient object to access its operations.
+     *
+     * @return the ContainerAppsClient object.
+     */
+    ContainerAppsClient getContainerApps();
+
+    /**
+     * Gets the ContainerAppsRevisionsClient object to access its operations.
+     *
+     * @return the ContainerAppsRevisionsClient object.
+     */
+    ContainerAppsRevisionsClient getContainerAppsRevisions();
+
+    /**
      * Gets the DeletedWebAppsClient object to access its operations.
      *
      * @return the DeletedWebAppsClient object.
@@ -176,4 +190,67 @@ public interface WebSiteManagementClient {
      * @return the WebAppsClient object.
      */
     WebAppsClient getWebApps();
+
+    /**
+     * Gets the WorkflowsClient object to access its operations.
+     *
+     * @return the WorkflowsClient object.
+     */
+    WorkflowsClient getWorkflows();
+
+    /**
+     * Gets the WorkflowRunsClient object to access its operations.
+     *
+     * @return the WorkflowRunsClient object.
+     */
+    WorkflowRunsClient getWorkflowRuns();
+
+    /**
+     * Gets the WorkflowRunActionsClient object to access its operations.
+     *
+     * @return the WorkflowRunActionsClient object.
+     */
+    WorkflowRunActionsClient getWorkflowRunActions();
+
+    /**
+     * Gets the WorkflowRunActionRepetitionsClient object to access its operations.
+     *
+     * @return the WorkflowRunActionRepetitionsClient object.
+     */
+    WorkflowRunActionRepetitionsClient getWorkflowRunActionRepetitions();
+
+    /**
+     * Gets the WorkflowRunActionRepetitionsRequestHistoriesClient object to access its operations.
+     *
+     * @return the WorkflowRunActionRepetitionsRequestHistoriesClient object.
+     */
+    WorkflowRunActionRepetitionsRequestHistoriesClient getWorkflowRunActionRepetitionsRequestHistories();
+
+    /**
+     * Gets the WorkflowRunActionScopeRepetitionsClient object to access its operations.
+     *
+     * @return the WorkflowRunActionScopeRepetitionsClient object.
+     */
+    WorkflowRunActionScopeRepetitionsClient getWorkflowRunActionScopeRepetitions();
+
+    /**
+     * Gets the WorkflowTriggersClient object to access its operations.
+     *
+     * @return the WorkflowTriggersClient object.
+     */
+    WorkflowTriggersClient getWorkflowTriggers();
+
+    /**
+     * Gets the WorkflowTriggerHistoriesClient object to access its operations.
+     *
+     * @return the WorkflowTriggerHistoriesClient object.
+     */
+    WorkflowTriggerHistoriesClient getWorkflowTriggerHistories();
+
+    /**
+     * Gets the WorkflowVersionsClient object to access its operations.
+     *
+     * @return the WorkflowVersionsClient object.
+     */
+    WorkflowVersionsClient getWorkflowVersions();
 }

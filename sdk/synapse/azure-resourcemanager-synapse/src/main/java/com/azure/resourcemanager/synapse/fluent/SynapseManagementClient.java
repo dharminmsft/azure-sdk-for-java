@@ -354,6 +354,14 @@ public interface SynapseManagementClient {
     WorkspaceManagedSqlServerRecoverableSqlPoolsClient getWorkspaceManagedSqlServerRecoverableSqlPools();
 
     /**
+     * Gets the WorkspaceManagedSqlServerDedicatedSqlMinimalTlsSettingsClient object to access its operations.
+     *
+     * @return the WorkspaceManagedSqlServerDedicatedSqlMinimalTlsSettingsClient object.
+     */
+    WorkspaceManagedSqlServerDedicatedSqlMinimalTlsSettingsClient
+        getWorkspaceManagedSqlServerDedicatedSqlMinimalTlsSettings();
+
+    /**
      * Gets the WorkspacesClient object to access its operations.
      *
      * @return the WorkspacesClient object.
@@ -499,13 +507,6 @@ public interface SynapseManagementClient {
      * @return the KustoPoolsClient object.
      */
     KustoPoolsClient getKustoPools();
-
-    /**
-     * Gets the KustoPoolsOperationsClient object to access its operations.
-     *
-     * @return the KustoPoolsOperationsClient object.
-     */
-    KustoPoolsOperationsClient getKustoPoolsOperations();
 
     /**
      * Gets the KustoPoolChildResourcesClient object to access its operations.

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-package com.azure.ai.formrecognizer.administration;
+package com.azure.ai.formrecognizer.documentanalysis.administration;
 
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.util.polling.AsyncPollResponse;
@@ -36,10 +36,10 @@ public class CopyModelAsync {
         String copyModelId = "copy-model-ID";
 
         // Get authorization to copy the model to target resource
-        targetClient.getCopyAuthorization(copiedModelId)
+        targetClient.getCopyAuthorization()
             // Start copy operation from the source client
             // The ID of the model that needs to be copied to the target resource
-            .subscribe(copyAuthorization -> sourceClient.beginCopyModel(copyModelId, copyAuthorization)
+            .subscribe(copyAuthorization -> sourceClient.beginCopyModelTo(copyModelId, copyAuthorization)
                 .filter(pollResponse -> pollResponse.getStatus().isComplete())
                 .flatMap(AsyncPollResponse::getFinalResult)
                     .subscribe(documentModelInfo -> {

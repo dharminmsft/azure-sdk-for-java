@@ -4,37 +4,28 @@
 
 package com.azure.resourcemanager.cosmos.fluent.models;
 
-import com.azure.core.annotation.Immutable;
-import com.azure.core.annotation.JsonFlatten;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.core.annotation.Fluent;
 import com.azure.resourcemanager.cosmos.models.ArmProxyResource;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** A private link resource. */
-@JsonFlatten
-@Immutable
-public class PrivateLinkResourceInner extends ArmProxyResource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(PrivateLinkResourceInner.class);
-
+@Fluent
+public final class PrivateLinkResourceInner extends ArmProxyResource {
     /*
-     * The private link resource group id.
+     * Resource properties.
      */
-    @JsonProperty(value = "properties.groupId", access = JsonProperty.Access.WRITE_ONLY)
-    private String groupId;
+    @JsonProperty(value = "properties")
+    private PrivateLinkResourceProperties innerProperties;
 
-    /*
-     * The private link resource required member names.
+    /**
+     * Get the innerProperties property: Resource properties.
+     *
+     * @return the innerProperties value.
      */
-    @JsonProperty(value = "properties.requiredMembers", access = JsonProperty.Access.WRITE_ONLY)
-    private List<String> requiredMembers;
-
-    /*
-     * The private link resource required zone names.
-     */
-    @JsonProperty(value = "properties.requiredZoneNames", access = JsonProperty.Access.WRITE_ONLY)
-    private List<String> requiredZoneNames;
+    private PrivateLinkResourceProperties innerProperties() {
+        return this.innerProperties;
+    }
 
     /**
      * Get the groupId property: The private link resource group id.
@@ -42,7 +33,7 @@ public class PrivateLinkResourceInner extends ArmProxyResource {
      * @return the groupId value.
      */
     public String groupId() {
-        return this.groupId;
+        return this.innerProperties() == null ? null : this.innerProperties().groupId();
     }
 
     /**
@@ -51,7 +42,7 @@ public class PrivateLinkResourceInner extends ArmProxyResource {
      * @return the requiredMembers value.
      */
     public List<String> requiredMembers() {
-        return this.requiredMembers;
+        return this.innerProperties() == null ? null : this.innerProperties().requiredMembers();
     }
 
     /**
@@ -60,7 +51,7 @@ public class PrivateLinkResourceInner extends ArmProxyResource {
      * @return the requiredZoneNames value.
      */
     public List<String> requiredZoneNames() {
-        return this.requiredZoneNames;
+        return this.innerProperties() == null ? null : this.innerProperties().requiredZoneNames();
     }
 
     /**
@@ -71,5 +62,8 @@ public class PrivateLinkResourceInner extends ArmProxyResource {
     @Override
     public void validate() {
         super.validate();
+        if (innerProperties() != null) {
+            innerProperties().validate();
+        }
     }
 }

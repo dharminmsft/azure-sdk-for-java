@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.fluent.WebCategoriesClient;
 import com.azure.resourcemanager.network.fluent.models.AzureWebCategoryInner;
 import com.azure.resourcemanager.network.models.AzureWebCategoryListResult;
@@ -33,8 +32,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in WebCategoriesClient. */
 public final class WebCategoriesClientImpl implements WebCategoriesClient {
-    private final ClientLogger logger = new ClientLogger(WebCategoriesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final WebCategoriesService service;
 
@@ -102,7 +99,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified Azure Web Category.
+     * @return the specified Azure Web Category along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<AzureWebCategoryInner>> getWithResponseAsync(String name, String expand) {
@@ -121,7 +118,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -147,7 +144,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified Azure Web Category.
+     * @return the specified Azure Web Category along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<AzureWebCategoryInner>> getWithResponseAsync(String name, String expand, Context context) {
@@ -166,7 +163,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -181,19 +178,11 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified Azure Web Category.
+     * @return the specified Azure Web Category on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<AzureWebCategoryInner> getAsync(String name, String expand) {
-        return getWithResponseAsync(name, expand)
-            .flatMap(
-                (Response<AzureWebCategoryInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return getWithResponseAsync(name, expand).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -203,20 +192,12 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified Azure Web Category.
+     * @return the specified Azure Web Category on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<AzureWebCategoryInner> getAsync(String name) {
         final String expand = null;
-        return getWithResponseAsync(name, expand)
-            .flatMap(
-                (Response<AzureWebCategoryInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return getWithResponseAsync(name, expand).flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -243,7 +224,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified Azure Web Category.
+     * @return the specified Azure Web Category along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<AzureWebCategoryInner> getWithResponse(String name, String expand, Context context) {
@@ -255,7 +236,8 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<AzureWebCategoryInner>> listSinglePageAsync() {
@@ -271,7 +253,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -297,7 +279,8 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<AzureWebCategoryInner>> listSinglePageAsync(Context context) {
@@ -313,7 +296,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -334,7 +317,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<AzureWebCategoryInner> listAsync() {
@@ -349,7 +332,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<AzureWebCategoryInner> listAsync(Context context) {
@@ -362,7 +345,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<AzureWebCategoryInner> list() {
@@ -376,7 +359,7 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return all the Azure Web Categories in a subscription.
+     * @return all the Azure Web Categories in a subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<AzureWebCategoryInner> list(Context context) {
@@ -386,11 +369,13 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListAzureWebCategories API service call.
+     * @return response for ListAzureWebCategories API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<AzureWebCategoryInner>> listBySubscriptionNextSinglePageAsync(String nextLink) {
@@ -422,12 +407,14 @@ public final class WebCategoriesClientImpl implements WebCategoriesClient {
     /**
      * Get the next page of items.
      *
-     * @param nextLink The nextLink parameter.
+     * @param nextLink The URL to get the next list of items
+     *     <p>The nextLink parameter.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response for ListAzureWebCategories API service call.
+     * @return response for ListAzureWebCategories API service call along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<AzureWebCategoryInner>> listBySubscriptionNextSinglePageAsync(

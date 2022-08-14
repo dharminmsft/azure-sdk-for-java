@@ -6,7 +6,6 @@ package com.azure.resourcemanager.network.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.AddressSpace;
 import com.azure.resourcemanager.network.models.BgpSettings;
 import com.azure.resourcemanager.network.models.ProvisioningState;
@@ -15,15 +14,12 @@ import com.azure.resourcemanager.network.models.VirtualNetworkGatewayType;
 import com.azure.resourcemanager.network.models.VpnClientConfiguration;
 import com.azure.resourcemanager.network.models.VpnGatewayGeneration;
 import com.azure.resourcemanager.network.models.VpnType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** VirtualNetworkGateway properties. */
 @Fluent
 public final class VirtualNetworkGatewayPropertiesFormat {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualNetworkGatewayPropertiesFormat.class);
-
     /*
      * IP configurations for virtual network gateway.
      */
@@ -43,8 +39,7 @@ public final class VirtualNetworkGatewayPropertiesFormat {
     private VpnType vpnType;
 
     /*
-     * The generation for this VirtualNetworkGateway. Must be None if
-     * gatewayType is not VPN.
+     * The generation for this VirtualNetworkGateway. Must be None if gatewayType is not VPN.
      */
     @JsonProperty(value = "vpnGatewayGeneration")
     private VpnGatewayGeneration vpnGatewayGeneration;
@@ -56,8 +51,7 @@ public final class VirtualNetworkGatewayPropertiesFormat {
     private Boolean enableBgp;
 
     /*
-     * Whether private IP needs to be enabled on this gateway for connections
-     * or not.
+     * Whether private IP needs to be enabled on this gateway for connections or not.
      */
     @JsonProperty(value = "enablePrivateIpAddress")
     private Boolean enablePrivateIpAddress;
@@ -69,23 +63,27 @@ public final class VirtualNetworkGatewayPropertiesFormat {
     private Boolean active;
 
     /*
-     * The reference to the LocalNetworkGateway resource which represents local
-     * network site having default routes. Assign Null value in case of
-     * removing existing default site setting.
+     * disableIPSecReplayProtection flag.
+     */
+    @JsonProperty(value = "disableIPSecReplayProtection")
+    private Boolean disableIpSecReplayProtection;
+
+    /*
+     * The reference to the LocalNetworkGateway resource which represents local network site having default routes.
+     * Assign Null value in case of removing existing default site setting.
      */
     @JsonProperty(value = "gatewayDefaultSite")
     private SubResource gatewayDefaultSite;
 
     /*
-     * The reference to the VirtualNetworkGatewaySku resource which represents
-     * the SKU selected for Virtual network gateway.
+     * The reference to the VirtualNetworkGatewaySku resource which represents the SKU selected for Virtual network
+     * gateway.
      */
     @JsonProperty(value = "sku")
     private VirtualNetworkGatewaySku sku;
 
     /*
-     * The reference to the VpnClientConfiguration resource which represents
-     * the P2S VpnClient configurations.
+     * The reference to the VpnClientConfiguration resource which represents the P2S VpnClient configurations.
      */
     @JsonProperty(value = "vpnClientConfiguration")
     private VpnClientConfiguration vpnClientConfiguration;
@@ -97,9 +95,8 @@ public final class VirtualNetworkGatewayPropertiesFormat {
     private BgpSettings bgpSettings;
 
     /*
-     * The reference to the address space resource which represents the custom
-     * routes address space specified by the customer for virtual network
-     * gateway and VpnClient.
+     * The reference to the address space resource which represents the custom routes address space specified by the
+     * customer for virtual network gateway and VpnClient.
      */
     @JsonProperty(value = "customRoutes")
     private AddressSpace customRoutes;
@@ -123,15 +120,13 @@ public final class VirtualNetworkGatewayPropertiesFormat {
     private Boolean enableDnsForwarding;
 
     /*
-     * The IP address allocated by the gateway to which dns requests can be
-     * sent.
+     * The IP address allocated by the gateway to which dns requests can be sent.
      */
     @JsonProperty(value = "inboundDnsForwardingEndpoint", access = JsonProperty.Access.WRITE_ONLY)
     private String inboundDnsForwardingEndpoint;
 
     /*
-     * Customer vnet resource id. VirtualNetworkGateway of type local gateway
-     * is associated with the customer vnet.
+     * Customer vnet resource id. VirtualNetworkGateway of type local gateway is associated with the customer vnet.
      */
     @JsonProperty(value = "vNetExtendedLocationResourceId")
     private String vNetExtendedLocationResourceId;
@@ -290,6 +285,27 @@ public final class VirtualNetworkGatewayPropertiesFormat {
      */
     public VirtualNetworkGatewayPropertiesFormat withActive(Boolean active) {
         this.active = active;
+        return this;
+    }
+
+    /**
+     * Get the disableIpSecReplayProtection property: disableIPSecReplayProtection flag.
+     *
+     * @return the disableIpSecReplayProtection value.
+     */
+    public Boolean disableIpSecReplayProtection() {
+        return this.disableIpSecReplayProtection;
+    }
+
+    /**
+     * Set the disableIpSecReplayProtection property: disableIPSecReplayProtection flag.
+     *
+     * @param disableIpSecReplayProtection the disableIpSecReplayProtection value to set.
+     * @return the VirtualNetworkGatewayPropertiesFormat object itself.
+     */
+    public VirtualNetworkGatewayPropertiesFormat withDisableIpSecReplayProtection(
+        Boolean disableIpSecReplayProtection) {
+        this.disableIpSecReplayProtection = disableIpSecReplayProtection;
         return this;
     }
 

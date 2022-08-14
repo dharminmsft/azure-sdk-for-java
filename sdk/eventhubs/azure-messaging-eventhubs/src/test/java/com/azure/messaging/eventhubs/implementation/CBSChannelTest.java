@@ -113,7 +113,7 @@ class CBSChannelTest extends IntegrationTestBase {
             connectionProperties.getSharedAccessKeyName(), connectionProperties.getSharedAccessKey());
         ConnectionOptions connectionOptions = new ConnectionOptions(connectionProperties.getEndpoint().getHost(),
             tokenCredential, CbsAuthorizationType.SHARED_ACCESS_SIGNATURE, ClientConstants.AZURE_ACTIVE_DIRECTORY_SCOPE,
-            AmqpTransportType.AMQP, RETRY_OPTIONS, ProxyOptions.SYSTEM_DEFAULTS, Schedulers.elastic(), clientOptions,
+            AmqpTransportType.AMQP, RETRY_OPTIONS, ProxyOptions.SYSTEM_DEFAULTS, Schedulers.boundedElastic(), clientOptions,
             SslDomain.VerifyMode.VERIFY_PEER_NAME, "test-product", "test-client-version");
         connection = new TestReactorConnection(CONNECTION_ID, connectionOptions, reactorProvider, handlerProvider,
             azureTokenManagerProvider, messageSerializer);
@@ -125,7 +125,8 @@ class CBSChannelTest extends IntegrationTestBase {
         // Act & Assert
         StepVerifier.create(cbsChannel.authorize(tokenAudience, tokenAudience))
             .assertNext(expiration -> OffsetDateTime.now().isBefore(expiration))
-            .verifyComplete();
+            .expectComplete()
+            .verify(TIMEOUT);
     }
 
     @Test
@@ -136,7 +137,7 @@ class CBSChannelTest extends IntegrationTestBase {
 
         final ConnectionOptions connectionOptions = new ConnectionOptions(connectionProperties.getEndpoint().getHost(),
             invalidToken, CbsAuthorizationType.SHARED_ACCESS_SIGNATURE, ClientConstants.AZURE_ACTIVE_DIRECTORY_SCOPE,
-            AmqpTransportType.AMQP, RETRY_OPTIONS, ProxyOptions.SYSTEM_DEFAULTS, Schedulers.elastic(), clientOptions,
+            AmqpTransportType.AMQP, RETRY_OPTIONS, ProxyOptions.SYSTEM_DEFAULTS, Schedulers.boundedElastic(), clientOptions,
             SslDomain.VerifyMode.VERIFY_PEER, "test-product", "test-client-version");
         connection = new TestReactorConnection(CONNECTION_ID, connectionOptions, reactorProvider, handlerProvider,
             azureTokenManagerProvider, messageSerializer);
@@ -155,7 +156,7 @@ class CBSChannelTest extends IntegrationTestBase {
                 Assertions.assertFalse(exception.isTransient());
                 Assertions.assertFalse(CoreUtils.isNullOrEmpty(exception.getMessage()));
             })
-            .verify();
+            .verify(TIMEOUT);
     }
 
     private static final class TestReactorConnection extends ReactorConnection {

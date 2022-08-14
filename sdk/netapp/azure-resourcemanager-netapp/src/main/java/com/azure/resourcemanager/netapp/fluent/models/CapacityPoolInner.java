@@ -6,19 +6,17 @@ package com.azure.resourcemanager.netapp.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
+import com.azure.core.management.SystemData;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.EncryptionType;
 import com.azure.resourcemanager.netapp.models.QosType;
 import com.azure.resourcemanager.netapp.models.ServiceLevel;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 /** Capacity pool resource. */
 @Fluent
 public final class CapacityPoolInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(CapacityPoolInner.class);
-
     /*
      * A unique read-only string that changes whenever the resource is updated.
      */
@@ -30,6 +28,13 @@ public final class CapacityPoolInner extends Resource {
      */
     @JsonProperty(value = "properties", required = true)
     private PoolProperties innerProperties = new PoolProperties();
+
+    /*
+     * Azure Resource Manager metadata containing createdBy and modifiedBy
+     * information.
+     */
+    @JsonProperty(value = "systemData", access = JsonProperty.Access.WRITE_ONLY)
+    private SystemData systemData;
 
     /**
      * Get the etag property: A unique read-only string that changes whenever the resource is updated.
@@ -47,6 +52,15 @@ public final class CapacityPoolInner extends Resource {
      */
     private PoolProperties innerProperties() {
         return this.innerProperties;
+    }
+
+    /**
+     * Get the systemData property: Azure Resource Manager metadata containing createdBy and modifiedBy information.
+     *
+     * @return the systemData value.
+     */
+    public SystemData systemData() {
+        return this.systemData;
     }
 
     /** {@inheritDoc} */
@@ -73,7 +87,7 @@ public final class CapacityPoolInner extends Resource {
     }
 
     /**
-     * Get the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value
+     * Get the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value
      * must be multiply of 4398046511104).
      *
      * @return the size value.
@@ -83,7 +97,7 @@ public final class CapacityPoolInner extends Resource {
     }
 
     /**
-     * Set the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value
+     * Set the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value
      * must be multiply of 4398046511104).
      *
      * @param size the size value to set.
@@ -130,7 +144,7 @@ public final class CapacityPoolInner extends Resource {
     }
 
     /**
-     * Get the totalThroughputMibps property: Total throughput of pool in Mibps.
+     * Get the totalThroughputMibps property: Total throughput of pool in MiB/s.
      *
      * @return the totalThroughputMibps value.
      */
@@ -139,7 +153,7 @@ public final class CapacityPoolInner extends Resource {
     }
 
     /**
-     * Get the utilizedThroughputMibps property: Utilized throughput of pool in Mibps.
+     * Get the utilizedThroughputMibps property: Utilized throughput of pool in MiB/s.
      *
      * @return the utilizedThroughputMibps value.
      */
@@ -225,7 +239,7 @@ public final class CapacityPoolInner extends Resource {
      */
     public void validate() {
         if (innerProperties() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException(
                         "Missing required property innerProperties in model CapacityPoolInner"));
@@ -233,4 +247,6 @@ public final class CapacityPoolInner extends Resource {
             innerProperties().validate();
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(CapacityPoolInner.class);
 }

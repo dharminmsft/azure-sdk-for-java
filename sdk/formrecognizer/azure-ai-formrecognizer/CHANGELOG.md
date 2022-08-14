@@ -1,14 +1,157 @@
 # Release History
 
-## 4.0.0-beta.2 (Unreleased)
+## 4.0.0-beta.6 (2022-08-10)
 
 ### Features Added
+- Add a constructor to create an instance of `CopyAuthorization` model.
+- Added BinaryData support to document analysis client using `beginAnalyzeDocument(String modelId, BinaryData document, long length)`
+- Added support for V2.1 & V2.0 APIs by adding FormRecognizerClient and FormTrainingClient.
 
 ### Breaking Changes
-
-### Bugs Fixed
+- Renamed `beginCreateComposedModel` method to `beginComposeModel` on DocumentModelAdministrationClient and DocumentModelAdministrationAsyncClient.
+- Renamed `CreateComposedModelOptions` model to `ComposeModelOptions`
+- Renamed `DocumentModelInfo` model to `DocumentModelDetails`
+- Renamed `ModelOperation` model to `ModelOperationDetails`
+- Renamed `ModelOperationInfo` model to `ModelOperationSummary`
+- Renamed `getAccountProperties` method to `getResourceDetails`
+- Renamed `AccountProperties` model to `ResourceDetails`
+- Renamed `state` property on model `DocumentSelectionMark` to `selectionMarkState`
+- Renamed `getValue*` accessor methods on `DocumentField` to `getValueAs*`
+- Renamed `DocTypeInfo` model to `DocumentTypeDetails`
+- Renamed `docTypes` property on `DocumentModelDetails` model to `documentTypes`
+- Removed models `DocumentModelOperationException`, `DocumentModelOperationError` and `DocumentModelOperationInnerError`.
+- Renamed `trainingFilesUrl` to `blobContainerUrl` in `beginBuildModel` method
+- Changed method `beginBuildModel(String, DocumentModelBuildMode, BuildModelOptions)` to `beginBuildModel(String, DocumentModelBuildMode, String, BuildModelOptions)`
+- Removed `prefix` property on model `BuildModelOptions`
 
 ### Other Changes
+#### Dependency Updates
+
+- Upgraded `azure-core` to `1.31.0`.
+- Upgraded `azure-core-http-netty` to `1.12.4`.
+
+## 3.1.13 (2022-07-05)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` to `1.30.0`.
+- Upgraded `azure-core-http-netty` to `1.12.3`.
+
+## 3.1.12 (2022-06-09)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` to `1.29.1`.
+- Upgraded `azure-core-http-netty` to `1.12.2`.
+
+## 4.0.0-beta.5 (2022-06-07)
+
+### Features Added
+- Added support for address type field value.
+- Added support for vertex coordinates with model `Point` to represent polygon vertices in `boundingPolygon` property.
+- Added `paragraphs` property on `AnalyzeResult`.
+- Added a new `DocumentParagraph` model to represent document paragraphs.
+- Added `kind` property on `DocumentPage` to represent the document page kind.
+
+### Breaking Changes
+- Renamed `modelIDs` in method `beginCreateComposedModel` to `componentModelIds`
+- Renamed method `beginCopyModel` to `beginCopyModelTo`
+- Renamed property `boundingBox` in model `BoundingRegion`, `DocumentLine`, `DocumentWord`, and `DocumentSelectionMark`
+to `boundingPolygon`.
+- Removed `entities` property on model `AnalyzeResult`
+- Renamed `code` property on `DocumentLanguage` model to `locale`
+
+### Other Changes
+#### Dependency Updates
+
+- Upgraded `azure-core` to `1.29.1`.
+- Upgraded `azure-core-http-netty` to `1.12.2`.
+
+## 3.1.11 (2022-05-10)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Upgraded `azure-core` from `1.27.0` to version `1.28.0`.
+- Upgraded `azure-core-http-netty` from `1.11.9` to version `1.12.0`.
+
+## 3.1.10 (2022-04-08)
+
+### Other Changes
+#### Dependency Updates
+- Upgraded `azure-core` from `1.26.0` to version `1.27.0`.
+- Upgraded `azure-core-http-netty` from `1.11.8` to version `1.11.9`.
+
+## 3.1.9 (2022-03-08)
+### Bug Fixes
+- Fixed referencing selection mark form element from FormField element.
+
+### Other Changes
+#### Dependency Updates
+- Upgraded `azure-core-http-netty` from `1.11.7` to version `1.11.8`.
+- Upgraded `azure-core` from `1.25.0` to version `1.26.0`.
+
+## 4.0.0-beta.4 (2022-02-10)
+
+### Features Added
+- Added interfaces from `com.azure.core.client.traits` to `DocumentAnalysisClientBuilder`
+  and `DocumentModelAdministrationClientBuilder`
+- Added support for currency type field value.
+- Added support for users to optionally specify tags when building, copying 
+or creating a composed a model using `tags` attribute on `BuildModelOptions`, `CreateComposedModelOptions`
+and `CopyAuthorizationOptions` model.
+- Added `languages` property on `AnalyzeResult`.
+- Added model `DocumentLanguage` that includes information about the detected languages found in a document.
+
+### Breaking Changes
+- Added `DocumentBuildMode` on `beginBuildModel` APIs to support building models with techniques for diverse templates.
+
+## 3.1.8 (2022-02-08)
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.25.0`.
+- Updated `azure-core-http-netty` to `1.11.7`.
+
+## 4.0.0-beta.3 (2022-01-13)
+### Bugs Fixed
+- Fixed confidence value returned on fields.
+
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.24.1`.
+- Updated `azure-core-http-netty` to `1.11.6`.
+
+## 3.1.7 (2022-01-13)
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.24.1`.
+- Updated `azure-core-http-netty` to `1.11.6`.
+
+## 4.0.0-beta.2 (2021-11-10)
+
+### Features Added
+- Update `HttpResponseException` to use azure-core `ResponseError`.
+- Added client validation to check for empty modelId passed by the user for `beginAnalyzeDocument` methods.
+
+### Breaking Changes
+- Rename `DocumentAnalysisException`, `FormRecognizerError`, `InnerError` to 
+`DocumentModelOperationException`, `DocumentModelOperationError`, `DocumentModelOperationInnerError` respectively.
+
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.22.0`.
+- Updated `azure-core-http-netty` to `1.11.2`.
+
+## 3.1.6 (2021-11-10)
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.22.0`.
+- Updated `azure-core-http-netty` to `1.11.2`.
 
 ## 4.0.0-beta.1 (2021-10-07)
 This version of the SDK defaults to the latest supported API version, which currently is 2021-09-30-preview.
@@ -42,6 +185,12 @@ To continue to use Form Recognizer API version 2.1, please use major version 3 o
 #### Dependency Updates
 - Upgraded `azure-core` dependency to 1.21.0
 - Upgraded `azure-identity` dependency to 1.3.7
+
+## 3.1.5 (2021-10-05)
+### Other Changes
+#### Dependency Updates
+- Updated `azure-core` to `1.21.0`.
+- Updated `azure-core-http-netty` to `1.11.1`.
 
 ## 3.1.4 (2021-09-09)
 ### Other Changes

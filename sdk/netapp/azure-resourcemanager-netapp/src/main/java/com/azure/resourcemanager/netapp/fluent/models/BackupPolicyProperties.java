@@ -5,23 +5,13 @@
 package com.azure.resourcemanager.netapp.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.VolumeBackups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Backup policy properties. */
 @Fluent
 public final class BackupPolicyProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(BackupPolicyProperties.class);
-
-    /*
-     * Name of backup policy
-     */
-    @JsonProperty(value = "name", access = JsonProperty.Access.WRITE_ONLY)
-    private String name;
-
     /*
      * Backup Policy Resource ID
      */
@@ -69,15 +59,6 @@ public final class BackupPolicyProperties {
      */
     @JsonProperty(value = "volumeBackups", access = JsonProperty.Access.WRITE_ONLY)
     private List<VolumeBackups> volumeBackups;
-
-    /**
-     * Get the name property: Name of backup policy.
-     *
-     * @return the name value.
-     */
-    public String name() {
-        return this.name;
-    }
 
     /**
      * Get the backupPolicyId property: Backup Policy Resource ID.

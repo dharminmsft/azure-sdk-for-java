@@ -15,7 +15,7 @@ module com.azure.cosmos {
     requires io.netty.resolver;
     requires io.netty.codec.http;
     requires io.netty.codec.http2;
-    requires io.netty.transport.epoll;
+    requires io.netty.transport.classes.epoll;
     requires io.netty.handler.proxy;
     requires reactor.netty.core;
     requires reactor.netty.http;
@@ -33,12 +33,29 @@ module com.azure.cosmos {
     exports com.azure.cosmos.models;
     exports com.azure.cosmos.util;
 
+    // exporting implementation packages specifically for cosmos encryption
+    exports com.azure.cosmos.implementation to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.batch to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.caches to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.feedranges to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.patch to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.query to com.azure.cosmos.encryption;
+
+    exports com.azure.cosmos.implementation.apachecommons.lang to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.apachecommons.lang.tuple to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.guava25.base to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.guava25.collect to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.guava27 to com.azure.cosmos.encryption;
+    exports com.azure.cosmos.implementation.directconnectivity to com.azure.cosmos.encryption;
+
     // exporting some packages specifically for Jackson
     opens com.azure.cosmos to com.fasterxml.jackson.databind, com.azure.spring.data.cosmos;
     opens com.azure.cosmos.implementation to com.fasterxml.jackson.databind, java.logging, com.fasterxml.jackson.module.afterburner;
     opens com.azure.cosmos.implementation.caches to com.fasterxml.jackson.databind;
     opens com.azure.cosmos.implementation.changefeed to com.fasterxml.jackson.databind;
-    opens com.azure.cosmos.implementation.changefeed.implementation to com.fasterxml.jackson.databind;
+    opens com.azure.cosmos.implementation.changefeed.common to com.fasterxml.jackson.databind;
+    opens com.azure.cosmos.implementation.changefeed.incremental to com.fasterxml.jackson.databind;
+    opens com.azure.cosmos.implementation.changefeed.fullfidelity to com.fasterxml.jackson.databind;
     opens com.azure.cosmos.implementation.feedranges to com.fasterxml.jackson.databind;
     opens com.azure.cosmos.implementation.changefeed.exceptions to com.fasterxml.jackson.databind;
     opens com.azure.cosmos.implementation.directconnectivity to com.fasterxml.jackson.databind;

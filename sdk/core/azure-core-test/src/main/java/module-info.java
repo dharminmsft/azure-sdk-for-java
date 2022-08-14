@@ -7,6 +7,7 @@ module com.azure.core.test {
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.params;
     requires reactor.test;
+    requires java.management;
 
     exports com.azure.core.test;
     exports com.azure.core.test.annotation;
@@ -19,6 +20,7 @@ module com.azure.core.test {
         com.azure.core.http.okhttp, org.junit.platform.commons;
 
     opens com.azure.core.test to com.fasterxml.jackson.databind, org.junit.platform.commons;
+    opens com.azure.core.test.models to com.fasterxml.jackson.databind;
     opens com.azure.core.test.annotation to org.junit.platform.commons;
     opens com.azure.core.test.implementation to com.fasterxml.jackson.databind, com.azure.core,
         org.junit.platform.commons;

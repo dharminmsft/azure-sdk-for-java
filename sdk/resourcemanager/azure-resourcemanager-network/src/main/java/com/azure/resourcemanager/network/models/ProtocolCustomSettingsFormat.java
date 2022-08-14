@@ -5,15 +5,11 @@
 package com.azure.resourcemanager.network.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** DDoS custom policy properties. */
 @Fluent
 public final class ProtocolCustomSettingsFormat {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ProtocolCustomSettingsFormat.class);
-
     /*
      * The protocol for which the DDoS protection policy is being customized.
      */
@@ -33,11 +29,10 @@ public final class ProtocolCustomSettingsFormat {
     private String sourceRateOverride;
 
     /*
-     * The customized DDoS protection trigger rate sensitivity degrees. High:
-     * Trigger rate set with most sensitivity w.r.t. normal traffic. Default:
-     * Trigger rate set with moderate sensitivity w.r.t. normal traffic. Low:
-     * Trigger rate set with less sensitivity w.r.t. normal traffic. Relaxed:
-     * Trigger rate set with least sensitivity w.r.t. normal traffic.
+     * The customized DDoS protection trigger rate sensitivity degrees. High: Trigger rate set with most sensitivity
+     * w.r.t. normal traffic. Default: Trigger rate set with moderate sensitivity w.r.t. normal traffic. Low: Trigger
+     * rate set with less sensitivity w.r.t. normal traffic. Relaxed: Trigger rate set with least sensitivity w.r.t.
+     * normal traffic.
      */
     @JsonProperty(value = "triggerSensitivityOverride")
     private DdosCustomPolicyTriggerSensitivityOverride triggerSensitivityOverride;

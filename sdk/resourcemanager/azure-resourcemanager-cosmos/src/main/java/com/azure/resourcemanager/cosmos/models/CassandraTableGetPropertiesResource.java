@@ -4,16 +4,12 @@
 
 package com.azure.resourcemanager.cosmos.models;
 
-import com.azure.core.annotation.Immutable;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.azure.core.annotation.Fluent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** The CassandraTableGetPropertiesResource model. */
-@Immutable
+@Fluent
 public final class CassandraTableGetPropertiesResource extends CassandraTableResource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(CassandraTableGetPropertiesResource.class);
-
     /*
      * A system generated property. A unique identifier.
      */

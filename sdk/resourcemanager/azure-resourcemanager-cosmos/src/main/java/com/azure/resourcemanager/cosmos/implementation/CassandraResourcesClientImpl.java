@@ -30,7 +30,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.cosmos.fluent.CassandraResourcesClient;
@@ -48,8 +47,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in CassandraResourcesClient. */
 public final class CassandraResourcesClientImpl implements CassandraResourcesClient {
-    private final ClientLogger logger = new ClientLogger(CassandraResourcesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final CassandraResourcesService service;
 
@@ -354,7 +351,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<CassandraKeyspaceGetResultsInner>> listCassandraKeyspacesSinglePageAsync(
@@ -407,7 +405,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<CassandraKeyspaceGetResultsInner>> listCassandraKeyspacesSinglePageAsync(
@@ -456,7 +455,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<CassandraKeyspaceGetResultsInner> listCassandraKeyspacesAsync(
@@ -473,7 +473,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<CassandraKeyspaceGetResultsInner> listCassandraKeyspacesAsync(
@@ -489,7 +490,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<CassandraKeyspaceGetResultsInner> listCassandraKeyspaces(
@@ -506,7 +508,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra keyspaces and their properties.
+     * @return the List operation response, that contains the Cassandra keyspaces and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<CassandraKeyspaceGetResultsInner> listCassandraKeyspaces(
@@ -523,7 +526,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name.
+     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name along
+     *     with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<CassandraKeyspaceGetResultsInner>> getCassandraKeyspaceWithResponseAsync(
@@ -577,7 +581,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name.
+     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name along
+     *     with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<CassandraKeyspaceGetResultsInner>> getCassandraKeyspaceWithResponseAsync(
@@ -627,20 +632,14 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name.
+     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<CassandraKeyspaceGetResultsInner> getCassandraKeyspaceAsync(
         String resourceGroupName, String accountName, String keyspaceName) {
         return getCassandraKeyspaceWithResponseAsync(resourceGroupName, accountName, keyspaceName)
-            .flatMap(
-                (Response<CassandraKeyspaceGetResultsInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -670,7 +669,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name.
+     * @return the Cassandra keyspaces under an existing Azure Cosmos DB database account with the provided name along
+     *     with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<CassandraKeyspaceGetResultsInner> getCassandraKeyspaceWithResponse(
@@ -688,7 +688,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return an Azure Cosmos DB Cassandra keyspace along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createUpdateCassandraKeyspaceWithResponseAsync(
@@ -755,7 +756,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return an Azure Cosmos DB Cassandra keyspace along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createUpdateCassandraKeyspaceWithResponseAsync(
@@ -819,9 +821,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB Cassandra keyspace.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<CassandraKeyspaceGetResultsInner>, CassandraKeyspaceGetResultsInner>
         beginCreateUpdateCassandraKeyspaceAsync(
             String resourceGroupName,
@@ -838,7 +840,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 CassandraKeyspaceGetResultsInner.class,
                 CassandraKeyspaceGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -852,9 +854,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB Cassandra keyspace.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<CassandraKeyspaceGetResultsInner>, CassandraKeyspaceGetResultsInner>
         beginCreateUpdateCassandraKeyspaceAsync(
             String resourceGroupName,
@@ -886,9 +888,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB Cassandra keyspace.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<CassandraKeyspaceGetResultsInner>, CassandraKeyspaceGetResultsInner>
         beginCreateUpdateCassandraKeyspace(
             String resourceGroupName,
@@ -911,9 +913,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB Cassandra keyspace.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<CassandraKeyspaceGetResultsInner>, CassandraKeyspaceGetResultsInner>
         beginCreateUpdateCassandraKeyspace(
             String resourceGroupName,
@@ -936,7 +938,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return an Azure Cosmos DB Cassandra keyspace on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<CassandraKeyspaceGetResultsInner> createUpdateCassandraKeyspaceAsync(
@@ -961,7 +963,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra keyspace.
+     * @return an Azure Cosmos DB Cassandra keyspace on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<CassandraKeyspaceGetResultsInner> createUpdateCassandraKeyspaceAsync(
@@ -1033,7 +1035,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteCassandraKeyspaceWithResponseAsync(
@@ -1085,7 +1087,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteCassandraKeyspaceWithResponseAsync(
@@ -1133,16 +1135,17 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteCassandraKeyspaceAsync(
         String resourceGroupName, String accountName, String keyspaceName) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             deleteCassandraKeyspaceWithResponseAsync(resourceGroupName, accountName, keyspaceName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -1155,9 +1158,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteCassandraKeyspaceAsync(
         String resourceGroupName, String accountName, String keyspaceName, Context context) {
         context = this.client.mergeContext(context);
@@ -1177,9 +1180,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDeleteCassandraKeyspace(
         String resourceGroupName, String accountName, String keyspaceName) {
         return beginDeleteCassandraKeyspaceAsync(resourceGroupName, accountName, keyspaceName).getSyncPoller();
@@ -1195,9 +1198,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDeleteCassandraKeyspace(
         String resourceGroupName, String accountName, String keyspaceName, Context context) {
         return beginDeleteCassandraKeyspaceAsync(resourceGroupName, accountName, keyspaceName, context).getSyncPoller();
@@ -1212,7 +1215,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteCassandraKeyspaceAsync(String resourceGroupName, String accountName, String keyspaceName) {
@@ -1231,7 +1234,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteCassandraKeyspaceAsync(
@@ -1284,7 +1287,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<ThroughputSettingsGetResultsInner>> getCassandraKeyspaceThroughputWithResponseAsync(
@@ -1340,7 +1343,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<ThroughputSettingsGetResultsInner>> getCassandraKeyspaceThroughputWithResponseAsync(
@@ -1392,20 +1395,13 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> getCassandraKeyspaceThroughputAsync(
         String resourceGroupName, String accountName, String keyspaceName) {
         return getCassandraKeyspaceThroughputWithResponseAsync(resourceGroupName, accountName, keyspaceName)
-            .flatMap(
-                (Response<ThroughputSettingsGetResultsInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1439,7 +1435,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra Keyspace under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<ThroughputSettingsGetResultsInner> getCassandraKeyspaceThroughputWithResponse(
@@ -1459,7 +1455,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> updateCassandraKeyspaceThroughputWithResponseAsync(
@@ -1527,7 +1524,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> updateCassandraKeyspaceThroughputWithResponseAsync(
@@ -1592,9 +1590,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraKeyspaceThroughputAsync(
             String resourceGroupName,
@@ -1611,7 +1609,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -1626,9 +1624,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraKeyspaceThroughputAsync(
             String resourceGroupName,
@@ -1661,9 +1659,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraKeyspaceThroughput(
             String resourceGroupName,
@@ -1687,9 +1685,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraKeyspaceThroughput(
             String resourceGroupName,
@@ -1713,7 +1711,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> updateCassandraKeyspaceThroughputAsync(
@@ -1739,7 +1737,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> updateCassandraKeyspaceThroughputAsync(
@@ -1813,7 +1811,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> migrateCassandraKeyspaceToAutoscaleWithResponseAsync(
@@ -1867,7 +1866,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> migrateCassandraKeyspaceToAutoscaleWithResponseAsync(
@@ -1917,9 +1917,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToAutoscaleAsync(
             String resourceGroupName, String accountName, String keyspaceName) {
@@ -1932,7 +1932,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -1945,9 +1945,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToAutoscaleAsync(
             String resourceGroupName, String accountName, String keyspaceName, Context context) {
@@ -1973,9 +1973,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToAutoscale(String resourceGroupName, String accountName, String keyspaceName) {
         return beginMigrateCassandraKeyspaceToAutoscaleAsync(resourceGroupName, accountName, keyspaceName)
@@ -1992,9 +1992,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToAutoscale(
             String resourceGroupName, String accountName, String keyspaceName, Context context) {
@@ -2011,7 +2011,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> migrateCassandraKeyspaceToAutoscaleAsync(
@@ -2031,7 +2031,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> migrateCassandraKeyspaceToAutoscaleAsync(
@@ -2085,7 +2085,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> migrateCassandraKeyspaceToManualThroughputWithResponseAsync(
@@ -2139,7 +2140,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> migrateCassandraKeyspaceToManualThroughputWithResponseAsync(
@@ -2189,9 +2191,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToManualThroughputAsync(
             String resourceGroupName, String accountName, String keyspaceName) {
@@ -2204,7 +2206,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -2217,9 +2219,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToManualThroughputAsync(
             String resourceGroupName, String accountName, String keyspaceName, Context context) {
@@ -2246,9 +2248,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToManualThroughput(
             String resourceGroupName, String accountName, String keyspaceName) {
@@ -2266,9 +2268,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraKeyspaceToManualThroughput(
             String resourceGroupName, String accountName, String keyspaceName, Context context) {
@@ -2286,7 +2288,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> migrateCassandraKeyspaceToManualThroughputAsync(
@@ -2306,7 +2308,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> migrateCassandraKeyspaceToManualThroughputAsync(
@@ -2362,7 +2364,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<CassandraTableGetResultsInner>> listCassandraTablesSinglePageAsync(
@@ -2420,7 +2423,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties along with {@link
+     *     PagedResponse} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<CassandraTableGetResultsInner>> listCassandraTablesSinglePageAsync(
@@ -2474,7 +2478,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<CassandraTableGetResultsInner> listCassandraTablesAsync(
@@ -2492,7 +2497,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties as paginated
+     *     response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<CassandraTableGetResultsInner> listCassandraTablesAsync(
@@ -2510,7 +2516,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<CassandraTableGetResultsInner> listCassandraTables(
@@ -2528,7 +2535,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the List operation response, that contains the Cassandra tables and their properties.
+     * @return the List operation response, that contains the Cassandra tables and their properties as paginated
+     *     response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<CassandraTableGetResultsInner> listCassandraTables(
@@ -2546,7 +2554,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra table under an existing Azure Cosmos DB database account.
+     * @return the Cassandra table under an existing Azure Cosmos DB database account along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<CassandraTableGetResultsInner>> getCassandraTableWithResponseAsync(
@@ -2605,7 +2614,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra table under an existing Azure Cosmos DB database account.
+     * @return the Cassandra table under an existing Azure Cosmos DB database account along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<CassandraTableGetResultsInner>> getCassandraTableWithResponseAsync(
@@ -2660,20 +2670,14 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra table under an existing Azure Cosmos DB database account.
+     * @return the Cassandra table under an existing Azure Cosmos DB database account on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<CassandraTableGetResultsInner> getCassandraTableAsync(
         String resourceGroupName, String accountName, String keyspaceName, String tableName) {
         return getCassandraTableWithResponseAsync(resourceGroupName, accountName, keyspaceName, tableName)
-            .flatMap(
-                (Response<CassandraTableGetResultsInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -2705,7 +2709,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the Cassandra table under an existing Azure Cosmos DB database account.
+     * @return the Cassandra table under an existing Azure Cosmos DB database account along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<CassandraTableGetResultsInner> getCassandraTableWithResponse(
@@ -2725,7 +2729,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return an Azure Cosmos DB Cassandra table along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createUpdateCassandraTableWithResponseAsync(
@@ -2798,7 +2802,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return an Azure Cosmos DB Cassandra table along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createUpdateCassandraTableWithResponseAsync(
@@ -2868,9 +2872,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB Cassandra table.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<CassandraTableGetResultsInner>, CassandraTableGetResultsInner>
         beginCreateUpdateCassandraTableAsync(
             String resourceGroupName,
@@ -2888,7 +2892,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 CassandraTableGetResultsInner.class,
                 CassandraTableGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -2903,9 +2907,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB Cassandra table.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<CassandraTableGetResultsInner>, CassandraTableGetResultsInner>
         beginCreateUpdateCassandraTableAsync(
             String resourceGroupName,
@@ -2939,9 +2943,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB Cassandra table.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<CassandraTableGetResultsInner>, CassandraTableGetResultsInner>
         beginCreateUpdateCassandraTable(
             String resourceGroupName,
@@ -2966,9 +2970,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB Cassandra table.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<CassandraTableGetResultsInner>, CassandraTableGetResultsInner>
         beginCreateUpdateCassandraTable(
             String resourceGroupName,
@@ -2993,7 +2997,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return an Azure Cosmos DB Cassandra table on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<CassandraTableGetResultsInner> createUpdateCassandraTableAsync(
@@ -3020,7 +3024,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB Cassandra table.
+     * @return an Azure Cosmos DB Cassandra table on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<CassandraTableGetResultsInner> createUpdateCassandraTableAsync(
@@ -3098,7 +3102,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteCassandraTableWithResponseAsync(
@@ -3155,7 +3159,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteCassandraTableWithResponseAsync(
@@ -3208,16 +3212,17 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteCassandraTableAsync(
         String resourceGroupName, String accountName, String keyspaceName, String tableName) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             deleteCassandraTableWithResponseAsync(resourceGroupName, accountName, keyspaceName, tableName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -3231,9 +3236,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteCassandraTableAsync(
         String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
         context = this.client.mergeContext(context);
@@ -3254,9 +3259,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDeleteCassandraTable(
         String resourceGroupName, String accountName, String keyspaceName, String tableName) {
         return beginDeleteCassandraTableAsync(resourceGroupName, accountName, keyspaceName, tableName).getSyncPoller();
@@ -3273,9 +3278,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDeleteCassandraTable(
         String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
         return beginDeleteCassandraTableAsync(resourceGroupName, accountName, keyspaceName, tableName, context)
@@ -3292,7 +3297,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteCassandraTableAsync(
@@ -3313,7 +3318,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteCassandraTableAsync(
@@ -3370,7 +3375,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<ThroughputSettingsGetResultsInner>> getCassandraTableThroughputWithResponseAsync(
@@ -3431,7 +3436,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<ThroughputSettingsGetResultsInner>> getCassandraTableThroughputWithResponseAsync(
@@ -3488,20 +3493,13 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> getCassandraTableThroughputAsync(
         String resourceGroupName, String accountName, String keyspaceName, String tableName) {
         return getCassandraTableThroughputWithResponseAsync(resourceGroupName, accountName, keyspaceName, tableName)
-            .flatMap(
-                (Response<ThroughputSettingsGetResultsInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -3537,7 +3535,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the RUs per second of the Cassandra table under an existing Azure Cosmos DB database account with the
-     *     provided name.
+     *     provided name along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<ThroughputSettingsGetResultsInner> getCassandraTableThroughputWithResponse(
@@ -3559,7 +3557,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> updateCassandraTableThroughputWithResponseAsync(
@@ -3633,7 +3632,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> updateCassandraTableThroughputWithResponseAsync(
@@ -3704,9 +3704,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraTableThroughputAsync(
             String resourceGroupName,
@@ -3724,7 +3724,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -3740,9 +3740,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraTableThroughputAsync(
             String resourceGroupName,
@@ -3777,9 +3777,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraTableThroughput(
             String resourceGroupName,
@@ -3805,9 +3805,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginUpdateCassandraTableThroughput(
             String resourceGroupName,
@@ -3833,7 +3833,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> updateCassandraTableThroughputAsync(
@@ -3861,7 +3861,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> updateCassandraTableThroughputAsync(
@@ -3941,7 +3941,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> migrateCassandraTableToAutoscaleWithResponseAsync(
@@ -4000,7 +4001,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> migrateCassandraTableToAutoscaleWithResponseAsync(
@@ -4055,9 +4057,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToAutoscaleAsync(
             String resourceGroupName, String accountName, String keyspaceName, String tableName) {
@@ -4070,7 +4072,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -4084,9 +4086,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToAutoscaleAsync(
             String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
@@ -4114,9 +4116,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToAutoscale(
             String resourceGroupName, String accountName, String keyspaceName, String tableName) {
@@ -4135,9 +4137,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToAutoscale(
             String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
@@ -4156,7 +4158,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> migrateCassandraTableToAutoscaleAsync(
@@ -4177,7 +4179,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> migrateCassandraTableToAutoscaleAsync(
@@ -4236,7 +4238,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> migrateCassandraTableToManualThroughputWithResponseAsync(
@@ -4295,7 +4298,8 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> migrateCassandraTableToManualThroughputWithResponseAsync(
@@ -4350,9 +4354,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToManualThroughputAsync(
             String resourceGroupName, String accountName, String keyspaceName, String tableName) {
@@ -4366,7 +4370,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
                 this.client.getHttpPipeline(),
                 ThroughputSettingsGetResultsInner.class,
                 ThroughputSettingsGetResultsInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -4380,9 +4384,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link PollerFlux} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToManualThroughputAsync(
             String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
@@ -4410,9 +4414,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToManualThroughput(
             String resourceGroupName, String accountName, String keyspaceName, String tableName) {
@@ -4432,9 +4436,9 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return the {@link SyncPoller} for polling of an Azure Cosmos DB resource throughput.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ThroughputSettingsGetResultsInner>, ThroughputSettingsGetResultsInner>
         beginMigrateCassandraTableToManualThroughput(
             String resourceGroupName, String accountName, String keyspaceName, String tableName, Context context) {
@@ -4453,7 +4457,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ThroughputSettingsGetResultsInner> migrateCassandraTableToManualThroughputAsync(
@@ -4475,7 +4479,7 @@ public final class CassandraResourcesClientImpl implements CassandraResourcesCli
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure Cosmos DB resource throughput.
+     * @return an Azure Cosmos DB resource throughput on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ThroughputSettingsGetResultsInner> migrateCassandraTableToManualThroughputAsync(

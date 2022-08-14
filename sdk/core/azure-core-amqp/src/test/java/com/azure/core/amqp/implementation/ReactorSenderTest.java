@@ -128,6 +128,7 @@ public class ReactorSenderTest {
         when(handler.getLinkCredits()).thenReturn(Flux.just(100));
 
         when(handler.getEndpointStates()).thenReturn(endpointStatePublisher.flux());
+        when(handler.getConnectionId()).thenReturn("connectionId");
         endpointStatePublisher.next(EndpointState.ACTIVE);
 
         when(tokenManager.getAuthorizationResults()).thenReturn(authorizationResults.flux());
@@ -698,8 +699,6 @@ public class ReactorSenderTest {
         }).when(reactorDispatcher).invoke(any(Runnable.class));
 
         doAnswer(invocation -> {
-            System.out.println("Running send timeout work.");
-
             final Runnable argument = invocation.getArgument(0);
             argument.run();
             return null;

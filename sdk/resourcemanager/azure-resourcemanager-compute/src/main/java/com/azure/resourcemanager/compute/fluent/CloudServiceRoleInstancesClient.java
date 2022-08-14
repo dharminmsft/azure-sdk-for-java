@@ -28,12 +28,12 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -43,14 +43,14 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -58,14 +58,14 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginDelete(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -73,15 +73,15 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginDelete(
         String roleInstanceName, String resourceGroupName, String cloudServiceName, Context context);
 
@@ -89,12 +89,12 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Void> deleteAsync(String roleInstanceName, String resourceGroupName, String cloudServiceName);
@@ -103,8 +103,8 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -116,8 +116,8 @@ public interface CloudServiceRoleInstancesClient {
      * Deletes a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
@@ -130,13 +130,14 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param expand The expand expression to apply to the operation. 'UserData' is not supported for cloud services.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a role instance from a cloud service.
+     * @return a role instance from a cloud service along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<RoleInstanceInner>> getWithResponseAsync(
@@ -146,13 +147,13 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param expand The expand expression to apply to the operation. 'UserData' is not supported for cloud services.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a role instance from a cloud service.
+     * @return a role instance from a cloud service on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<RoleInstanceInner> getAsync(
@@ -162,12 +163,12 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a role instance from a cloud service.
+     * @return a role instance from a cloud service on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<RoleInstanceInner> getAsync(String roleInstanceName, String resourceGroupName, String cloudServiceName);
@@ -176,8 +177,8 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -190,14 +191,14 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a role instance from a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param expand The expand expression to apply to the operation. 'UserData' is not supported for cloud services.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a role instance from a cloud service.
+     * @return a role instance from a cloud service along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Response<RoleInstanceInner> getWithResponse(
@@ -211,12 +212,13 @@ public interface CloudServiceRoleInstancesClient {
      * Retrieves information about the run-time state of a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the instance view of the role instance.
+     * @return the instance view of the role instance along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<RoleInstanceViewInner>> getInstanceViewWithResponseAsync(
@@ -226,12 +228,12 @@ public interface CloudServiceRoleInstancesClient {
      * Retrieves information about the run-time state of a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the instance view of the role instance.
+     * @return the instance view of the role instance on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<RoleInstanceViewInner> getInstanceViewAsync(
@@ -241,8 +243,8 @@ public interface CloudServiceRoleInstancesClient {
      * Retrieves information about the run-time state of a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -255,13 +257,13 @@ public interface CloudServiceRoleInstancesClient {
      * Retrieves information about the run-time state of a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the instance view of the role instance.
+     * @return the instance view of the role instance along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Response<RoleInstanceViewInner> getInstanceViewWithResponse(
@@ -271,13 +273,13 @@ public interface CloudServiceRoleInstancesClient {
      * Gets the list of all role instances in a cloud service. Use nextLink property in the response to get the next
      * page of role instances. Do this till nextLink is null to fetch all the role instances.
      *
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param expand The expand expression to apply to the operation. 'UserData' is not supported for cloud services.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the list of all role instances in a cloud service.
+     * @return the list of all role instances in a cloud service as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     PagedFlux<RoleInstanceInner> listAsync(String resourceGroupName, String cloudServiceName, InstanceViewTypes expand);
@@ -286,12 +288,12 @@ public interface CloudServiceRoleInstancesClient {
      * Gets the list of all role instances in a cloud service. Use nextLink property in the response to get the next
      * page of role instances. Do this till nextLink is null to fetch all the role instances.
      *
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the list of all role instances in a cloud service.
+     * @return the list of all role instances in a cloud service as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     PagedFlux<RoleInstanceInner> listAsync(String resourceGroupName, String cloudServiceName);
@@ -300,12 +302,12 @@ public interface CloudServiceRoleInstancesClient {
      * Gets the list of all role instances in a cloud service. Use nextLink property in the response to get the next
      * page of role instances. Do this till nextLink is null to fetch all the role instances.
      *
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the list of all role instances in a cloud service.
+     * @return the list of all role instances in a cloud service as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     PagedIterable<RoleInstanceInner> list(String resourceGroupName, String cloudServiceName);
@@ -314,14 +316,14 @@ public interface CloudServiceRoleInstancesClient {
      * Gets the list of all role instances in a cloud service. Use nextLink property in the response to get the next
      * page of role instances. Do this till nextLink is null to fetch all the role instances.
      *
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param expand The expand expression to apply to the operation. 'UserData' is not supported for cloud services.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the list of all role instances in a cloud service.
+     * @return the list of all role instances in a cloud service as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     PagedIterable<RoleInstanceInner> list(
@@ -331,12 +333,12 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<Flux<ByteBuffer>>> restartWithResponseAsync(
@@ -346,14 +348,14 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     PollerFlux<PollResult<Void>, Void> beginRestartAsync(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -361,14 +363,14 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginRestart(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -376,15 +378,15 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginRestart(
         String roleInstanceName, String resourceGroupName, String cloudServiceName, Context context);
 
@@ -392,12 +394,12 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Void> restartAsync(String roleInstanceName, String resourceGroupName, String cloudServiceName);
@@ -406,8 +408,8 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -419,8 +421,8 @@ public interface CloudServiceRoleInstancesClient {
      * The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
@@ -434,12 +436,12 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<Flux<ByteBuffer>>> reimageWithResponseAsync(
@@ -450,14 +452,14 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     PollerFlux<PollResult<Void>, Void> beginReimageAsync(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -466,14 +468,14 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginReimage(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -482,15 +484,15 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginReimage(
         String roleInstanceName, String resourceGroupName, String cloudServiceName, Context context);
 
@@ -499,12 +501,12 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Void> reimageAsync(String roleInstanceName, String resourceGroupName, String cloudServiceName);
@@ -514,8 +516,8 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -528,8 +530,8 @@ public interface CloudServiceRoleInstancesClient {
      * worker roles.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
@@ -544,12 +546,12 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Response<Flux<ByteBuffer>>> rebuildWithResponseAsync(
@@ -561,14 +563,14 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     PollerFlux<PollResult<Void>, Void> beginRebuildAsync(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -578,14 +580,14 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginRebuild(
         String roleInstanceName, String resourceGroupName, String cloudServiceName);
 
@@ -595,15 +597,15 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     SyncPoller<PollResult<Void>, Void> beginRebuild(
         String roleInstanceName, String resourceGroupName, String cloudServiceName, Context context);
 
@@ -613,12 +615,12 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<Void> rebuildAsync(String roleInstanceName, String resourceGroupName, String cloudServiceName);
@@ -629,8 +631,8 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -644,8 +646,8 @@ public interface CloudServiceRoleInstancesClient {
      * storage resources, you can use Reimage Role Instance.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.resourcemanager.compute.models.ApiErrorException thrown if the request is rejected by server.
@@ -658,12 +660,12 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a remote desktop file for a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a remote desktop file for a role instance in a cloud service.
+     * @return a remote desktop file for a role instance in a cloud service on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     Mono<StreamResponse> getRemoteDesktopFileWithResponseAsync(
@@ -673,8 +675,8 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a remote desktop file for a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -688,8 +690,8 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a remote desktop file for a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -702,8 +704,8 @@ public interface CloudServiceRoleInstancesClient {
      * Gets a remote desktop file for a role instance in a cloud service.
      *
      * @param roleInstanceName Name of the role instance.
-     * @param resourceGroupName The resourceGroupName parameter.
-     * @param cloudServiceName The cloudServiceName parameter.
+     * @param resourceGroupName Name of the resource group.
+     * @param cloudServiceName Name of the cloud service.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.

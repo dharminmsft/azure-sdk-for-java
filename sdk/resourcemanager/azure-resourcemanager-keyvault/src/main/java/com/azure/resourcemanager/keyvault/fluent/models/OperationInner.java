@@ -5,19 +5,13 @@
 package com.azure.resourcemanager.keyvault.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.annotation.JsonFlatten;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.keyvault.models.OperationDisplay;
 import com.azure.resourcemanager.keyvault.models.ServiceSpecification;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Key Vault REST API operation definition. */
-@JsonFlatten
 @Fluent
-public class OperationInner {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(OperationInner.class);
-
+public final class OperationInner {
     /*
      * Operation name: {provider}/{resource}/{operation}
      */
@@ -37,16 +31,16 @@ public class OperationInner {
     private String origin;
 
     /*
+     * Properties of operation, include metric specifications.
+     */
+    @JsonProperty(value = "properties")
+    private OperationProperties innerOperationProperties;
+
+    /*
      * Property to specify whether the action is a data action.
      */
     @JsonProperty(value = "isDataAction")
     private Boolean isDataAction;
-
-    /*
-     * One property of operation, include metric specifications.
-     */
-    @JsonProperty(value = "properties.serviceSpecification")
-    private ServiceSpecification serviceSpecification;
 
     /**
      * Get the name property: Operation name: {provider}/{resource}/{operation}.
@@ -109,6 +103,15 @@ public class OperationInner {
     }
 
     /**
+     * Get the innerOperationProperties property: Properties of operation, include metric specifications.
+     *
+     * @return the innerOperationProperties value.
+     */
+    private OperationProperties innerOperationProperties() {
+        return this.innerOperationProperties;
+    }
+
+    /**
      * Get the isDataAction property: Property to specify whether the action is a data action.
      *
      * @return the isDataAction value.
@@ -134,7 +137,7 @@ public class OperationInner {
      * @return the serviceSpecification value.
      */
     public ServiceSpecification serviceSpecification() {
-        return this.serviceSpecification;
+        return this.innerOperationProperties() == null ? null : this.innerOperationProperties().serviceSpecification();
     }
 
     /**
@@ -144,7 +147,10 @@ public class OperationInner {
      * @return the OperationInner object itself.
      */
     public OperationInner withServiceSpecification(ServiceSpecification serviceSpecification) {
-        this.serviceSpecification = serviceSpecification;
+        if (this.innerOperationProperties() == null) {
+            this.innerOperationProperties = new OperationProperties();
+        }
+        this.innerOperationProperties().withServiceSpecification(serviceSpecification);
         return this;
     }
 
@@ -157,8 +163,8 @@ public class OperationInner {
         if (display() != null) {
             display().validate();
         }
-        if (serviceSpecification() != null) {
-            serviceSpecification().validate();
+        if (innerOperationProperties() != null) {
+            innerOperationProperties().validate();
         }
     }
 }

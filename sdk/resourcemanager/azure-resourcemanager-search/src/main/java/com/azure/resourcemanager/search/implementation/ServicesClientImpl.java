@@ -31,7 +31,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.resources.fluentcore.collection.InnerSupportsDelete;
@@ -54,8 +53,6 @@ public final class ServicesClientImpl
         InnerSupportsListing<SearchServiceInner>,
         InnerSupportsDelete<Void>,
         ServicesClient {
-    private final ClientLogger logger = new ClientLogger(ServicesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ServicesService service;
 
@@ -219,13 +216,14 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -270,7 +268,7 @@ public final class ServicesClientImpl
                             serviceParam,
                             accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -284,14 +282,15 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -351,15 +350,15 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return the {@link PollerFlux} for polling of describes an Azure Cognitive Search service and its current state.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<SearchServiceInner>, SearchServiceInner> beginCreateOrUpdateAsync(
         String resourceGroupName, String searchServiceName, SearchServiceInner serviceParam, UUID clientRequestId) {
         Mono<Response<Flux<ByteBuffer>>> mono =
@@ -367,7 +366,11 @@ public final class ServicesClientImpl
         return this
             .client
             .<SearchServiceInner, SearchServiceInner>getLroResult(
-                mono, this.client.getHttpPipeline(), SearchServiceInner.class, SearchServiceInner.class, Context.NONE);
+                mono,
+                this.client.getHttpPipeline(),
+                SearchServiceInner.class,
+                SearchServiceInner.class,
+                this.client.getContext());
     }
 
     /**
@@ -381,16 +384,16 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return the {@link PollerFlux} for polling of describes an Azure Cognitive Search service and its current state.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<SearchServiceInner>, SearchServiceInner> beginCreateOrUpdateAsync(
         String resourceGroupName,
         String searchServiceName,
@@ -418,15 +421,15 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return the {@link SyncPoller} for polling of describes an Azure Cognitive Search service and its current state.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<SearchServiceInner>, SearchServiceInner> beginCreateOrUpdate(
         String resourceGroupName, String searchServiceName, SearchServiceInner serviceParam, UUID clientRequestId) {
         return beginCreateOrUpdateAsync(resourceGroupName, searchServiceName, serviceParam, clientRequestId)
@@ -444,16 +447,16 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return the {@link SyncPoller} for polling of describes an Azure Cognitive Search service and its current state.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<SearchServiceInner>, SearchServiceInner> beginCreateOrUpdate(
         String resourceGroupName,
         String searchServiceName,
@@ -475,13 +478,14 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> createOrUpdateAsync(
@@ -502,11 +506,12 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> createOrUpdateAsync(
@@ -528,14 +533,15 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<SearchServiceInner> createOrUpdateAsync(
@@ -560,7 +566,7 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
@@ -585,7 +591,7 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -609,7 +615,7 @@ public final class ServicesClientImpl
      *     characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search
      *     service names must be globally unique since they are part of the service URI
      *     (https://&lt;name&gt;.search.windows.net). You cannot change the service name after the service is created.
-     * @param serviceParam Describes an Azure Cognitive Search service and its current state.
+     * @param serviceParam The definition of the search service to create or update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
@@ -635,13 +641,14 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SearchServiceInner>> updateWithResponseAsync(
@@ -686,7 +693,7 @@ public final class ServicesClientImpl
                             serviceParam,
                             accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -695,14 +702,15 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SearchServiceInner>> updateWithResponseAsync(
@@ -757,26 +765,20 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> updateAsync(
         String resourceGroupName, String searchServiceName, SearchServiceUpdate serviceParam, UUID clientRequestId) {
         return updateWithResponseAsync(resourceGroupName, searchServiceName, serviceParam, clientRequestId)
-            .flatMap(
-                (Response<SearchServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -785,25 +787,19 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> updateAsync(
         String resourceGroupName, String searchServiceName, SearchServiceUpdate serviceParam) {
         final UUID clientRequestId = null;
         return updateWithResponseAsync(resourceGroupName, searchServiceName, serviceParam, clientRequestId)
-            .flatMap(
-                (Response<SearchServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -812,7 +808,7 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -831,14 +827,14 @@ public final class ServicesClientImpl
      * @param resourceGroupName The name of the resource group within the current subscription. You can obtain this
      *     value from the Azure Resource Manager API or the portal.
      * @param searchServiceName The name of the Azure Cognitive Search service to update.
-     * @param serviceParam The parameters used to update an Azure Cognitive Search service.
+     * @param serviceParam The definition of the search service to update.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return describes an Azure Cognitive Search service and its current state.
+     * @return describes an Azure Cognitive Search service and its current state along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<SearchServiceInner> updateWithResponse(
@@ -863,7 +859,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the search service with the given name in the given resource group.
+     * @return the search service with the given name in the given resource group along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<SearchServiceInner>> getByResourceGroupWithResponseAsync(
@@ -902,7 +899,7 @@ public final class ServicesClientImpl
                             this.client.getSubscriptionId(),
                             accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -918,7 +915,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the search service with the given name in the given resource group.
+     * @return the search service with the given name in the given resource group along with {@link Response} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SearchServiceInner>> getByResourceGroupWithResponseAsync(
@@ -969,20 +967,14 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the search service with the given name in the given resource group.
+     * @return the search service with the given name in the given resource group on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> getByResourceGroupAsync(
         String resourceGroupName, String searchServiceName, UUID clientRequestId) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, searchServiceName, clientRequestId)
-            .flatMap(
-                (Response<SearchServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -995,20 +987,14 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the search service with the given name in the given resource group.
+     * @return the search service with the given name in the given resource group on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<SearchServiceInner> getByResourceGroupAsync(String resourceGroupName, String searchServiceName) {
         final UUID clientRequestId = null;
         return getByResourceGroupWithResponseAsync(resourceGroupName, searchServiceName, clientRequestId)
-            .flatMap(
-                (Response<SearchServiceInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1042,7 +1028,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the search service with the given name in the given resource group.
+     * @return the search service with the given name in the given resource group along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<SearchServiceInner> getByResourceGroupWithResponse(
@@ -1063,7 +1049,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Void>> deleteWithResponseAsync(
@@ -1102,7 +1088,7 @@ public final class ServicesClientImpl
                             this.client.getSubscriptionId(),
                             accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1118,7 +1104,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> deleteWithResponseAsync(
@@ -1169,12 +1155,12 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String searchServiceName, UUID clientRequestId) {
         return deleteWithResponseAsync(resourceGroupName, searchServiceName, clientRequestId)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -1187,13 +1173,13 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String searchServiceName) {
         final UUID clientRequestId = null;
         return deleteWithResponseAsync(resourceGroupName, searchServiceName, clientRequestId)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -1226,7 +1212,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Void> deleteWithResponse(
@@ -1244,7 +1230,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listByResourceGroupSinglePageAsync(
@@ -1287,7 +1274,7 @@ public final class ServicesClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1301,7 +1288,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listByResourceGroupSinglePageAsync(
@@ -1354,7 +1342,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<SearchServiceInner> listByResourceGroupAsync(String resourceGroupName, UUID clientRequestId) {
@@ -1371,7 +1359,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<SearchServiceInner> listByResourceGroupAsync(String resourceGroupName) {
@@ -1392,7 +1380,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<SearchServiceInner> listByResourceGroupAsync(
@@ -1410,7 +1398,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group as paginated response with {@link
+     *     PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<SearchServiceInner> listByResourceGroup(String resourceGroupName) {
@@ -1429,7 +1418,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given resource group.
+     * @return a list of all search services in the given resource group as paginated response with {@link
+     *     PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<SearchServiceInner> listByResourceGroup(
@@ -1445,7 +1435,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listSinglePageAsync(UUID clientRequestId) {
@@ -1482,7 +1473,7 @@ public final class ServicesClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1494,7 +1485,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listSinglePageAsync(UUID clientRequestId, Context context) {
@@ -1539,7 +1531,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<SearchServiceInner> listAsync(UUID clientRequestId) {
@@ -1553,7 +1545,7 @@ public final class ServicesClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<SearchServiceInner> listAsync() {
@@ -1572,7 +1564,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<SearchServiceInner> listAsync(UUID clientRequestId, Context context) {
@@ -1586,7 +1578,7 @@ public final class ServicesClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<SearchServiceInner> list() {
@@ -1603,7 +1595,7 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all search services in the given subscription.
+     * @return a list of all search services in the given subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<SearchServiceInner> list(UUID clientRequestId, Context context) {
@@ -1614,19 +1606,18 @@ public final class ServicesClientImpl
      * Checks whether or not the given search service name is available for use. Search service names must be globally
      * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
      *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
+     * @param checkNameAvailabilityInput The resource name and type to check.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return output of check name availability API.
+     * @return output of check name availability API along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<CheckNameAvailabilityOutput>> checkNameAvailabilityWithResponseAsync(
-        String name, UUID clientRequestId) {
+        CheckNameAvailabilityInput checkNameAvailabilityInput, UUID clientRequestId) {
         if (this.client.getEndpoint() == null) {
             return Mono
                 .error(
@@ -1639,12 +1630,15 @@ public final class ServicesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        if (name == null) {
-            return Mono.error(new IllegalArgumentException("Parameter name is required and cannot be null."));
+        if (checkNameAvailabilityInput == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter checkNameAvailabilityInput is required and cannot be null."));
+        } else {
+            checkNameAvailabilityInput.validate();
         }
         final String accept = "application/json";
-        CheckNameAvailabilityInput checkNameAvailabilityInput = new CheckNameAvailabilityInput();
-        checkNameAvailabilityInput.withName(name);
         return FluxUtil
             .withContext(
                 context ->
@@ -1657,27 +1651,26 @@ public final class ServicesClientImpl
                             checkNameAvailabilityInput,
                             accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
      * Checks whether or not the given search service name is available for use. Search service names must be globally
      * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
      *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
+     * @param checkNameAvailabilityInput The resource name and type to check.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return output of check name availability API.
+     * @return output of check name availability API along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<CheckNameAvailabilityOutput>> checkNameAvailabilityWithResponseAsync(
-        String name, UUID clientRequestId, Context context) {
+        CheckNameAvailabilityInput checkNameAvailabilityInput, UUID clientRequestId, Context context) {
         if (this.client.getEndpoint() == null) {
             return Mono
                 .error(
@@ -1690,12 +1683,15 @@ public final class ServicesClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        if (name == null) {
-            return Mono.error(new IllegalArgumentException("Parameter name is required and cannot be null."));
+        if (checkNameAvailabilityInput == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter checkNameAvailabilityInput is required and cannot be null."));
+        } else {
+            checkNameAvailabilityInput.validate();
         }
         final String accept = "application/json";
-        CheckNameAvailabilityInput checkNameAvailabilityInput = new CheckNameAvailabilityInput();
-        checkNameAvailabilityInput.withName(name);
         context = this.client.mergeContext(context);
         return service
             .checkNameAvailability(
@@ -1712,92 +1708,72 @@ public final class ServicesClientImpl
      * Checks whether or not the given search service name is available for use. Search service names must be globally
      * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
      *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
+     * @param checkNameAvailabilityInput The resource name and type to check.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return output of check name availability API.
+     * @return output of check name availability API on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<CheckNameAvailabilityOutput> checkNameAvailabilityAsync(String name, UUID clientRequestId) {
-        return checkNameAvailabilityWithResponseAsync(name, clientRequestId)
-            .flatMap(
-                (Response<CheckNameAvailabilityOutput> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+    public Mono<CheckNameAvailabilityOutput> checkNameAvailabilityAsync(
+        CheckNameAvailabilityInput checkNameAvailabilityInput, UUID clientRequestId) {
+        return checkNameAvailabilityWithResponseAsync(checkNameAvailabilityInput, clientRequestId)
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
      * Checks whether or not the given search service name is available for use. Search service names must be globally
      * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
      *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
+     * @param checkNameAvailabilityInput The resource name and type to check.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ManagementException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return output of check name availability API on successful completion of {@link Mono}.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<CheckNameAvailabilityOutput> checkNameAvailabilityAsync(
+        CheckNameAvailabilityInput checkNameAvailabilityInput) {
+        final UUID clientRequestId = null;
+        return checkNameAvailabilityWithResponseAsync(checkNameAvailabilityInput, clientRequestId)
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
+    }
+
+    /**
+     * Checks whether or not the given search service name is available for use. Search service names must be globally
+     * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
+     *
+     * @param checkNameAvailabilityInput The resource name and type to check.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return output of check name availability API.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<CheckNameAvailabilityOutput> checkNameAvailabilityAsync(String name) {
+    public CheckNameAvailabilityOutput checkNameAvailability(CheckNameAvailabilityInput checkNameAvailabilityInput) {
         final UUID clientRequestId = null;
-        return checkNameAvailabilityWithResponseAsync(name, clientRequestId)
-            .flatMap(
-                (Response<CheckNameAvailabilityOutput> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+        return checkNameAvailabilityAsync(checkNameAvailabilityInput, clientRequestId).block();
     }
 
     /**
      * Checks whether or not the given search service name is available for use. Search service names must be globally
      * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
      *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws ManagementException thrown if the request is rejected by server.
-     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return output of check name availability API.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public CheckNameAvailabilityOutput checkNameAvailability(String name) {
-        final UUID clientRequestId = null;
-        return checkNameAvailabilityAsync(name, clientRequestId).block();
-    }
-
-    /**
-     * Checks whether or not the given search service name is available for use. Search service names must be globally
-     * unique since they are part of the service URI (https://&lt;name&gt;.search.windows.net).
-     *
-     * @param name The search service name to validate. Search service names must only contain lowercase letters, digits
-     *     or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and
-     *     must be between 2 and 60 characters in length.
+     * @param checkNameAvailabilityInput The resource name and type to check.
      * @param clientRequestId A client-generated GUID value that identifies this request. If specified, this will be
      *     included in response information as a way to track the request.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return output of check name availability API.
+     * @return output of check name availability API along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<CheckNameAvailabilityOutput> checkNameAvailabilityWithResponse(
-        String name, UUID clientRequestId, Context context) {
-        return checkNameAvailabilityWithResponseAsync(name, clientRequestId, context).block();
+        CheckNameAvailabilityInput checkNameAvailabilityInput, UUID clientRequestId, Context context) {
+        return checkNameAvailabilityWithResponseAsync(checkNameAvailabilityInput, clientRequestId, context).block();
     }
 
     /**
@@ -1809,7 +1785,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing a list of Azure Cognitive Search services.
+     * @return response containing a list of Azure Cognitive Search services along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listByResourceGroupNextSinglePageAsync(
@@ -1838,7 +1815,7 @@ public final class ServicesClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1851,7 +1828,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing a list of Azure Cognitive Search services.
+     * @return response containing a list of Azure Cognitive Search services along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listByResourceGroupNextSinglePageAsync(
@@ -1889,7 +1867,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing a list of Azure Cognitive Search services.
+     * @return response containing a list of Azure Cognitive Search services along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listBySubscriptionNextSinglePageAsync(
@@ -1918,7 +1897,7 @@ public final class ServicesClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1931,7 +1910,8 @@ public final class ServicesClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return response containing a list of Azure Cognitive Search services.
+     * @return response containing a list of Azure Cognitive Search services along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<SearchServiceInner>> listBySubscriptionNextSinglePageAsync(

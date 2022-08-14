@@ -25,7 +25,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.network.fluent.ExpressRouteConnectionsClient;
@@ -37,8 +36,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in ExpressRouteConnectionsClient. */
 public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConnectionsClient {
-    private final ClientLogger logger = new ClientLogger(ExpressRouteConnectionsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final ExpressRouteConnectionsService service;
 
@@ -139,7 +136,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return expressRouteConnection resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -179,7 +176,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
         } else {
             putExpressRouteConnectionParameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -209,7 +206,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return expressRouteConnection resource along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -250,7 +247,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
         } else {
             putExpressRouteConnectionParameters.validate();
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -276,9 +273,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return the {@link PollerFlux} for polling of expressRouteConnection resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<ExpressRouteConnectionInner>, ExpressRouteConnectionInner> beginCreateOrUpdateAsync(
         String resourceGroupName,
         String expressRouteGatewayName,
@@ -294,7 +291,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                 this.client.getHttpPipeline(),
                 ExpressRouteConnectionInner.class,
                 ExpressRouteConnectionInner.class,
-                Context.NONE);
+                this.client.getContext());
     }
 
     /**
@@ -308,9 +305,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return the {@link PollerFlux} for polling of expressRouteConnection resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<ExpressRouteConnectionInner>, ExpressRouteConnectionInner> beginCreateOrUpdateAsync(
         String resourceGroupName,
         String expressRouteGatewayName,
@@ -345,9 +342,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return the {@link SyncPoller} for polling of expressRouteConnection resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ExpressRouteConnectionInner>, ExpressRouteConnectionInner> beginCreateOrUpdate(
         String resourceGroupName,
         String expressRouteGatewayName,
@@ -369,9 +366,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return the {@link SyncPoller} for polling of expressRouteConnection resource.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<ExpressRouteConnectionInner>, ExpressRouteConnectionInner> beginCreateOrUpdate(
         String resourceGroupName,
         String expressRouteGatewayName,
@@ -397,7 +394,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return expressRouteConnection resource on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ExpressRouteConnectionInner> createOrUpdateAsync(
@@ -422,7 +419,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection resource.
+     * @return expressRouteConnection resource on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<ExpressRouteConnectionInner> createOrUpdateAsync(
@@ -502,7 +499,8 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified ExpressRouteConnection.
+     * @return the specified ExpressRouteConnection along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<ExpressRouteConnectionInner>> getWithResponseAsync(
@@ -531,7 +529,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -559,7 +557,8 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified ExpressRouteConnection.
+     * @return the specified ExpressRouteConnection along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<ExpressRouteConnectionInner>> getWithResponseAsync(
@@ -588,7 +587,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -612,20 +611,13 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified ExpressRouteConnection.
+     * @return the specified ExpressRouteConnection on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ExpressRouteConnectionInner> getAsync(
         String resourceGroupName, String expressRouteGatewayName, String connectionName) {
         return getWithResponseAsync(resourceGroupName, expressRouteGatewayName, connectionName)
-            .flatMap(
-                (Response<ExpressRouteConnectionInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -655,7 +647,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the specified ExpressRouteConnection.
+     * @return the specified ExpressRouteConnection along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<ExpressRouteConnectionInner> getWithResponse(
@@ -672,7 +664,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -701,7 +693,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -729,7 +721,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -758,7 +750,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -782,16 +774,17 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String resourceGroupName, String expressRouteGatewayName, String connectionName) {
         Mono<Response<Flux<ByteBuffer>>> mono =
             deleteWithResponseAsync(resourceGroupName, expressRouteGatewayName, connectionName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -804,9 +797,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String resourceGroupName, String expressRouteGatewayName, String connectionName, Context context) {
         context = this.client.mergeContext(context);
@@ -826,9 +819,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(
         String resourceGroupName, String expressRouteGatewayName, String connectionName) {
         return beginDeleteAsync(resourceGroupName, expressRouteGatewayName, connectionName).getSyncPoller();
@@ -844,9 +837,9 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(
         String resourceGroupName, String expressRouteGatewayName, String connectionName, Context context) {
         return beginDeleteAsync(resourceGroupName, expressRouteGatewayName, connectionName, context).getSyncPoller();
@@ -861,7 +854,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String expressRouteGatewayName, String connectionName) {
@@ -880,7 +873,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(
@@ -930,7 +923,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection list.
+     * @return expressRouteConnection list along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<ExpressRouteConnectionListInner>> listWithResponseAsync(
@@ -956,7 +949,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         return FluxUtil
             .withContext(
@@ -982,7 +975,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection list.
+     * @return expressRouteConnection list along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<ExpressRouteConnectionListInner>> listWithResponseAsync(
@@ -1008,7 +1001,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
-        final String apiVersion = "2021-03-01";
+        final String apiVersion = "2022-01-01";
         final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
@@ -1030,19 +1023,12 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection list.
+     * @return expressRouteConnection list on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<ExpressRouteConnectionListInner> listAsync(String resourceGroupName, String expressRouteGatewayName) {
         return listWithResponseAsync(resourceGroupName, expressRouteGatewayName)
-            .flatMap(
-                (Response<ExpressRouteConnectionListInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -1069,7 +1055,7 @@ public final class ExpressRouteConnectionsClientImpl implements ExpressRouteConn
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return expressRouteConnection list.
+     * @return expressRouteConnection list along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<ExpressRouteConnectionListInner> listWithResponse(

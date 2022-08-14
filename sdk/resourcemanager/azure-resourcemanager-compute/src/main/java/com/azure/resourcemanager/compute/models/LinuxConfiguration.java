@@ -5,8 +5,6 @@
 package com.azure.resourcemanager.compute.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -16,8 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Fluent
 public final class LinuxConfiguration {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(LinuxConfiguration.class);
-
     /*
      * Specifies whether password authentication should be disabled.
      */
@@ -31,18 +27,15 @@ public final class LinuxConfiguration {
     private SshConfiguration ssh;
 
     /*
-     * Indicates whether virtual machine agent should be provisioned on the
-     * virtual machine. <br><br> When this property is not specified in the
-     * request body, default behavior is to set it to true.  This will ensure
-     * that VM Agent is installed on the VM so that extensions can be added to
-     * the VM later.
+     * Indicates whether virtual machine agent should be provisioned on the virtual machine. <br><br> When this
+     * property is not specified in the request body, default behavior is to set it to true.  This will ensure that VM
+     * Agent is installed on the VM so that extensions can be added to the VM later.
      */
     @JsonProperty(value = "provisionVMAgent")
     private Boolean provisionVMAgent;
 
     /*
-     * [Preview Feature] Specifies settings related to VM Guest Patching on
-     * Linux.
+     * [Preview Feature] Specifies settings related to VM Guest Patching on Linux.
      */
     @JsonProperty(value = "patchSettings")
     private LinuxPatchSettings patchSettings;

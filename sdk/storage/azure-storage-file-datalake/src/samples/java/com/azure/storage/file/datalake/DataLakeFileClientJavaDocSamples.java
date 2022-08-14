@@ -4,6 +4,7 @@
 package com.azure.storage.file.datalake;
 
 import com.azure.core.http.rest.Response;
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.Context;
 import com.azure.storage.common.ParallelTransferOptions;
 import com.azure.storage.common.implementation.Constants;
@@ -12,6 +13,7 @@ import com.azure.storage.file.datalake.models.DownloadRetryOptions;
 import com.azure.storage.file.datalake.models.FileQueryDelimitedSerialization;
 import com.azure.storage.file.datalake.models.FileQueryError;
 import com.azure.storage.file.datalake.models.FileQueryJsonSerialization;
+import com.azure.storage.file.datalake.options.DataLakePathDeleteOptions;
 import com.azure.storage.file.datalake.options.FileParallelUploadOptions;
 import com.azure.storage.file.datalake.options.FileQueryOptions;
 import com.azure.storage.file.datalake.models.FileQueryProgress;
@@ -200,6 +202,32 @@ public class DataLakeFileClientJavaDocSamples {
     }
 
     /**
+     * Code snippets for {@link DataLakeFileClient#upload(BinaryData)} and
+     * {@link DataLakeFileClient#upload(BinaryData, boolean)}
+     */
+    public void uploadBinaryDataCodeSnippets() {
+        BinaryData binaryData = BinaryData.fromStream(data, length);
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.upload#BinaryData
+        try {
+            client.upload(binaryData);
+            System.out.println("Upload from file succeeded");
+        } catch (UncheckedIOException ex) {
+            System.err.printf("Failed to upload from file %s%n", ex.getMessage());
+        }
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.upload#BinaryData
+
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.upload#BinaryData-boolean
+        try {
+            boolean overwrite = false;
+            client.upload(binaryData, overwrite);
+            System.out.println("Upload from file succeeded");
+        } catch (UncheckedIOException ex) {
+            System.err.printf("Failed to upload from file %s%n", ex.getMessage());
+        }
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.upload#BinaryData-boolean
+    }
+
+    /**
      * Code snippets for {@link DataLakeFileClient#uploadFromFile(String)},
      * {@link DataLakeFileClient#uploadFromFile(String, boolean)} and
      * {@link DataLakeFileClient#uploadFromFile(String, ParallelTransferOptions, PathHttpHeaders, Map, DataLakeRequestConditions, Duration)}
@@ -265,6 +293,28 @@ public class DataLakeFileClientJavaDocSamples {
             new Context(key1, value1));
         System.out.printf("Append data completed with status %d%n", response.getStatusCode());
         // END: com.azure.storage.file.datalake.DataLakeFileClient.appendWithResponse#InputStream-long-long-byte-String-Duration-Context
+    }
+
+    /**
+     * Code snippets for {@link DataLakeFileClient#append(BinaryData, long)} and
+     * {@link DataLakeFileClient#appendWithResponse(BinaryData, long, byte[], String, Duration, Context)}
+     */
+    public void appendBinaryDataCodeSnippets() {
+        BinaryData binaryData = BinaryData.fromStream(data, length);
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.append#BinaryData-long
+        client.append(binaryData, offset);
+        System.out.println("Append data completed");
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.append#BinaryData-long
+
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.appendWithResponse#BinaryData-long-byte-String-Duration-Context
+        FileRange range = new FileRange(1024, 2048L);
+        DownloadRetryOptions options = new DownloadRetryOptions().setMaxRetryRequests(5);
+        byte[] contentMd5 = new byte[0]; // Replace with valid md5
+
+        Response<Void> response = client.appendWithResponse(binaryData, offset, contentMd5, leaseId, timeout,
+            new Context(key1, value1));
+        System.out.printf("Append data completed with status %d%n", response.getStatusCode());
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.appendWithResponse#BinaryData-long-byte-String-Duration-Context
     }
 
     /**
@@ -409,6 +459,31 @@ public class DataLakeFileClientJavaDocSamples {
         client.scheduleDeletionWithResponse(options, timeout, context);
         System.out.println("File deletion has been scheduled");
         // END: com.azure.storage.file.datalake.DataLakeFileClient.scheduleDeletionWithResponse#FileScheduleDeletionOptions-Duration-Context
+    }
+
+    /**
+     * Code snippets for {@link DataLakeFileClient#deleteIfExists()}  and
+     * {@link DataLakeFileClient#deleteIfExistsWithResponse(DataLakePathDeleteOptions, Duration, Context)}
+     */
+    public void deleteIfExistsCodeSnippets() {
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.deleteIfExists
+        client.deleteIfExists();
+        System.out.println("Delete request completed");
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.deleteIfExists
+
+        // BEGIN: com.azure.storage.file.datalake.DataLakeFileClient.deleteIfExistsWithResponse#DataLakePathDeleteOptions-Duration-Context
+        DataLakeRequestConditions requestConditions = new DataLakeRequestConditions()
+            .setLeaseId(leaseId);
+        DataLakePathDeleteOptions options = new DataLakePathDeleteOptions().setIsRecursive(false)
+            .setRequestConditions(requestConditions);
+
+        Response<Boolean> response = client.deleteIfExistsWithResponse(options, timeout, new Context(key1, value1));
+        if (response.getStatusCode() == 404) {
+            System.out.println("Does not exist.");
+        } else {
+            System.out.printf("Delete completed with status %d%n", response.getStatusCode());
+        }
+        // END: com.azure.storage.file.datalake.DataLakeFileClient.deleteIfExistsWithResponse#DataLakePathDeleteOptions-Duration-Context
     }
 
 }

@@ -4,6 +4,9 @@
 package com.azure.security.keyvault.secrets;
 
 import com.azure.core.annotation.ServiceClientBuilder;
+import com.azure.core.client.traits.ConfigurationTrait;
+import com.azure.core.client.traits.HttpTrait;
+import com.azure.core.client.traits.TokenCredentialTrait;
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.HttpClient;
 import com.azure.core.http.HttpHeader;
@@ -17,13 +20,18 @@ import com.azure.core.http.policy.HttpLogOptions;
 import com.azure.core.http.policy.HttpLoggingPolicy;
 import com.azure.core.http.policy.HttpPipelinePolicy;
 import com.azure.core.http.policy.HttpPolicyProviders;
+import com.azure.core.http.policy.RetryOptions;
 import com.azure.core.http.policy.RetryPolicy;
 import com.azure.core.http.policy.UserAgentPolicy;
 import com.azure.core.util.ClientOptions;
 import com.azure.core.util.Configuration;
 import com.azure.core.util.CoreUtils;
+import com.azure.core.util.HttpClientOptions;
+import com.azure.core.util.builder.ClientBuilderUtil;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.security.keyvault.secrets.implementation.KeyVaultCredentialPolicy;
+import com.azure.security.keyvault.secrets.implementation.KeyVaultErrorCodeStrings;
+import com.azure.security.keyvault.secrets.implementation.SecretClientImpl;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecretIdentifier;
 
 import java.net.MalformedURLException;
@@ -42,27 +50,65 @@ import java.util.Map;
  * <p> The minimal configuration options required by {@link SecretClientBuilder secretClientBuilder} to build
  * {@link SecretAsyncClient} are {@link String vaultUrl} and {@link TokenCredential credential}. </p>
  *
- * {@codesnippet com.azure.security.keyvault.secrets.async.secretclient.construct}
+ * <!-- src_embed com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation -->
+ * <pre>
+ * SecretAsyncClient secretAsyncClient = new SecretClientBuilder&#40;&#41;
+ *     .credential&#40;new DefaultAzureCredentialBuilder&#40;&#41;.build&#40;&#41;&#41;
+ *     .vaultUrl&#40;&quot;&lt;your-key-vault-url&gt;&quot;&#41;
+ *     .httpLogOptions&#40;new HttpLogOptions&#40;&#41;.setLogLevel&#40;HttpLogDetailLevel.BODY_AND_HEADERS&#41;&#41;
+ *     .buildAsyncClient&#40;&#41;;
+ * </pre>
+ * <!-- end com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation -->
  *
  * <p><strong>Samples to construct the sync client</strong></p>
- * {@codesnippet com.azure.security.keyvault.secretclient.sync.construct}
+ * <!-- src_embed com.azure.security.keyvault.SecretClient.instantiation -->
+ * <pre>
+ * SecretClient secretClient = new SecretClientBuilder&#40;&#41;
+ *     .credential&#40;new DefaultAzureCredentialBuilder&#40;&#41;.build&#40;&#41;&#41;
+ *     .vaultUrl&#40;&quot;&lt;your-key-vault-url&gt;&quot;&#41;
+ *     .httpLogOptions&#40;new HttpLogOptions&#40;&#41;.setLogLevel&#40;HttpLogDetailLevel.BODY_AND_HEADERS&#41;&#41;
+ *     .buildClient&#40;&#41;;
+ * </pre>
+ * <!-- end com.azure.security.keyvault.SecretClient.instantiation -->
  *
  * <p>The {@link HttpLogDetailLevel log detail level}, multiple custom {@link HttpLoggingPolicy policies} and custom
  * {@link HttpClient http client} can be optionally configured in the {@link SecretClientBuilder}.</p>
  *
- * {@codesnippet com.azure.security.keyvault.secrets.async.secretclient.withhttpclient.instantiation}
+ * <!-- src_embed com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation.withHttpClient -->
+ * <pre>
+ * SecretAsyncClient secretAsyncClient = new SecretClientBuilder&#40;&#41;
+ *     .httpLogOptions&#40;new HttpLogOptions&#40;&#41;.setLogLevel&#40;HttpLogDetailLevel.BODY_AND_HEADERS&#41;&#41;
+ *     .vaultUrl&#40;&quot;&lt;your-key-vault-url&gt;&quot;&#41;
+ *     .credential&#40;new DefaultAzureCredentialBuilder&#40;&#41;.build&#40;&#41;&#41;
+ *     .httpClient&#40;HttpClient.createDefault&#40;&#41;&#41;
+ *     .buildAsyncClient&#40;&#41;;
+ * </pre>
+ * <!-- end com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation.withHttpClient -->
  *
  * <p>Alternatively, custom {@link HttpPipeline http pipeline} with custom {@link HttpPipelinePolicy} policies and
  * {@link String vaultUrl}
  * can be specified. It provides finer control over the construction of {@link SecretAsyncClient client}</p>
  *
- * {@codesnippet com.azure.security.keyvault.secrets.async.secretclient.pipeline.instantiation}
+ * <!-- src_embed com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation.withPipeline -->
+ * <pre>
+ * HttpPipeline pipeline = new HttpPipelineBuilder&#40;&#41;
+ *     .policies&#40;new KeyVaultCredentialPolicy&#40;credential&#41;, new RetryPolicy&#40;&#41;&#41;
+ *     .build&#40;&#41;;
+ * SecretAsyncClient secretAsyncClient = new SecretClientBuilder&#40;&#41;
+ *     .pipeline&#40;pipeline&#41;
+ *     .vaultUrl&#40;&quot;&lt;your-key-vault-url&gt;&quot;&#41;
+ *     .buildAsyncClient&#40;&#41;;
+ * </pre>
+ * <!-- end com.azure.security.keyvault.secrets.SecretAsyncClient.instantiation.withPipeline -->
  *
  * @see SecretClient
  * @see SecretAsyncClient
  */
 @ServiceClientBuilder(serviceClients = SecretClient.class)
-public final class SecretClientBuilder {
+public final class SecretClientBuilder implements
+    TokenCredentialTrait<SecretClientBuilder>,
+    HttpTrait<SecretClientBuilder>,
+    ConfigurationTrait<SecretClientBuilder> {
     private final ClientLogger logger = new ClientLogger(SecretClientBuilder.class);
     // This is properties file's name.
     private static final String AZURE_KEY_VAULT_SECRETS = "azure-key-vault-secrets.properties";
@@ -73,10 +119,11 @@ public final class SecretClientBuilder {
     private final Map<String, String> properties;
     private TokenCredential credential;
     private HttpPipeline pipeline;
-    private URL vaultUrl;
+    private String vaultUrl;
     private HttpClient httpClient;
     private HttpLogOptions httpLogOptions;
     private RetryPolicy retryPolicy;
+    private RetryOptions retryOptions;
     private Configuration configuration;
     private SecretServiceVersion version;
     private ClientOptions clientOptions;
@@ -85,7 +132,6 @@ public final class SecretClientBuilder {
      * The constructor with defaults.
      */
     public SecretClientBuilder() {
-        retryPolicy = new RetryPolicy();
         httpLogOptions = new HttpLogOptions();
         perCallPolicies = new ArrayList<>();
         perRetryPolicies = new ArrayList<>();
@@ -107,9 +153,11 @@ public final class SecretClientBuilder {
      *
      * @throws IllegalStateException If {@link SecretClientBuilder#credential(TokenCredential)} or
      * {@link SecretClientBuilder#vaultUrl(String)} have not been set.
+     * @throws IllegalStateException If both {@link #retryOptions(RetryOptions)}
+     * and {@link #retryPolicy(RetryPolicy)} have been set.
      */
     public SecretClient buildClient() {
-        return new SecretClient(buildAsyncClient());
+        return new SecretClient(buildInnerClient());
     }
 
     /**
@@ -127,11 +175,18 @@ public final class SecretClientBuilder {
      *
      * @throws IllegalStateException If {@link SecretClientBuilder#credential(TokenCredential)} or
      * {@link SecretClientBuilder#vaultUrl(String)} have not been set.
+     * @throws IllegalStateException If both {@link #retryOptions(RetryOptions)}
+     * and {@link #retryPolicy(RetryPolicy)} have been set.
      */
     public SecretAsyncClient buildAsyncClient() {
+        return new SecretAsyncClient(buildInnerClient());
+    }
+
+
+    private SecretClientImpl buildInnerClient() {
         Configuration buildConfiguration =
             (configuration == null) ? Configuration.getGlobalConfiguration().clone() : configuration;
-        URL buildEndpoint = getBuildEndpoint(buildConfiguration);
+        String buildEndpoint = getBuildEndpoint(buildConfiguration);
 
         if (buildEndpoint == null) {
             throw logger.logExceptionAsError(
@@ -142,7 +197,7 @@ public final class SecretClientBuilder {
         SecretServiceVersion serviceVersion = version != null ? version : SecretServiceVersion.getLatest();
 
         if (pipeline != null) {
-            return new SecretAsyncClient(vaultUrl, pipeline, serviceVersion);
+            return new SecretClientImpl(vaultUrl, pipeline, serviceVersion);
         }
 
         if (credential == null) {
@@ -174,7 +229,7 @@ public final class SecretClientBuilder {
         HttpPolicyProviders.addBeforeRetryPolicies(policies);
 
         // Add retry policy.
-        policies.add(retryPolicy == null ? new RetryPolicy() : retryPolicy);
+        policies.add(ClientBuilderUtil.validateAndGetRetryPolicy(retryPolicy, retryOptions));
 
         policies.add(new KeyVaultCredentialPolicy(credential));
 
@@ -189,7 +244,7 @@ public final class SecretClientBuilder {
             .httpClient(httpClient)
             .build();
 
-        return new SecretAsyncClient(vaultUrl, pipeline, serviceVersion);
+        return new SecretClientImpl(vaultUrl, pipeline, serviceVersion);
     }
 
     /**
@@ -210,7 +265,8 @@ public final class SecretClientBuilder {
         }
 
         try {
-            this.vaultUrl = new URL(vaultUrl);
+            URL url = new URL(vaultUrl);
+            this.vaultUrl = url.toString();
         } catch (MalformedURLException e) {
             throw logger.logExceptionAsError(new IllegalArgumentException(
                 "The Azure Key Vault url is malformed.", e));
@@ -220,14 +276,17 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Sets the credential to use when authenticating HTTP requests.
+     * Sets the {@link TokenCredential} used to authorize requests sent to the service. Refer to the Azure SDK for Java
+     * <a href="https://aka.ms/azsdk/java/docs/identity">identity and authentication</a>
+     * documentation for more details on proper usage of the {@link TokenCredential} type.
      *
-     * @param credential The credential to use for authenticating HTTP requests.
+     * @param credential {@link TokenCredential} used to authorize requests sent to the service.
      *
      * @return The updated {@link SecretClientBuilder} object.
      *
      * @throws NullPointerException If {@code credential} is {@code null}.
      */
+    @Override
     public SecretClientBuilder credential(TokenCredential credential) {
         if (credential == null) {
             throw logger.logExceptionAsError(new NullPointerException("'credential' cannot be null."));
@@ -239,14 +298,21 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Sets the logging configuration for HTTP requests and responses.
+     * Sets the {@link HttpLogOptions logging configuration} to use when sending and receiving requests to and from
+     * the service. If a {@code logLevel} is not provided, default value of {@link HttpLogDetailLevel#NONE} is set.
      *
-     * <p> If logLevel is not provided, default value of {@link HttpLogDetailLevel#NONE} is set.</p>
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
      *
-     * @param logOptions The logging configuration to use when sending and receiving HTTP requests/responses.
-     *
+     * @param logOptions The {@link HttpLogOptions logging configuration} to use when sending and receiving requests to
+     * and from the service.
      * @return The updated {@link SecretClientBuilder} object.
      */
+    @Override
     public SecretClientBuilder httpLogOptions(HttpLogOptions logOptions) {
         httpLogOptions = logOptions;
 
@@ -254,15 +320,21 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Adds a policy to the set of existing policies that are executed after
-     * {@link SecretAsyncClient} or {@link SecretClient} required policies.
+     * Adds a {@link HttpPipelinePolicy pipeline policy} to apply on each request sent.
      *
-     * @param policy The {@link HttpPipelinePolicy policy} to be added.
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
      *
+     * @param policy A {@link HttpPipelinePolicy pipeline policy}.
      * @return The updated {@link SecretClientBuilder} object.
      *
      * @throws NullPointerException If {@code policy} is {@code null}.
      */
+    @Override
     public SecretClientBuilder addPolicy(HttpPipelinePolicy policy) {
         if (policy == null) {
             throw logger.logExceptionAsError(new NullPointerException("'policy' cannot be null."));
@@ -278,12 +350,19 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Sets the HTTP client to use for sending and receiving requests to and from the service.
+     * Sets the {@link HttpClient} to use for sending and receiving requests to and from the service.
      *
-     * @param client The HTTP client to use for requests.
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
      *
+     * @param client The {@link HttpClient} to use for requests.
      * @return The updated {@link SecretClientBuilder} object.
      */
+    @Override
     public SecretClientBuilder httpClient(HttpClient client) {
         this.httpClient = client;
 
@@ -291,15 +370,22 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Sets the HTTP pipeline to use for the service client.
+     * Sets the {@link HttpPipeline} to use for the service client.
      *
-     * If {@code pipeline} is set, all other settings are ignored, aside from
-     * {@link SecretClientBuilder#vaultUrl(String) vaultUrl} to build {@link SecretAsyncClient} or {@link SecretClient}.
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
+     * <p>
+     * The {@link #vaultUrl(String) vaultUrl} is not ignored when
+     * {@code pipeline} is set.
      *
-     * @param pipeline The HTTP pipeline to use for sending service requests and receiving responses.
-     *
+     * @param pipeline {@link HttpPipeline} to use for sending service requests and receiving responses.
      * @return The updated {@link SecretClientBuilder} object.
      */
+    @Override
     public SecretClientBuilder pipeline(HttpPipeline pipeline) {
         this.pipeline = pipeline;
 
@@ -316,6 +402,7 @@ public final class SecretClientBuilder {
      *
      * @return The updated {@link SecretClientBuilder} object.
      */
+    @Override
     public SecretClientBuilder configuration(Configuration configuration) {
         this.configuration = configuration;
 
@@ -341,6 +428,7 @@ public final class SecretClientBuilder {
 
     /**
      * Sets the {@link RetryPolicy} that is used when each request is sent.
+     * Setting this is mutually exclusive with using {@link #retryOptions(RetryOptions)}.
      *
      * The default retry policy will be used in the pipeline, if not provided.
      *
@@ -355,24 +443,52 @@ public final class SecretClientBuilder {
     }
 
     /**
-     * Sets the {@link ClientOptions} which enables various options to be set on the client. For example setting an
-     * {@code applicationId} using {@link ClientOptions#setApplicationId(String)} to configure
-     * the {@link UserAgentPolicy} for telemetry/monitoring purposes.
+     * Sets the {@link RetryOptions} for all the requests made through the client.
      *
-     * <p>More About <a href="https://azure.github.io/azure-sdk/general_azurecore.html#telemetry-policy">Azure Core:
-     * Telemetry policy</a>
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
+     * <p>
+     * Setting this is mutually exclusive with using {@link #retryPolicy(RetryPolicy)}.
      *
-     * @param clientOptions the {@link ClientOptions} to be set on the client.
-     *
+     * @param retryOptions The {@link RetryOptions} to use for all the requests made through the client.
      * @return The updated {@link SecretClientBuilder} object.
      */
+    @Override
+    public SecretClientBuilder retryOptions(RetryOptions retryOptions) {
+        this.retryOptions = retryOptions;
+        return this;
+    }
+
+    /**
+     * Allows for setting common properties such as application ID, headers, proxy configuration, etc. Note that it is
+     * recommended that this method be called with an instance of the {@link HttpClientOptions}
+     * class (a subclass of the {@link ClientOptions} base class). The HttpClientOptions subclass provides more
+     * configuration options suitable for HTTP clients, which is applicable for any class that implements this HttpTrait
+     * interface.
+     *
+     * <p><strong>Note:</strong> It is important to understand the precedence order of the HttpTrait APIs. In
+     * particular, if a {@link HttpPipeline} is specified, this takes precedence over all other APIs in the trait, and
+     * they will be ignored. If no {@link HttpPipeline} is specified, a HTTP pipeline will be constructed internally
+     * based on the settings provided to this trait. Additionally, there may be other APIs in types that implement this
+     * trait that are also ignored if an {@link HttpPipeline} is specified, so please be sure to refer to the
+     * documentation of types that implement this trait to understand the full set of implications.</p>
+     *
+     * @param clientOptions A configured instance of {@link HttpClientOptions}.
+     * @see HttpClientOptions
+     * @return The updated {@link SecretClientBuilder} object.
+     */
+    @Override
     public SecretClientBuilder clientOptions(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
 
         return this;
     }
 
-    private URL getBuildEndpoint(Configuration configuration) {
+    private String getBuildEndpoint(Configuration configuration) {
         if (vaultUrl != null) {
             return vaultUrl;
         }
@@ -383,7 +499,8 @@ public final class SecretClientBuilder {
         }
 
         try {
-            return new URL(configEndpoint);
+            URL url =  new URL(configEndpoint);
+            return url.toString();
         } catch (MalformedURLException ex) {
             return null;
         }

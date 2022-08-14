@@ -51,7 +51,7 @@ To use the [DefaultAzureCredential][DefaultAzureCredential] provider shown below
 <dependency>
     <groupId>com.azure</groupId>
     <artifactId>azure-identity</artifactId>
-    <version>1.1.0</version>
+    <version>1.5.4</version>
 </dependency>
 ```
 
@@ -60,8 +60,7 @@ You will also need to [register a new AAD application][register_aad_app] and [gr
 Set the values of the client ID, tenant ID, and client secret of the AAD application as environment variables: AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
 
 ##### Async client
-<!-- embedme ./src/samples/java/com/azure/ai/anomalydetector/ReadmeSamples.java#L29-L43 -->
-```java
+```java readme-sample-createAnomalyDetectorAsyncClient
 String endpoint = "<anomaly-detector-resource-endpoint>";
 HttpHeaders headers = new HttpHeaders()
     .put("Accept", ContentType.APPLICATION_JSON);
@@ -80,8 +79,7 @@ AnomalyDetectorAsyncClient anomalyDetectorAsyncClient = new AnomalyDetectorClien
 ```
 
 ##### Sync client
-<!-- embedme ./src/samples/java/com/azure/ai/anomalydetector/ReadmeSamples.java#L50-L64 -->
-```java
+```java readme-sample-createAnomalyDetectorClient
 String endpoint = "<anomaly-detector-resource-endpoint>";
 HttpHeaders headers = new HttpHeaders()
     .put("Accept", ContentType.APPLICATION_JSON);

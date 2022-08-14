@@ -40,7 +40,10 @@ public class ChunkedDownloadUtils {
             ? range.getCount() : parallelTransferOptions.getBlockSizeLong();
 
         return downloader.apply(new BlobRange(range.getOffset(), initialChunkSize), requestConditions)
-            .subscribeOn(Schedulers.elastic())
+            // Subscribe on boundElastic instead of elastic as elastic is deprecated and boundElastic provided the same
+            // functionality with the added benefit that it won't infinitely create threads if needed and will instead
+            // queue.
+            .subscribeOn(Schedulers.boundedElastic())
             .flatMap(response -> {
                 /*
                 Either the etag was set and it matches because the download succeeded, so this is a no-op, or there
@@ -75,14 +78,17 @@ public class ChunkedDownloadUtils {
                     .getHeaders().getValue("Content-Range")) == 0) {
 
                     return downloader.apply(new BlobRange(0, 0L), requestConditions)
-                        .subscribeOn(Schedulers.elastic())
+                        // Subscribe on boundElastic instead of elastic as elastic is deprecated and boundElastic
+                        // provided the same functionality with the added benefit that it won't infinitely create
+                        // threads if needed and will instead queue.
+                        .subscribeOn(Schedulers.boundedElastic())
                         .flatMap(response -> {
                             /*
                             Ensure the blob is still 0 length by checking our download was the full length.
                             (200 is for full blob; 206 is partial).
                              */
                             if (response.getStatusCode() != 200) {
-                                Mono.error(new IllegalStateException("Blob was modified mid download. It was "
+                                return Mono.error(new IllegalStateException("Blob was modified mid download. It was "
                                     + "originally 0 bytes and is now larger."));
                             }
                             return Mono.zip(Mono.just(0L), Mono.just(requestConditions), Mono.just(response));
@@ -111,7 +117,7 @@ public class ChunkedDownloadUtils {
 
         // Make the download call.
         return downloader.apply(chunkRange, requestConditions)
-            .subscribeOn(Schedulers.elastic())
+            .subscribeOn(Schedulers.boundedElastic())
             .flatMapMany(returnTransformer);
     }
 
@@ -129,7 +135,7 @@ public class ChunkedDownloadUtils {
     }
 
     public static long extractTotalBlobLength(String contentRange) {
-        return Long.parseLong(contentRange.split("/")[1]);
+        return Long.parseLong(ModelHelper.FORWARD_SLASH.split(contentRange)[1]);
     }
 
     public static int calculateNumBlocks(long dataSize, long blockLength) {

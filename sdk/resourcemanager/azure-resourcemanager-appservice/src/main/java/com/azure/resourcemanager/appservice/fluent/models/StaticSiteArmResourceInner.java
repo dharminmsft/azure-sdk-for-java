@@ -6,15 +6,15 @@ package com.azure.resourcemanager.appservice.fluent.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
-import com.azure.core.util.logging.ClientLogger;
+import com.azure.resourcemanager.appservice.models.EnterpriseGradeCdnStatus;
 import com.azure.resourcemanager.appservice.models.ManagedServiceIdentity;
 import com.azure.resourcemanager.appservice.models.ResponseMessageEnvelopeRemotePrivateEndpointConnection;
 import com.azure.resourcemanager.appservice.models.SkuDescription;
 import com.azure.resourcemanager.appservice.models.StagingEnvironmentPolicy;
 import com.azure.resourcemanager.appservice.models.StaticSiteBuildProperties;
+import com.azure.resourcemanager.appservice.models.StaticSiteLinkedBackend;
 import com.azure.resourcemanager.appservice.models.StaticSiteTemplateOptions;
 import com.azure.resourcemanager.appservice.models.StaticSiteUserProvidedFunctionApp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +22,6 @@ import java.util.Map;
 /** Static Site ARM resource. */
 @Fluent
 public final class StaticSiteArmResourceInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(StaticSiteArmResourceInner.class);
-
     /*
      * Core resource properties
      */
@@ -353,6 +351,15 @@ public final class StaticSiteArmResourceInner extends Resource {
     }
 
     /**
+     * Get the linkedBackends property: Backends linked to the static side.
+     *
+     * @return the linkedBackends value.
+     */
+    public List<StaticSiteLinkedBackend> linkedBackends() {
+        return this.innerProperties() == null ? null : this.innerProperties().linkedBackends();
+    }
+
+    /**
      * Get the provider property: The provider that submitted the last deployment to the primary environment of the
      * static site.
      *
@@ -360,6 +367,71 @@ public final class StaticSiteArmResourceInner extends Resource {
      */
     public String provider() {
         return this.innerProperties() == null ? null : this.innerProperties().provider();
+    }
+
+    /**
+     * Set the provider property: The provider that submitted the last deployment to the primary environment of the
+     * static site.
+     *
+     * @param provider the provider value to set.
+     * @return the StaticSiteArmResourceInner object itself.
+     */
+    public StaticSiteArmResourceInner withProvider(String provider) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new StaticSite();
+        }
+        this.innerProperties().withProvider(provider);
+        return this;
+    }
+
+    /**
+     * Get the enterpriseGradeCdnStatus property: State indicating the status of the enterprise grade CDN serving
+     * traffic to the static web app.
+     *
+     * @return the enterpriseGradeCdnStatus value.
+     */
+    public EnterpriseGradeCdnStatus enterpriseGradeCdnStatus() {
+        return this.innerProperties() == null ? null : this.innerProperties().enterpriseGradeCdnStatus();
+    }
+
+    /**
+     * Set the enterpriseGradeCdnStatus property: State indicating the status of the enterprise grade CDN serving
+     * traffic to the static web app.
+     *
+     * @param enterpriseGradeCdnStatus the enterpriseGradeCdnStatus value to set.
+     * @return the StaticSiteArmResourceInner object itself.
+     */
+    public StaticSiteArmResourceInner withEnterpriseGradeCdnStatus(EnterpriseGradeCdnStatus enterpriseGradeCdnStatus) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new StaticSite();
+        }
+        this.innerProperties().withEnterpriseGradeCdnStatus(enterpriseGradeCdnStatus);
+        return this;
+    }
+
+    /**
+     * Get the publicNetworkAccess property: State indicating whether public traffic are allowed or not for a static web
+     * app. Allowed Values: 'Enabled', 'Disabled' or an empty string.
+     *
+     * @return the publicNetworkAccess value.
+     */
+    public String publicNetworkAccess() {
+        return this.innerProperties() == null ? null : this.innerProperties().publicNetworkAccess();
+    }
+
+    /**
+     * Set the publicNetworkAccess property: State indicating whether public traffic are allowed or not for a static web
+     * app. Allowed Values: 'Enabled', 'Disabled' or an empty string.
+     *
+     * @param publicNetworkAccess the publicNetworkAccess value to set.
+     * @return the StaticSiteArmResourceInner object itself.
+     */
+    public StaticSiteArmResourceInner withPublicNetworkAccess(String publicNetworkAccess) {
+        if (this.innerProperties() == null) {
+            this.innerProperties = new StaticSite();
+        }
+        this.innerProperties().withPublicNetworkAccess(publicNetworkAccess);
+        return this;
     }
 
     /**

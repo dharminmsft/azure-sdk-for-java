@@ -5,15 +5,11 @@
 package com.azure.resourcemanager.network.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** The parameters specifying the resource whose effective routes are being requested. */
 @Fluent
 public final class EffectiveRoutesParameters {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(EffectiveRoutesParameters.class);
-
     /*
      * The resource whose effective routes are being requested.
      */
@@ -21,9 +17,8 @@ public final class EffectiveRoutesParameters {
     private String resourceId;
 
     /*
-     * The type of the specified resource like RouteTable,
-     * ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and
-     * P2SConnection.
+     * The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection,
+     * VpnConnection and P2SConnection.
      */
     @JsonProperty(value = "virtualWanResourceType")
     private String virtualWanResourceType;

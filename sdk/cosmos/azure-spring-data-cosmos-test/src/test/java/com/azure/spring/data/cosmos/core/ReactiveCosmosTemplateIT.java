@@ -12,8 +12,10 @@ import com.azure.cosmos.models.CosmosContainerResponse;
 import com.azure.cosmos.models.PartitionKey;
 import com.azure.cosmos.models.SqlQuerySpec;
 import com.azure.cosmos.models.ThroughputResponse;
+import com.azure.spring.data.cosmos.Constants;
 import com.azure.spring.data.cosmos.CosmosFactory;
 import com.azure.spring.data.cosmos.ReactiveIntegrationTestCollectionManager;
+import com.azure.spring.data.cosmos.common.PropertyLoader;
 import com.azure.spring.data.cosmos.common.ResponseDiagnosticsTestUtils;
 import com.azure.spring.data.cosmos.common.TestConstants;
 import com.azure.spring.data.cosmos.config.CosmosConfig;
@@ -46,10 +48,13 @@ import org.springframework.data.annotation.Persistent;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,8 +67,6 @@ import static com.azure.spring.data.cosmos.common.TestConstants.HOBBIES;
 import static com.azure.spring.data.cosmos.common.TestConstants.LAST_NAME;
 import static com.azure.spring.data.cosmos.common.TestConstants.PASSPORT_IDS_BY_COUNTRY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -150,8 +153,11 @@ public class ReactiveCosmosTemplateIT {
         final Mono<Person> insertMono = cosmosTemplate.insert(TEST_PERSON,
             new PartitionKey(personInfo.getPartitionKeyFieldValue(TEST_PERSON)));
         StepVerifier.create(insertMono)
-                    .expectErrorMatches(ex -> ex instanceof CosmosAccessException && ((CosmosAccessException) ex).getCosmosException() instanceof ConflictException)
+                    .expectErrorMatches(ex -> ex instanceof CosmosAccessException &&
+                        ((CosmosAccessException) ex).getCosmosException() instanceof ConflictException)
                     .verify();
+
+        assertThat(responseDiagnosticsTestUtils.getCosmosDiagnostics()).isNotNull();
     }
 
     @Test
@@ -174,8 +180,8 @@ public class ReactiveCosmosTemplateIT {
             TEST_PERSON.getId(),
             Person.class);
         StepVerifier.create(findById).consumeNextWith(actual -> {
-            Assert.assertThat(actual.getFirstName(), is(equalTo(TEST_PERSON.getFirstName())));
-            Assert.assertThat(actual.getLastName(), is(equalTo(TEST_PERSON.getLastName())));
+            Assert.assertEquals(actual.getFirstName(), TEST_PERSON.getFirstName());
+            Assert.assertEquals(actual.getLastName(), TEST_PERSON.getLastName());
         }).verifyComplete();
 
         assertThat(responseDiagnosticsTestUtils.getCosmosDiagnostics()).isNotNull();
@@ -243,10 +249,11 @@ public class ReactiveCosmosTemplateIT {
     @Test
     public void testInsertShouldFailIfColumnNotAnnotatedWithAutoGenerate() {
         final Person person = new Person(null, FIRST_NAME, LAST_NAME, HOBBIES, ADDRESSES, AGE, PASSPORT_IDS_BY_COUNTRY);
-        Mono<GenIdEntity> entityMono = cosmosTemplate.insert(Person.class.getSimpleName(),
+        Mono<Person> entityMono = cosmosTemplate.insert(Person.class.getSimpleName(),
             person, new PartitionKey(person.getLastName()));
         StepVerifier.create(entityMono).verifyError(CosmosAccessException.class);
 
+        assertThat(responseDiagnosticsTestUtils.getCosmosDiagnostics()).isNotNull();
     }
 
     @Test
@@ -479,6 +486,7 @@ public class ReactiveCosmosTemplateIT {
         StepVerifier.create(findById)
                     .expectError(CosmosAccessException.class)
                     .verify();
+        assertThat(responseDiagnosticsTestUtils.getCosmosDiagnostics()).isNotNull();
     }
 
     @Test
@@ -565,6 +573,56 @@ public class ReactiveCosmosTemplateIT {
         final CosmosAsyncDatabase database = client.getDatabase(configuredThroughputDbName);
         final ThroughputResponse response = database.readThroughput().block();
         assertEquals(expectedRequestUnits, response.getProperties().getManualThroughput());
+    }
+
+    @Test
+    public void queryWithMaxDegreeOfParallelism() throws ClassNotFoundException {
+        final CosmosConfig config = CosmosConfig.builder()
+            .maxDegreeOfParallelism(20)
+            .build();
+        final ReactiveCosmosTemplate maxDegreeOfParallelismCosmosTemplate = createReactiveCosmosTemplate(config, TestConstants.DB_NAME);
+
+        final AuditableEntity entity = new AuditableEntity();
+        entity.setId(UUID.randomUUID().toString());
+
+        auditableRepository.save(entity);
+
+        Criteria equals = Criteria.getInstance(CriteriaType.IS_EQUAL, "id", Collections.singletonList(entity.getId()), Part.IgnoreCaseType.NEVER);
+        final SqlQuerySpec sqlQuerySpec = new FindQuerySpecGenerator().generateCosmos(new CosmosQuery(equals));
+        final Flux<AuditableEntity> flux = maxDegreeOfParallelismCosmosTemplate.runQuery(sqlQuerySpec, AuditableEntity.class, AuditableEntity.class);
+
+        StepVerifier.create(flux).expectNextCount(1).verifyComplete();
+        assertEquals((int) ReflectionTestUtils.getField(maxDegreeOfParallelismCosmosTemplate, "maxDegreeOfParallelism"), 20);
+    }
+
+    @Test
+    public void queryWithQueryMerticsEnabled() throws ClassNotFoundException {
+        final CosmosConfig config = CosmosConfig.builder()
+            .enableQueryMetrics(true)
+            .build();
+        final ReactiveCosmosTemplate queryMetricsEnabledCosmosTemplate = createReactiveCosmosTemplate(config, TestConstants.DB_NAME);
+
+        final AuditableEntity entity = new AuditableEntity();
+        entity.setId(UUID.randomUUID().toString());
+
+        auditableRepository.save(entity);
+
+        Criteria equals = Criteria.getInstance(CriteriaType.IS_EQUAL, "id", Collections.singletonList(entity.getId()), Part.IgnoreCaseType.NEVER);
+        final SqlQuerySpec sqlQuerySpec = new FindQuerySpecGenerator().generateCosmos(new CosmosQuery(equals));
+        final Flux<AuditableEntity> flux = queryMetricsEnabledCosmosTemplate.runQuery(sqlQuerySpec, AuditableEntity.class, AuditableEntity.class);
+
+        StepVerifier.create(flux).expectNextCount(1).verifyComplete();
+        assertEquals((boolean) ReflectionTestUtils.getField(queryMetricsEnabledCosmosTemplate, "queryMetricsEnabled"), true);
+    }
+
+    @Test
+    public void userAgentSpringDataCosmosSuffix() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        //  getUserAgentSuffix method from CosmosClientBuilder
+        Method getUserAgentSuffix = CosmosClientBuilder.class.getDeclaredMethod("getUserAgentSuffix");
+        getUserAgentSuffix.setAccessible(true);
+        String userAgentSuffix = (String) getUserAgentSuffix.invoke(cosmosClientBuilder);
+        assertThat(userAgentSuffix).contains(Constants.USER_AGENT_SUFFIX);
+        assertThat(userAgentSuffix).contains(PropertyLoader.getProjectVersion());
     }
 
     private void deleteDatabaseIfExists(String dbName) {

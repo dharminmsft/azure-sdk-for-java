@@ -9,14 +9,12 @@ import com.azure.identity.implementation.IdentityClientOptions;
 import com.azure.identity.implementation.util.IdentityUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
 
-@RunWith(PowerMockRunner.class)
 public class IdentityUtilTests {
 
+    @Test
     public void testMultiTenantAuthenticationEnabled() throws Exception {
         String currentTenant = "tenant";
         String newTenant = "tenant-new";
@@ -24,7 +22,6 @@ public class IdentityUtilTests {
             .setScopes(Arrays.asList("http://vault.azure.net/.default"))
             .setTenantId(newTenant);
         IdentityClientOptions options = new IdentityClientOptions();
-        options.setAllowMultiTenantAuthentication(true);
 
         Assert.assertEquals(newTenant, IdentityUtil.resolveTenantId(currentTenant, trc, options));
     }
@@ -37,7 +34,7 @@ public class IdentityUtilTests {
             .setScopes(Arrays.asList("http://vault.azure.net/.default"))
             .setTenantId("newTenant");
         IdentityClientOptions options = new IdentityClientOptions();
-        options.setAllowMultiTenantAuthentication(false);
+        options.disableMultiTenantAuthentication();
 
         IdentityUtil.resolveTenantId(currentTenant, trc, options);
     }

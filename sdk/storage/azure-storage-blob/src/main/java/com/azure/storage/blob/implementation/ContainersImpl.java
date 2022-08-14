@@ -19,37 +19,43 @@ import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceInterface;
 import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.annotation.UnexpectedResponseExceptionType;
+import com.azure.core.http.rest.ResponseBase;
 import com.azure.core.http.rest.RestProxy;
 import com.azure.core.http.rest.StreamResponse;
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.Context;
 import com.azure.core.util.DateTimeRfc1123;
-import com.azure.core.util.serializer.CollectionFormat;
-import com.azure.core.util.serializer.JacksonAdapter;
-import com.azure.storage.blob.implementation.models.ContainersAcquireLeaseResponse;
-import com.azure.storage.blob.implementation.models.ContainersBreakLeaseResponse;
-import com.azure.storage.blob.implementation.models.ContainersChangeLeaseResponse;
-import com.azure.storage.blob.implementation.models.ContainersCreateResponse;
-import com.azure.storage.blob.implementation.models.ContainersDeleteResponse;
-import com.azure.storage.blob.implementation.models.ContainersGetAccessPolicyResponse;
-import com.azure.storage.blob.implementation.models.ContainersGetAccountInfoResponse;
-import com.azure.storage.blob.implementation.models.ContainersGetPropertiesResponse;
-import com.azure.storage.blob.implementation.models.ContainersListBlobFlatSegmentResponse;
-import com.azure.storage.blob.implementation.models.ContainersListBlobHierarchySegmentResponse;
-import com.azure.storage.blob.implementation.models.ContainersReleaseLeaseResponse;
-import com.azure.storage.blob.implementation.models.ContainersRenameResponse;
-import com.azure.storage.blob.implementation.models.ContainersRenewLeaseResponse;
-import com.azure.storage.blob.implementation.models.ContainersRestoreResponse;
-import com.azure.storage.blob.implementation.models.ContainersSetAccessPolicyResponse;
-import com.azure.storage.blob.implementation.models.ContainersSetMetadataResponse;
-import com.azure.storage.blob.implementation.models.StorageErrorException;
+import com.azure.storage.blob.implementation.models.ContainersAcquireLeaseHeaders;
+import com.azure.storage.blob.implementation.models.ContainersBreakLeaseHeaders;
+import com.azure.storage.blob.implementation.models.ContainersChangeLeaseHeaders;
+import com.azure.storage.blob.implementation.models.ContainersCreateHeaders;
+import com.azure.storage.blob.implementation.models.ContainersDeleteHeaders;
+import com.azure.storage.blob.implementation.models.ContainersFilterBlobsHeaders;
+import com.azure.storage.blob.implementation.models.ContainersGetAccessPolicyHeaders;
+import com.azure.storage.blob.implementation.models.ContainersGetAccountInfoHeaders;
+import com.azure.storage.blob.implementation.models.ContainersGetPropertiesHeaders;
+import com.azure.storage.blob.implementation.models.ContainersListBlobFlatSegmentHeaders;
+import com.azure.storage.blob.implementation.models.ContainersListBlobHierarchySegmentHeaders;
+import com.azure.storage.blob.implementation.models.ContainersReleaseLeaseHeaders;
+import com.azure.storage.blob.implementation.models.ContainersRenameHeaders;
+import com.azure.storage.blob.implementation.models.ContainersRenewLeaseHeaders;
+import com.azure.storage.blob.implementation.models.ContainersRestoreHeaders;
+import com.azure.storage.blob.implementation.models.ContainersSetAccessPolicyHeaders;
+import com.azure.storage.blob.implementation.models.ContainersSetMetadataHeaders;
+import com.azure.storage.blob.implementation.models.FilterBlobSegment;
+import com.azure.storage.blob.implementation.models.ListBlobsFlatSegmentResponse;
+import com.azure.storage.blob.implementation.models.ListBlobsHierarchySegmentResponse;
 import com.azure.storage.blob.models.BlobContainerEncryptionScope;
 import com.azure.storage.blob.models.BlobSignedIdentifier;
+import com.azure.storage.blob.models.BlobStorageException;
 import com.azure.storage.blob.models.ListBlobsIncludeItem;
 import com.azure.storage.blob.models.PublicAccessType;
 import java.nio.ByteBuffer;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -81,8 +87,8 @@ public final class ContainersImpl {
     public interface ContainersService {
         @Put("/{containerName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersCreateResponse> create(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersCreateHeaders, Void>> create(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -98,8 +104,8 @@ public final class ContainersImpl {
 
         @Get("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersGetPropertiesResponse> getProperties(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersGetPropertiesHeaders, Void>> getProperties(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -112,8 +118,8 @@ public final class ContainersImpl {
 
         @Delete("/{containerName}")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersDeleteResponse> delete(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersDeleteHeaders, Void>> delete(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -128,8 +134,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersSetMetadataResponse> setMetadata(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersSetMetadataHeaders, Void>> setMetadata(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -145,8 +151,8 @@ public final class ContainersImpl {
 
         @Get("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersGetAccessPolicyResponse> getAccessPolicy(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersGetAccessPolicyHeaders, List<BlobSignedIdentifier>>> getAccessPolicy(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -160,8 +166,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersSetAccessPolicyResponse> setAccessPolicy(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersSetAccessPolicyHeaders, Void>> setAccessPolicy(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -179,8 +185,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersRestoreResponse> restore(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersRestoreHeaders, Void>> restore(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -195,8 +201,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersRenameResponse> rename(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersRenameHeaders, Void>> rename(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -211,7 +217,7 @@ public final class ContainersImpl {
 
         @Post("/{containerName}")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
         Mono<StreamResponse> submitBatch(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
@@ -226,10 +232,44 @@ public final class ContainersImpl {
                 @HeaderParam("Accept") String accept,
                 Context context);
 
+        @Post("/{containerName}")
+        @ExpectedResponses({202})
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<StreamResponse> submitBatch(
+                @HostParam("url") String url,
+                @PathParam("containerName") String containerName,
+                @QueryParam("restype") String restype,
+                @QueryParam("comp") String comp,
+                @HeaderParam("Content-Length") long contentLength,
+                @HeaderParam("Content-Type") String multipartContentType,
+                @QueryParam("timeout") Integer timeout,
+                @HeaderParam("x-ms-version") String version,
+                @HeaderParam("x-ms-client-request-id") String requestId,
+                @BodyParam("application/xml") BinaryData body,
+                @HeaderParam("Accept") String accept,
+                Context context);
+
+        @Get("/{containerName}")
+        @ExpectedResponses({200})
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersFilterBlobsHeaders, FilterBlobSegment>> filterBlobs(
+                @HostParam("url") String url,
+                @PathParam("containerName") String containerName,
+                @QueryParam("restype") String restype,
+                @QueryParam("comp") String comp,
+                @QueryParam("timeout") Integer timeout,
+                @HeaderParam("x-ms-version") String version,
+                @HeaderParam("x-ms-client-request-id") String requestId,
+                @QueryParam("where") String where,
+                @QueryParam("marker") String marker,
+                @QueryParam("maxresults") Integer maxresults,
+                @HeaderParam("Accept") String accept,
+                Context context);
+
         @Put("/{containerName}")
         @ExpectedResponses({201})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersAcquireLeaseResponse> acquireLease(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersAcquireLeaseHeaders, Void>> acquireLease(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("comp") String comp,
@@ -247,8 +287,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersReleaseLeaseResponse> releaseLease(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersReleaseLeaseHeaders, Void>> releaseLease(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("comp") String comp,
@@ -265,8 +305,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersRenewLeaseResponse> renewLease(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersRenewLeaseHeaders, Void>> renewLease(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("comp") String comp,
@@ -283,8 +323,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersBreakLeaseResponse> breakLease(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersBreakLeaseHeaders, Void>> breakLease(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("comp") String comp,
@@ -301,8 +341,8 @@ public final class ContainersImpl {
 
         @Put("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersChangeLeaseResponse> changeLease(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersChangeLeaseHeaders, Void>> changeLease(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("comp") String comp,
@@ -320,8 +360,8 @@ public final class ContainersImpl {
 
         @Get("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersListBlobFlatSegmentResponse> listBlobFlatSegment(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersListBlobFlatSegmentHeaders, ListBlobsFlatSegmentResponse>> listBlobFlatSegment(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -338,27 +378,28 @@ public final class ContainersImpl {
 
         @Get("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersListBlobHierarchySegmentResponse> listBlobHierarchySegment(
-                @HostParam("url") String url,
-                @PathParam("containerName") String containerName,
-                @QueryParam("restype") String restype,
-                @QueryParam("comp") String comp,
-                @QueryParam("prefix") String prefix,
-                @QueryParam("delimiter") String delimiter,
-                @QueryParam("marker") String marker,
-                @QueryParam("maxresults") Integer maxresults,
-                @QueryParam("include") String include,
-                @QueryParam("timeout") Integer timeout,
-                @HeaderParam("x-ms-version") String version,
-                @HeaderParam("x-ms-client-request-id") String requestId,
-                @HeaderParam("Accept") String accept,
-                Context context);
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersListBlobHierarchySegmentHeaders, ListBlobsHierarchySegmentResponse>>
+                listBlobHierarchySegment(
+                        @HostParam("url") String url,
+                        @PathParam("containerName") String containerName,
+                        @QueryParam("restype") String restype,
+                        @QueryParam("comp") String comp,
+                        @QueryParam("prefix") String prefix,
+                        @QueryParam("delimiter") String delimiter,
+                        @QueryParam("marker") String marker,
+                        @QueryParam("maxresults") Integer maxresults,
+                        @QueryParam("include") String include,
+                        @QueryParam("timeout") Integer timeout,
+                        @HeaderParam("x-ms-version") String version,
+                        @HeaderParam("x-ms-client-request-id") String requestId,
+                        @HeaderParam("Accept") String accept,
+                        Context context);
 
         @Get("/{containerName}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.blob.models.BlobStorageException.class)
-        Mono<ContainersGetAccountInfoResponse> getAccountInfo(
+        @UnexpectedResponseExceptionType(BlobStorageException.class)
+        Mono<ResponseBase<ContainersGetAccountInfoHeaders, Void>> getAccountInfo(
                 @HostParam("url") String url,
                 @PathParam("containerName") String containerName,
                 @QueryParam("restype") String restype,
@@ -388,12 +429,12 @@ public final class ContainersImpl {
      * @param blobContainerEncryptionScope Parameter group.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersCreateResponse> createWithResponseAsync(
+    public Mono<ResponseBase<ContainersCreateHeaders, Void>> createWithResponseAsync(
             String containerName,
             Integer timeout,
             Map<String, String> metadata,
@@ -442,12 +483,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersGetPropertiesResponse> getPropertiesWithResponseAsync(
+    public Mono<ResponseBase<ContainersGetPropertiesHeaders, Void>> getPropertiesWithResponseAsync(
             String containerName, Integer timeout, String leaseId, String requestId, Context context) {
         final String restype = "container";
         final String accept = "application/xml";
@@ -480,12 +521,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersDeleteResponse> deleteWithResponseAsync(
+    public Mono<ResponseBase<ContainersDeleteHeaders, Void>> deleteWithResponseAsync(
             String containerName,
             Integer timeout,
             String leaseId,
@@ -533,12 +574,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersSetMetadataResponse> setMetadataWithResponseAsync(
+    public Mono<ResponseBase<ContainersSetMetadataHeaders, Void>> setMetadataWithResponseAsync(
             String containerName,
             Integer timeout,
             String leaseId,
@@ -579,13 +620,15 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the permissions for the specified container.
+     * @return the permissions for the specified container along with {@link ResponseBase} on successful completion of
+     *     {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersGetAccessPolicyResponse> getAccessPolicyWithResponseAsync(
-            String containerName, Integer timeout, String leaseId, String requestId, Context context) {
+    public Mono<ResponseBase<ContainersGetAccessPolicyHeaders, List<BlobSignedIdentifier>>>
+            getAccessPolicyWithResponseAsync(
+                    String containerName, Integer timeout, String leaseId, String requestId, Context context) {
         final String restype = "container";
         final String comp = "acl";
         final String accept = "application/xml";
@@ -621,12 +664,12 @@ public final class ContainersImpl {
      * @param containerAcl the acls for the container.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersSetAccessPolicyResponse> setAccessPolicyWithResponseAsync(
+    public Mono<ResponseBase<ContainersSetAccessPolicyHeaders, Void>> setAccessPolicyWithResponseAsync(
             String containerName,
             Integer timeout,
             String leaseId,
@@ -676,12 +719,12 @@ public final class ContainersImpl {
      *     container to restore.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersRestoreResponse> restoreWithResponseAsync(
+    public Mono<ResponseBase<ContainersRestoreHeaders, Void>> restoreWithResponseAsync(
             String containerName,
             Integer timeout,
             String requestId,
@@ -719,12 +762,12 @@ public final class ContainersImpl {
      *     the lease ID must match.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersRenameResponse> renameWithResponseAsync(
+    public Mono<ResponseBase<ContainersRenameHeaders, Void>> renameWithResponseAsync(
             String containerName,
             String sourceContainerName,
             Integer timeout,
@@ -763,9 +806,9 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the response body on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<StreamResponse> submitBatchWithResponseAsync(
@@ -795,6 +838,107 @@ public final class ContainersImpl {
     }
 
     /**
+     * The Batch operation allows multiple API calls to be embedded into a single HTTP request.
+     *
+     * @param containerName The container name.
+     * @param contentLength The length of the request.
+     * @param multipartContentType Required. The value of this header must be multipart/mixed with a batch boundary.
+     *     Example header value: multipart/mixed; boundary=batch_&lt;GUID&gt;.
+     * @param body Initial data.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a
+     *     href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting
+     *     Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the
+     *     analytics logs when storage analytics logging is enabled.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws BlobStorageException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the response body on successful completion of {@link Mono}.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<StreamResponse> submitBatchWithResponseAsync(
+            String containerName,
+            long contentLength,
+            String multipartContentType,
+            BinaryData body,
+            Integer timeout,
+            String requestId,
+            Context context) {
+        final String restype = "container";
+        final String comp = "batch";
+        final String accept = "application/xml";
+        return service.submitBatch(
+                this.client.getUrl(),
+                containerName,
+                restype,
+                comp,
+                contentLength,
+                multipartContentType,
+                timeout,
+                this.client.getVersion(),
+                requestId,
+                body,
+                accept,
+                context);
+    }
+
+    /**
+     * The Filter Blobs operation enables callers to list blobs in a container whose tags match a given search
+     * expression. Filter blobs searches within the given container.
+     *
+     * @param containerName The container name.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a
+     *     href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting
+     *     Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the
+     *     analytics logs when storage analytics logging is enabled.
+     * @param where Filters the results to return only to return only blobs whose tags match the specified expression.
+     * @param marker A string value that identifies the portion of the list of containers to be returned with the next
+     *     listing operation. The operation returns the NextMarker value within the response body if the listing
+     *     operation did not return all containers remaining to be listed with the current page. The NextMarker value
+     *     can be used as the value for the marker parameter in a subsequent call to request the next page of list
+     *     items. The marker value is opaque to the client.
+     * @param maxresults Specifies the maximum number of containers to return. If the request does not specify
+     *     maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the
+     *     listing operation crosses a partition boundary, then the service will return a continuation token for
+     *     retrieving the remainder of the results. For this reason, it is possible that the service will return fewer
+     *     results than specified by maxresults, or than the default of 5000.
+     * @param context The context to associate with this operation.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws BlobStorageException thrown if the request is rejected by server.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the result of a Filter Blobs API call along with {@link ResponseBase} on successful completion of {@link
+     *     Mono}.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<ResponseBase<ContainersFilterBlobsHeaders, FilterBlobSegment>> filterBlobsWithResponseAsync(
+            String containerName,
+            Integer timeout,
+            String requestId,
+            String where,
+            String marker,
+            Integer maxresults,
+            Context context) {
+        final String restype = "container";
+        final String comp = "blobs";
+        final String accept = "application/xml";
+        return service.filterBlobs(
+                this.client.getUrl(),
+                containerName,
+                restype,
+                comp,
+                timeout,
+                this.client.getVersion(),
+                requestId,
+                where,
+                marker,
+                maxresults,
+                accept,
+                context);
+    }
+
+    /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60
      * seconds, or can be infinite.
      *
@@ -816,12 +960,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersAcquireLeaseResponse> acquireLeaseWithResponseAsync(
+    public Mono<ResponseBase<ContainersAcquireLeaseHeaders, Void>> acquireLeaseWithResponseAsync(
             String containerName,
             Integer timeout,
             Integer duration,
@@ -872,12 +1016,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersReleaseLeaseResponse> releaseLeaseWithResponseAsync(
+    public Mono<ResponseBase<ContainersReleaseLeaseHeaders, Void>> releaseLeaseWithResponseAsync(
             String containerName,
             String leaseId,
             Integer timeout,
@@ -926,12 +1070,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersRenewLeaseResponse> renewLeaseWithResponseAsync(
+    public Mono<ResponseBase<ContainersRenewLeaseHeaders, Void>> renewLeaseWithResponseAsync(
             String containerName,
             String leaseId,
             Integer timeout,
@@ -985,12 +1129,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersBreakLeaseResponse> breakLeaseWithResponseAsync(
+    public Mono<ResponseBase<ContainersBreakLeaseHeaders, Void>> breakLeaseWithResponseAsync(
             String containerName,
             Integer timeout,
             Integer breakPeriod,
@@ -1042,12 +1186,12 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersChangeLeaseResponse> changeLeaseWithResponseAsync(
+    public Mono<ResponseBase<ContainersChangeLeaseHeaders, Void>> changeLeaseWithResponseAsync(
             String containerName,
             String leaseId,
             String proposedLeaseId,
@@ -1104,25 +1248,28 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an enumeration of blobs.
+     * @return an enumeration of blobs along with {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersListBlobFlatSegmentResponse> listBlobFlatSegmentWithResponseAsync(
-            String containerName,
-            String prefix,
-            String marker,
-            Integer maxresults,
-            List<ListBlobsIncludeItem> include,
-            Integer timeout,
-            String requestId,
-            Context context) {
+    public Mono<ResponseBase<ContainersListBlobFlatSegmentHeaders, ListBlobsFlatSegmentResponse>>
+            listBlobFlatSegmentWithResponseAsync(
+                    String containerName,
+                    String prefix,
+                    String marker,
+                    Integer maxresults,
+                    List<ListBlobsIncludeItem> include,
+                    Integer timeout,
+                    String requestId,
+                    Context context) {
         final String restype = "container";
         final String comp = "list";
         final String accept = "application/xml";
         String includeConverted =
-                JacksonAdapter.createDefaultSerializerAdapter().serializeList(include, CollectionFormat.CSV);
+                (include == null)
+                        ? null
+                        : include.stream().map(value -> Objects.toString(value, "")).collect(Collectors.joining(","));
         return service.listBlobFlatSegment(
                 this.client.getUrl(),
                 containerName,
@@ -1165,26 +1312,29 @@ public final class ContainersImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an enumeration of blobs.
+     * @return an enumeration of blobs along with {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersListBlobHierarchySegmentResponse> listBlobHierarchySegmentWithResponseAsync(
-            String containerName,
-            String delimiter,
-            String prefix,
-            String marker,
-            Integer maxresults,
-            List<ListBlobsIncludeItem> include,
-            Integer timeout,
-            String requestId,
-            Context context) {
+    public Mono<ResponseBase<ContainersListBlobHierarchySegmentHeaders, ListBlobsHierarchySegmentResponse>>
+            listBlobHierarchySegmentWithResponseAsync(
+                    String containerName,
+                    String delimiter,
+                    String prefix,
+                    String marker,
+                    Integer maxresults,
+                    List<ListBlobsIncludeItem> include,
+                    Integer timeout,
+                    String requestId,
+                    Context context) {
         final String restype = "container";
         final String comp = "list";
         final String accept = "application/xml";
         String includeConverted =
-                JacksonAdapter.createDefaultSerializerAdapter().serializeList(include, CollectionFormat.CSV);
+                (include == null)
+                        ? null
+                        : include.stream().map(value -> Objects.toString(value, "")).collect(Collectors.joining(","));
         return service.listBlobHierarchySegment(
                 this.client.getUrl(),
                 containerName,
@@ -1208,12 +1358,12 @@ public final class ContainersImpl {
      * @param containerName The container name.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws BlobStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ContainersGetAccountInfoResponse> getAccountInfoWithResponseAsync(
+    public Mono<ResponseBase<ContainersGetAccountInfoHeaders, Void>> getAccountInfoWithResponseAsync(
             String containerName, Context context) {
         final String restype = "account";
         final String comp = "properties";

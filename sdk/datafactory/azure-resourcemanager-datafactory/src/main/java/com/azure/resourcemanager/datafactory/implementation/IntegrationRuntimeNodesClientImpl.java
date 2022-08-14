@@ -25,7 +25,6 @@ import com.azure.core.http.rest.RestProxy;
 import com.azure.core.management.exception.ManagementException;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.datafactory.fluent.IntegrationRuntimeNodesClient;
 import com.azure.resourcemanager.datafactory.fluent.models.IntegrationRuntimeNodeIpAddressInner;
 import com.azure.resourcemanager.datafactory.fluent.models.SelfHostedIntegrationRuntimeNodeInner;
@@ -34,8 +33,6 @@ import reactor.core.publisher.Mono;
 
 /** An instance of this class provides access to all the operations defined in IntegrationRuntimeNodesClient. */
 public final class IntegrationRuntimeNodesClientImpl implements IntegrationRuntimeNodesClient {
-    private final ClientLogger logger = new ClientLogger(IntegrationRuntimeNodesClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final IntegrationRuntimeNodesService service;
 
@@ -141,7 +138,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a self-hosted integration runtime node.
+     * @return a self-hosted integration runtime node along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SelfHostedIntegrationRuntimeNodeInner>> getWithResponseAsync(
@@ -202,7 +200,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a self-hosted integration runtime node.
+     * @return a self-hosted integration runtime node along with {@link Response} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SelfHostedIntegrationRuntimeNodeInner>> getWithResponseAsync(
@@ -259,20 +258,13 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a self-hosted integration runtime node.
+     * @return a self-hosted integration runtime node on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<SelfHostedIntegrationRuntimeNodeInner> getAsync(
         String resourceGroupName, String factoryName, String integrationRuntimeName, String nodeName) {
         return getWithResponseAsync(resourceGroupName, factoryName, integrationRuntimeName, nodeName)
-            .flatMap(
-                (Response<SelfHostedIntegrationRuntimeNodeInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -304,7 +296,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a self-hosted integration runtime node.
+     * @return a self-hosted integration runtime node along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<SelfHostedIntegrationRuntimeNodeInner> getWithResponse(
@@ -322,7 +314,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> deleteWithResponseAsync(
@@ -383,7 +375,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Void>> deleteWithResponseAsync(
@@ -440,13 +432,13 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(
         String resourceGroupName, String factoryName, String integrationRuntimeName, String nodeName) {
         return deleteWithResponseAsync(resourceGroupName, factoryName, integrationRuntimeName, nodeName)
-            .flatMap((Response<Void> res) -> Mono.empty());
+            .flatMap(ignored -> Mono.empty());
     }
 
     /**
@@ -476,7 +468,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<Void> deleteWithResponse(
@@ -496,7 +488,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return properties of Self-hosted integration runtime node.
+     * @return properties of Self-hosted integration runtime node along with {@link Response} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SelfHostedIntegrationRuntimeNodeInner>> updateWithResponseAsync(
@@ -571,7 +564,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return properties of Self-hosted integration runtime node.
+     * @return properties of Self-hosted integration runtime node along with {@link Response} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<SelfHostedIntegrationRuntimeNodeInner>> updateWithResponseAsync(
@@ -643,7 +637,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return properties of Self-hosted integration runtime node.
+     * @return properties of Self-hosted integration runtime node on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<SelfHostedIntegrationRuntimeNodeInner> updateAsync(
@@ -654,14 +648,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
         UpdateIntegrationRuntimeNodeRequest updateIntegrationRuntimeNodeRequest) {
         return updateWithResponseAsync(
                 resourceGroupName, factoryName, integrationRuntimeName, nodeName, updateIntegrationRuntimeNodeRequest)
-            .flatMap(
-                (Response<SelfHostedIntegrationRuntimeNodeInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -701,7 +688,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return properties of Self-hosted integration runtime node.
+     * @return properties of Self-hosted integration runtime node along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<SelfHostedIntegrationRuntimeNodeInner> updateWithResponse(
@@ -731,7 +718,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the IP address of self-hosted integration runtime node.
+     * @return the IP address of self-hosted integration runtime node along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<IntegrationRuntimeNodeIpAddressInner>> getIpAddressWithResponseAsync(
@@ -792,7 +780,8 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the IP address of self-hosted integration runtime node.
+     * @return the IP address of self-hosted integration runtime node along with {@link Response} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<IntegrationRuntimeNodeIpAddressInner>> getIpAddressWithResponseAsync(
@@ -849,20 +838,13 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the IP address of self-hosted integration runtime node.
+     * @return the IP address of self-hosted integration runtime node on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<IntegrationRuntimeNodeIpAddressInner> getIpAddressAsync(
         String resourceGroupName, String factoryName, String integrationRuntimeName, String nodeName) {
         return getIpAddressWithResponseAsync(resourceGroupName, factoryName, integrationRuntimeName, nodeName)
-            .flatMap(
-                (Response<IntegrationRuntimeNodeIpAddressInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -894,7 +876,7 @@ public final class IntegrationRuntimeNodesClientImpl implements IntegrationRunti
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the IP address of self-hosted integration runtime node.
+     * @return the IP address of self-hosted integration runtime node along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<IntegrationRuntimeNodeIpAddressInner> getIpAddressWithResponse(

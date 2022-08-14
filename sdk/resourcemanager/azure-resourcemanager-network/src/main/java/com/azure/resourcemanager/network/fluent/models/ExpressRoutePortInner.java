@@ -7,22 +7,24 @@ package com.azure.resourcemanager.network.fluent.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.Resource;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.network.models.ExpressRoutePortsEncapsulation;
 import com.azure.resourcemanager.network.models.ManagedServiceIdentity;
 import com.azure.resourcemanager.network.models.ProvisioningState;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
 
-/** ExpressRoute Port ExpressRoutePort resource definition. */
+/**
+ * ExpressRoute Port
+ *
+ * <p>ExpressRoutePort resource definition.
+ */
 @Fluent
 public final class ExpressRoutePortInner extends Resource {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(ExpressRoutePortInner.class);
-
     /*
-     * ExpressRoutePort Properties ExpressRoutePort properties.
+     * ExpressRoutePort Properties
+     *
+     * ExpressRoutePort properties.
      */
     @JsonProperty(value = "properties")
     private ExpressRoutePortPropertiesFormat innerProperties;
@@ -46,7 +48,9 @@ public final class ExpressRoutePortInner extends Resource {
     private String id;
 
     /**
-     * Get the innerProperties property: ExpressRoutePort Properties ExpressRoutePort properties.
+     * Get the innerProperties property: ExpressRoutePort Properties
+     *
+     * <p>ExpressRoutePort properties.
      *
      * @return the innerProperties value.
      */
@@ -225,8 +229,9 @@ public final class ExpressRoutePortInner extends Resource {
     }
 
     /**
-     * Get the links property: ExpressRouteLink Sub-Resources The set of physical links of the ExpressRoutePort
-     * resource.
+     * Get the links property: ExpressRouteLink Sub-Resources
+     *
+     * <p>The set of physical links of the ExpressRoutePort resource.
      *
      * @return the links value.
      */
@@ -235,8 +240,9 @@ public final class ExpressRoutePortInner extends Resource {
     }
 
     /**
-     * Set the links property: ExpressRouteLink Sub-Resources The set of physical links of the ExpressRoutePort
-     * resource.
+     * Set the links property: ExpressRouteLink Sub-Resources
+     *
+     * <p>The set of physical links of the ExpressRoutePort resource.
      *
      * @param links the links value to set.
      * @return the ExpressRoutePortInner object itself.

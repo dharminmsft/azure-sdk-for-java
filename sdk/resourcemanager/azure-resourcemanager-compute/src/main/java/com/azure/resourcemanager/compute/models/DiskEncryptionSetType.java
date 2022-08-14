@@ -8,7 +8,7 @@ import com.azure.core.util.ExpandableStringEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Collection;
 
-/** Defines values for DiskEncryptionSetType. */
+/** The type of key used to encrypt the data of the disk. */
 public final class DiskEncryptionSetType extends ExpandableStringEnum<DiskEncryptionSetType> {
     /** Static value EncryptionAtRestWithCustomerKey for DiskEncryptionSetType. */
     public static final DiskEncryptionSetType ENCRYPTION_AT_REST_WITH_CUSTOMER_KEY =
@@ -17,6 +17,10 @@ public final class DiskEncryptionSetType extends ExpandableStringEnum<DiskEncryp
     /** Static value EncryptionAtRestWithPlatformAndCustomerKeys for DiskEncryptionSetType. */
     public static final DiskEncryptionSetType ENCRYPTION_AT_REST_WITH_PLATFORM_AND_CUSTOMER_KEYS =
         fromString("EncryptionAtRestWithPlatformAndCustomerKeys");
+
+    /** Static value ConfidentialVmEncryptedWithCustomerKey for DiskEncryptionSetType. */
+    public static final DiskEncryptionSetType CONFIDENTIAL_VM_ENCRYPTED_WITH_CUSTOMER_KEY =
+        fromString("ConfidentialVmEncryptedWithCustomerKey");
 
     /**
      * Creates or finds a DiskEncryptionSetType from its string representation.
@@ -29,7 +33,11 @@ public final class DiskEncryptionSetType extends ExpandableStringEnum<DiskEncryp
         return fromString(name, DiskEncryptionSetType.class);
     }
 
-    /** @return known DiskEncryptionSetType values. */
+    /**
+     * Gets known DiskEncryptionSetType values.
+     *
+     * @return known DiskEncryptionSetType values.
+     */
     public static Collection<DiskEncryptionSetType> values() {
         return values(DiskEncryptionSetType.class);
     }

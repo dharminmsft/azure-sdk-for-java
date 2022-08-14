@@ -5,18 +5,14 @@
 package com.azure.resourcemanager.netapp.fluent.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.ServiceLevel;
 import com.azure.resourcemanager.netapp.models.VolumePatchPropertiesDataProtection;
 import com.azure.resourcemanager.netapp.models.VolumePatchPropertiesExportPolicy;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Patchable volume properties. */
 @Fluent
 public final class VolumePatchProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VolumePatchProperties.class);
-
     /*
      * serviceLevel The service level of the file system
      */
@@ -38,7 +34,8 @@ public final class VolumePatchProperties {
     private VolumePatchPropertiesExportPolicy exportPolicy;
 
     /*
-     * Maximum throughput in Mibps that can be achieved by this volume
+     * Maximum throughput in Mibps that can be achieved by this volume and this
+     * will be accepted as input only for manual qosType volume
      */
     @JsonProperty(value = "throughputMibps")
     private Float throughputMibps;
@@ -69,6 +66,31 @@ public final class VolumePatchProperties {
      */
     @JsonProperty(value = "defaultGroupQuotaInKiBs")
     private Long defaultGroupQuotaInKiBs;
+
+    /*
+     * UNIX permissions for NFS volume accepted in octal 4 digit format. First
+     * digit selects the set user ID(4), set group ID (2) and sticky (1)
+     * attributes. Second digit selects permission for the owner of the file:
+     * read (4), write (2) and execute (1). Third selects permissions for other
+     * users in the same group. the fourth for other users not in the group.
+     * 0755 - gives read/write/execute permissions to owner and read/execute to
+     * group and other users.
+     */
+    @JsonProperty(value = "unixPermissions")
+    private String unixPermissions;
+
+    /*
+     * Specifies whether Cool Access(tiering) is enabled for the volume.
+     */
+    @JsonProperty(value = "coolAccess")
+    private Boolean coolAccess;
+
+    /*
+     * Specifies the number of days after which data that is not accessed by
+     * clients will be tiered.
+     */
+    @JsonProperty(value = "coolnessPeriod")
+    private Integer coolnessPeriod;
 
     /**
      * Get the serviceLevel property: serviceLevel The service level of the file system.
@@ -133,7 +155,8 @@ public final class VolumePatchProperties {
     }
 
     /**
-     * Get the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Get the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @return the throughputMibps value.
      */
@@ -142,7 +165,8 @@ public final class VolumePatchProperties {
     }
 
     /**
-     * Set the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Set the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @param throughputMibps the throughputMibps value to set.
      * @return the VolumePatchProperties object itself.
@@ -235,6 +259,76 @@ public final class VolumePatchProperties {
      */
     public VolumePatchProperties withDefaultGroupQuotaInKiBs(Long defaultGroupQuotaInKiBs) {
         this.defaultGroupQuotaInKiBs = defaultGroupQuotaInKiBs;
+        return this;
+    }
+
+    /**
+     * Get the unixPermissions property: UNIX permissions for NFS volume accepted in octal 4 digit format. First digit
+     * selects the set user ID(4), set group ID (2) and sticky (1) attributes. Second digit selects permission for the
+     * owner of the file: read (4), write (2) and execute (1). Third selects permissions for other users in the same
+     * group. the fourth for other users not in the group. 0755 - gives read/write/execute permissions to owner and
+     * read/execute to group and other users.
+     *
+     * @return the unixPermissions value.
+     */
+    public String unixPermissions() {
+        return this.unixPermissions;
+    }
+
+    /**
+     * Set the unixPermissions property: UNIX permissions for NFS volume accepted in octal 4 digit format. First digit
+     * selects the set user ID(4), set group ID (2) and sticky (1) attributes. Second digit selects permission for the
+     * owner of the file: read (4), write (2) and execute (1). Third selects permissions for other users in the same
+     * group. the fourth for other users not in the group. 0755 - gives read/write/execute permissions to owner and
+     * read/execute to group and other users.
+     *
+     * @param unixPermissions the unixPermissions value to set.
+     * @return the VolumePatchProperties object itself.
+     */
+    public VolumePatchProperties withUnixPermissions(String unixPermissions) {
+        this.unixPermissions = unixPermissions;
+        return this;
+    }
+
+    /**
+     * Get the coolAccess property: Specifies whether Cool Access(tiering) is enabled for the volume.
+     *
+     * @return the coolAccess value.
+     */
+    public Boolean coolAccess() {
+        return this.coolAccess;
+    }
+
+    /**
+     * Set the coolAccess property: Specifies whether Cool Access(tiering) is enabled for the volume.
+     *
+     * @param coolAccess the coolAccess value to set.
+     * @return the VolumePatchProperties object itself.
+     */
+    public VolumePatchProperties withCoolAccess(Boolean coolAccess) {
+        this.coolAccess = coolAccess;
+        return this;
+    }
+
+    /**
+     * Get the coolnessPeriod property: Specifies the number of days after which data that is not accessed by clients
+     * will be tiered.
+     *
+     * @return the coolnessPeriod value.
+     */
+    public Integer coolnessPeriod() {
+        return this.coolnessPeriod;
+    }
+
+    /**
+     * Set the coolnessPeriod property: Specifies the number of days after which data that is not accessed by clients
+     * will be tiered.
+     *
+     * @param coolnessPeriod the coolnessPeriod value to set.
+     * @return the VolumePatchProperties object itself.
+     */
+    public VolumePatchProperties withCoolnessPeriod(Integer coolnessPeriod) {
+        this.coolnessPeriod = coolnessPeriod;
         return this;
     }
 

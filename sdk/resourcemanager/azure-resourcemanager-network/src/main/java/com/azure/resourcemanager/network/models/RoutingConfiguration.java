@@ -6,15 +6,11 @@ package com.azure.resourcemanager.network.models;
 
 import com.azure.core.annotation.Fluent;
 import com.azure.core.management.SubResource;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Routing Configuration indicating the associated and propagated route tables for this connection. */
 @Fluent
 public final class RoutingConfiguration {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(RoutingConfiguration.class);
-
     /*
      * The resource id RouteTable associated with this RoutingConfiguration.
      */
@@ -28,8 +24,7 @@ public final class RoutingConfiguration {
     private PropagatedRouteTable propagatedRouteTables;
 
     /*
-     * List of routes that control routing from VirtualHub into a virtual
-     * network connection.
+     * List of routes that control routing from VirtualHub into a virtual network connection.
      */
     @JsonProperty(value = "vnetRoutes")
     private VnetRoute vnetRoutes;

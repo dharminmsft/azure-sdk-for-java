@@ -1,14 +1,106 @@
 # Release History
 
-## 2.9.0-beta.1 (Unreleased)
+## 2.18.0-beta.1 (Unreleased)
 
 ### Features Added
 
+- Supported setting default `WebApplicationFirewall` when selected `ApplicationGatewayTier` is `ApplicationGatewayTier.WAF_v2`.
+
 ### Breaking Changes
 
-### Bugs Fixed
+- Rename class `ExplicitProxySettings` to `ExplicitProxy`.
 
 ### Other Changes
+
+#### Dependency Updates
+
+- Updated `api-version` to `2022-01-01`.
+
+## 2.17.0 (2022-07-25)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources.
+
+## 2.16.0 (2022-06-24)
+
+### Features Added
+
+- Supported `priority` in `ApplicationGatewayRequestRoutingRule`.
+
+### Breaking Changes
+
+- Renamed class `OrderByOrder` to `FirewallPolicyIdpsQuerySortOrder`.
+- Renamed class `SingleQueryResultDirection` to `FirewallPolicyIdpsSignatureDirection`.
+- Renamed class `SingleQueryResultMode` to `FirewallPolicyIdpsSignatureMode`.
+- Renamed class `SingleQueryResultSeverity` to `FirewallPolicyIdpsSignatureSeverity`.
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated `api-version` to `2021-08-01`.
+
+## 2.15.0 (2022-05-25)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources.
+
+## 2.14.0 (2022-04-11)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources.
+
+## 2.13.0 (2022-03-11)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources.
+
+## 2.12.0 (2022-02-14)
+
+### Features Added
+
+- Supported wildcard hostname in `ApplicationGateway` listener.
+- Supported `withHostnames()` and `hostnames()` in `HasHostname`.
+
+## 2.11.0 (2022-01-17)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources
+
+## 2.10.0 (2021-11-22)
+
+### Features Added
+
+- Supported `getByVirtualMachineScaleSetInstanceIdAsync()` in `NetworkInterfaces`.
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated `api-version` to `2021-05-01`.
+
+## 2.9.0 (2021-10-21)
+
+### Other Changes
+
+#### Dependency Updates
+
+- Updated core dependency from resources
 
 ## 2.8.0 (2021-09-15)
 

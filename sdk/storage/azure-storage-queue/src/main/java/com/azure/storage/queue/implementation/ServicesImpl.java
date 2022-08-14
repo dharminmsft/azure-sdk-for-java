@@ -19,18 +19,21 @@ import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.annotation.UnexpectedResponseExceptionType;
 import com.azure.core.http.rest.PagedResponse;
 import com.azure.core.http.rest.PagedResponseBase;
+import com.azure.core.http.rest.ResponseBase;
 import com.azure.core.http.rest.RestProxy;
 import com.azure.core.util.Context;
 import com.azure.core.util.serializer.CollectionFormat;
 import com.azure.core.util.serializer.JacksonAdapter;
-import com.azure.storage.queue.implementation.models.ServicesGetPropertiesResponse;
-import com.azure.storage.queue.implementation.models.ServicesGetStatisticsResponse;
-import com.azure.storage.queue.implementation.models.ServicesListQueuesSegmentNextResponse;
-import com.azure.storage.queue.implementation.models.ServicesListQueuesSegmentResponse;
-import com.azure.storage.queue.implementation.models.ServicesSetPropertiesResponse;
-import com.azure.storage.queue.implementation.models.StorageErrorException;
+import com.azure.storage.queue.implementation.models.ListQueuesSegmentResponse;
+import com.azure.storage.queue.implementation.models.ServicesGetPropertiesHeaders;
+import com.azure.storage.queue.implementation.models.ServicesGetStatisticsHeaders;
+import com.azure.storage.queue.implementation.models.ServicesListQueuesSegmentHeaders;
+import com.azure.storage.queue.implementation.models.ServicesListQueuesSegmentNextHeaders;
+import com.azure.storage.queue.implementation.models.ServicesSetPropertiesHeaders;
 import com.azure.storage.queue.models.QueueItem;
 import com.azure.storage.queue.models.QueueServiceProperties;
+import com.azure.storage.queue.models.QueueServiceStatistics;
+import com.azure.storage.queue.models.QueueStorageException;
 import java.util.List;
 import reactor.core.publisher.Mono;
 
@@ -61,35 +64,22 @@ public final class ServicesImpl {
     public interface ServicesService {
         @Put("/")
         @ExpectedResponses({202})
-        @UnexpectedResponseExceptionType(com.azure.storage.queue.models.QueueStorageException.class)
-        Mono<ServicesSetPropertiesResponse> setProperties(
+        @UnexpectedResponseExceptionType(QueueStorageException.class)
+        Mono<ResponseBase<ServicesSetPropertiesHeaders, Void>> setProperties(
                 @HostParam("url") String url,
                 @QueryParam("restype") String restype,
                 @QueryParam("comp") String comp,
                 @QueryParam("timeout") Integer timeout,
                 @HeaderParam("x-ms-version") String version,
                 @HeaderParam("x-ms-client-request-id") String requestId,
-                @BodyParam("application/xml") QueueServiceProperties properties,
+                @BodyParam("application/xml") QueueServiceProperties queueServiceProperties,
                 @HeaderParam("Accept") String accept,
                 Context context);
 
         @Get("/")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.queue.models.QueueStorageException.class)
-        Mono<ServicesGetPropertiesResponse> getProperties(
-                @HostParam("url") String url,
-                @QueryParam("restype") String restype,
-                @QueryParam("comp") String comp,
-                @QueryParam("timeout") Integer timeout,
-                @HeaderParam("x-ms-version") String version,
-                @HeaderParam("x-ms-client-request-id") String requestId,
-                @HeaderParam("Accept") String accept,
-                Context context);
-
-        @Get("/")
-        @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.queue.models.QueueStorageException.class)
-        Mono<ServicesGetStatisticsResponse> getStatistics(
+        @UnexpectedResponseExceptionType(QueueStorageException.class)
+        Mono<ResponseBase<ServicesGetPropertiesHeaders, QueueServiceProperties>> getProperties(
                 @HostParam("url") String url,
                 @QueryParam("restype") String restype,
                 @QueryParam("comp") String comp,
@@ -101,8 +91,21 @@ public final class ServicesImpl {
 
         @Get("/")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.queue.models.QueueStorageException.class)
-        Mono<ServicesListQueuesSegmentResponse> listQueuesSegment(
+        @UnexpectedResponseExceptionType(QueueStorageException.class)
+        Mono<ResponseBase<ServicesGetStatisticsHeaders, QueueServiceStatistics>> getStatistics(
+                @HostParam("url") String url,
+                @QueryParam("restype") String restype,
+                @QueryParam("comp") String comp,
+                @QueryParam("timeout") Integer timeout,
+                @HeaderParam("x-ms-version") String version,
+                @HeaderParam("x-ms-client-request-id") String requestId,
+                @HeaderParam("Accept") String accept,
+                Context context);
+
+        @Get("/")
+        @ExpectedResponses({200})
+        @UnexpectedResponseExceptionType(QueueStorageException.class)
+        Mono<ResponseBase<ServicesListQueuesSegmentHeaders, ListQueuesSegmentResponse>> listQueuesSegment(
                 @HostParam("url") String url,
                 @QueryParam("comp") String comp,
                 @QueryParam("prefix") String prefix,
@@ -117,8 +120,8 @@ public final class ServicesImpl {
 
         @Get("{nextLink}")
         @ExpectedResponses({200})
-        @UnexpectedResponseExceptionType(com.azure.storage.queue.models.QueueStorageException.class)
-        Mono<ServicesListQueuesSegmentNextResponse> listQueuesSegmentNext(
+        @UnexpectedResponseExceptionType(QueueStorageException.class)
+        Mono<ResponseBase<ServicesListQueuesSegmentNextHeaders, ListQueuesSegmentResponse>> listQueuesSegmentNext(
                 @PathParam(value = "nextLink", encoded = true) String nextLink,
                 @HostParam("url") String url,
                 @HeaderParam("x-ms-version") String version,
@@ -131,7 +134,7 @@ public final class ServicesImpl {
      * Sets properties for a storage account's Queue service endpoint, including properties for Storage Analytics and
      * CORS (Cross-Origin Resource Sharing) rules.
      *
-     * @param properties The StorageService properties.
+     * @param queueServiceProperties The StorageService properties.
      * @param timeout The The timeout parameter is expressed in seconds. For more information, see &lt;a
      *     href="https://docs.microsoft.com/en-us/rest/api/storageservices/setting-timeouts-for-queue-service-operations&gt;Setting
      *     Timeouts for Queue Service Operations.&lt;/a&gt;.
@@ -139,13 +142,13 @@ public final class ServicesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws QueueStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ServicesSetPropertiesResponse> setPropertiesWithResponseAsync(
-            QueueServiceProperties properties, Integer timeout, String requestId, Context context) {
+    public Mono<ResponseBase<ServicesSetPropertiesHeaders, Void>> setPropertiesWithResponseAsync(
+            QueueServiceProperties queueServiceProperties, Integer timeout, String requestId, Context context) {
         final String restype = "service";
         final String comp = "properties";
         final String accept = "application/xml";
@@ -156,7 +159,7 @@ public final class ServicesImpl {
                 timeout,
                 this.client.getVersion(),
                 requestId,
-                properties,
+                queueServiceProperties,
                 accept,
                 context);
     }
@@ -172,13 +175,14 @@ public final class ServicesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws QueueStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the properties of a storage account's Queue service, including properties for Storage Analytics and CORS
-     *     (Cross-Origin Resource Sharing) rules.
+     *     (Cross-Origin Resource Sharing) rules along with {@link ResponseBase} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ServicesGetPropertiesResponse> getPropertiesWithResponseAsync(
+    public Mono<ResponseBase<ServicesGetPropertiesHeaders, QueueServiceProperties>> getPropertiesWithResponseAsync(
             Integer timeout, String requestId, Context context) {
         final String restype = "service";
         final String comp = "properties";
@@ -198,12 +202,12 @@ public final class ServicesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws QueueStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return statistics for the storage service.
+     * @return stats for the storage service along with {@link ResponseBase} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<ServicesGetStatisticsResponse> getStatisticsWithResponseAsync(
+    public Mono<ResponseBase<ServicesGetStatisticsHeaders, QueueServiceStatistics>> getStatisticsWithResponseAsync(
             Integer timeout, String requestId, Context context) {
         final String restype = "service";
         final String comp = "stats";
@@ -235,9 +239,10 @@ public final class ServicesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws QueueStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the object returned when calling List Queues on a Queue Service.
+     * @return the object returned when calling List Queues on a Queue Service along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<QueueItem>> listQueuesSegmentSinglePageAsync(
@@ -283,9 +288,10 @@ public final class ServicesImpl {
      *     analytics logs when storage analytics logging is enabled.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws StorageErrorException thrown if the request is rejected by server.
+     * @throws QueueStorageException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the object returned when calling List Queues on a Queue Service.
+     * @return the object returned when calling List Queues on a Queue Service along with {@link PagedResponse} on
+     *     successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<PagedResponse<QueueItem>> listQueuesSegmentNextSinglePageAsync(

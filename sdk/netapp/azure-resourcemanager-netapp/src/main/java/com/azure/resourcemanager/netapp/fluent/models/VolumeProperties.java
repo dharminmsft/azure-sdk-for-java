@@ -7,21 +7,21 @@ package com.azure.resourcemanager.netapp.fluent.models;
 import com.azure.core.annotation.Fluent;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.AvsDataStore;
+import com.azure.resourcemanager.netapp.models.EnableSubvolumes;
+import com.azure.resourcemanager.netapp.models.EncryptionKeySource;
 import com.azure.resourcemanager.netapp.models.NetworkFeatures;
+import com.azure.resourcemanager.netapp.models.PlacementKeyValuePairs;
 import com.azure.resourcemanager.netapp.models.SecurityStyle;
 import com.azure.resourcemanager.netapp.models.ServiceLevel;
 import com.azure.resourcemanager.netapp.models.VolumePropertiesDataProtection;
 import com.azure.resourcemanager.netapp.models.VolumePropertiesExportPolicy;
 import com.azure.resourcemanager.netapp.models.VolumeStorageToNetworkProximity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /** Volume properties. */
 @Fluent
 public final class VolumeProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VolumeProperties.class);
-
     /*
      * FileSystem ID Unique FileSystem Identifier.
      */
@@ -179,16 +179,27 @@ public final class VolumeProperties {
     private Boolean smbContinuouslyAvailable;
 
     /*
-     * Maximum throughput in Mibps that can be achieved by this volume
+     * Maximum throughput in MiB/s that can be achieved by this volume and this
+     * will be accepted as input only for manual qosType volume
      */
     @JsonProperty(value = "throughputMibps")
     private Float throughputMibps;
 
     /*
-     * Encryption Key Source. Possible values are: 'Microsoft.NetApp'
+     * Source of key used to encrypt data in volume. Applicable if NetApp
+     * account has encryption.keySource = 'Microsoft.KeyVault'. Possible values
+     * (case-insensitive) are: 'Microsoft.NetApp, Microsoft.KeyVault'
      */
     @JsonProperty(value = "encryptionKeySource")
-    private String encryptionKeySource;
+    private EncryptionKeySource encryptionKeySource;
+
+    /*
+     * The resource ID of private endpoint for KeyVault. It must reside in the
+     * same VNET as the volume. Only applicable if encryptionKeySource =
+     * 'Microsoft.KeyVault'.
+     */
+    @JsonProperty(value = "keyVaultPrivateEndpointResourceId")
+    private String keyVaultPrivateEndpointResourceId;
 
     /*
      * Specifies whether LDAP is enabled or not for a given NFS volume.
@@ -256,6 +267,64 @@ public final class VolumeProperties {
      */
     @JsonProperty(value = "defaultGroupQuotaInKiBs")
     private Long defaultGroupQuotaInKiBs;
+
+    /*
+     * Maximum number of files allowed. Needs a service request in order to be
+     * changed. Only allowed to be changed if volume quota is more than 4TiB.
+     */
+    @JsonProperty(value = "maximumNumberOfFiles", access = JsonProperty.Access.WRITE_ONLY)
+    private Long maximumNumberOfFiles;
+
+    /*
+     * Volume Group Name
+     */
+    @JsonProperty(value = "volumeGroupName", access = JsonProperty.Access.WRITE_ONLY)
+    private String volumeGroupName;
+
+    /*
+     * Pool Resource Id used in case of creating a volume through volume group
+     */
+    @JsonProperty(value = "capacityPoolResourceId")
+    private String capacityPoolResourceId;
+
+    /*
+     * Proximity placement group associated with the volume
+     */
+    @JsonProperty(value = "proximityPlacementGroup")
+    private String proximityPlacementGroup;
+
+    /*
+     * T2 network information
+     */
+    @JsonProperty(value = "t2Network", access = JsonProperty.Access.WRITE_ONLY)
+    private String t2Network;
+
+    /*
+     * Volume spec name is the application specific designation or identifier
+     * for the particular volume in a volume group for e.g. data, log
+     */
+    @JsonProperty(value = "volumeSpecName")
+    private String volumeSpecName;
+
+    /*
+     * Specifies if the volume is encrypted or not. Only available on volumes
+     * created or updated after 2022-01-01.
+     */
+    @JsonProperty(value = "encrypted", access = JsonProperty.Access.WRITE_ONLY)
+    private Boolean encrypted;
+
+    /*
+     * Volume placement rules Application specific placement rules for the
+     * particular volume
+     */
+    @JsonProperty(value = "placementRules")
+    private List<PlacementKeyValuePairs> placementRules;
+
+    /*
+     * Flag indicating whether subvolume operations are enabled on the volume
+     */
+    @JsonProperty(value = "enableSubvolumes")
+    private EnableSubvolumes enableSubvolumes;
 
     /**
      * Get the fileSystemId property: FileSystem ID Unique FileSystem Identifier.
@@ -674,7 +743,8 @@ public final class VolumeProperties {
     }
 
     /**
-     * Get the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Get the throughputMibps property: Maximum throughput in MiB/s that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @return the throughputMibps value.
      */
@@ -683,7 +753,8 @@ public final class VolumeProperties {
     }
 
     /**
-     * Set the throughputMibps property: Maximum throughput in Mibps that can be achieved by this volume.
+     * Set the throughputMibps property: Maximum throughput in MiB/s that can be achieved by this volume and this will
+     * be accepted as input only for manual qosType volume.
      *
      * @param throughputMibps the throughputMibps value to set.
      * @return the VolumeProperties object itself.
@@ -694,22 +765,48 @@ public final class VolumeProperties {
     }
 
     /**
-     * Get the encryptionKeySource property: Encryption Key Source. Possible values are: 'Microsoft.NetApp'.
+     * Get the encryptionKeySource property: Source of key used to encrypt data in volume. Applicable if NetApp account
+     * has encryption.keySource = 'Microsoft.KeyVault'. Possible values (case-insensitive) are: 'Microsoft.NetApp,
+     * Microsoft.KeyVault'.
      *
      * @return the encryptionKeySource value.
      */
-    public String encryptionKeySource() {
+    public EncryptionKeySource encryptionKeySource() {
         return this.encryptionKeySource;
     }
 
     /**
-     * Set the encryptionKeySource property: Encryption Key Source. Possible values are: 'Microsoft.NetApp'.
+     * Set the encryptionKeySource property: Source of key used to encrypt data in volume. Applicable if NetApp account
+     * has encryption.keySource = 'Microsoft.KeyVault'. Possible values (case-insensitive) are: 'Microsoft.NetApp,
+     * Microsoft.KeyVault'.
      *
      * @param encryptionKeySource the encryptionKeySource value to set.
      * @return the VolumeProperties object itself.
      */
-    public VolumeProperties withEncryptionKeySource(String encryptionKeySource) {
+    public VolumeProperties withEncryptionKeySource(EncryptionKeySource encryptionKeySource) {
         this.encryptionKeySource = encryptionKeySource;
+        return this;
+    }
+
+    /**
+     * Get the keyVaultPrivateEndpointResourceId property: The resource ID of private endpoint for KeyVault. It must
+     * reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.
+     *
+     * @return the keyVaultPrivateEndpointResourceId value.
+     */
+    public String keyVaultPrivateEndpointResourceId() {
+        return this.keyVaultPrivateEndpointResourceId;
+    }
+
+    /**
+     * Set the keyVaultPrivateEndpointResourceId property: The resource ID of private endpoint for KeyVault. It must
+     * reside in the same VNET as the volume. Only applicable if encryptionKeySource = 'Microsoft.KeyVault'.
+     *
+     * @param keyVaultPrivateEndpointResourceId the keyVaultPrivateEndpointResourceId value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withKeyVaultPrivateEndpointResourceId(String keyVaultPrivateEndpointResourceId) {
+        this.keyVaultPrivateEndpointResourceId = keyVaultPrivateEndpointResourceId;
         return this;
     }
 
@@ -901,13 +998,155 @@ public final class VolumeProperties {
     }
 
     /**
+     * Get the maximumNumberOfFiles property: Maximum number of files allowed. Needs a service request in order to be
+     * changed. Only allowed to be changed if volume quota is more than 4TiB.
+     *
+     * @return the maximumNumberOfFiles value.
+     */
+    public Long maximumNumberOfFiles() {
+        return this.maximumNumberOfFiles;
+    }
+
+    /**
+     * Get the volumeGroupName property: Volume Group Name.
+     *
+     * @return the volumeGroupName value.
+     */
+    public String volumeGroupName() {
+        return this.volumeGroupName;
+    }
+
+    /**
+     * Get the capacityPoolResourceId property: Pool Resource Id used in case of creating a volume through volume group.
+     *
+     * @return the capacityPoolResourceId value.
+     */
+    public String capacityPoolResourceId() {
+        return this.capacityPoolResourceId;
+    }
+
+    /**
+     * Set the capacityPoolResourceId property: Pool Resource Id used in case of creating a volume through volume group.
+     *
+     * @param capacityPoolResourceId the capacityPoolResourceId value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withCapacityPoolResourceId(String capacityPoolResourceId) {
+        this.capacityPoolResourceId = capacityPoolResourceId;
+        return this;
+    }
+
+    /**
+     * Get the proximityPlacementGroup property: Proximity placement group associated with the volume.
+     *
+     * @return the proximityPlacementGroup value.
+     */
+    public String proximityPlacementGroup() {
+        return this.proximityPlacementGroup;
+    }
+
+    /**
+     * Set the proximityPlacementGroup property: Proximity placement group associated with the volume.
+     *
+     * @param proximityPlacementGroup the proximityPlacementGroup value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withProximityPlacementGroup(String proximityPlacementGroup) {
+        this.proximityPlacementGroup = proximityPlacementGroup;
+        return this;
+    }
+
+    /**
+     * Get the t2Network property: T2 network information.
+     *
+     * @return the t2Network value.
+     */
+    public String t2Network() {
+        return this.t2Network;
+    }
+
+    /**
+     * Get the volumeSpecName property: Volume spec name is the application specific designation or identifier for the
+     * particular volume in a volume group for e.g. data, log.
+     *
+     * @return the volumeSpecName value.
+     */
+    public String volumeSpecName() {
+        return this.volumeSpecName;
+    }
+
+    /**
+     * Set the volumeSpecName property: Volume spec name is the application specific designation or identifier for the
+     * particular volume in a volume group for e.g. data, log.
+     *
+     * @param volumeSpecName the volumeSpecName value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withVolumeSpecName(String volumeSpecName) {
+        this.volumeSpecName = volumeSpecName;
+        return this;
+    }
+
+    /**
+     * Get the encrypted property: Specifies if the volume is encrypted or not. Only available on volumes created or
+     * updated after 2022-01-01.
+     *
+     * @return the encrypted value.
+     */
+    public Boolean encrypted() {
+        return this.encrypted;
+    }
+
+    /**
+     * Get the placementRules property: Volume placement rules Application specific placement rules for the particular
+     * volume.
+     *
+     * @return the placementRules value.
+     */
+    public List<PlacementKeyValuePairs> placementRules() {
+        return this.placementRules;
+    }
+
+    /**
+     * Set the placementRules property: Volume placement rules Application specific placement rules for the particular
+     * volume.
+     *
+     * @param placementRules the placementRules value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withPlacementRules(List<PlacementKeyValuePairs> placementRules) {
+        this.placementRules = placementRules;
+        return this;
+    }
+
+    /**
+     * Get the enableSubvolumes property: Flag indicating whether subvolume operations are enabled on the volume.
+     *
+     * @return the enableSubvolumes value.
+     */
+    public EnableSubvolumes enableSubvolumes() {
+        return this.enableSubvolumes;
+    }
+
+    /**
+     * Set the enableSubvolumes property: Flag indicating whether subvolume operations are enabled on the volume.
+     *
+     * @param enableSubvolumes the enableSubvolumes value to set.
+     * @return the VolumeProperties object itself.
+     */
+    public VolumeProperties withEnableSubvolumes(EnableSubvolumes enableSubvolumes) {
+        this.enableSubvolumes = enableSubvolumes;
+        return this;
+    }
+
+    /**
      * Validates the instance.
      *
      * @throws IllegalArgumentException thrown if the instance is not valid.
      */
     public void validate() {
         if (creationToken() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException("Missing required property creationToken in model VolumeProperties"));
         }
@@ -915,7 +1154,7 @@ public final class VolumeProperties {
             exportPolicy().validate();
         }
         if (subnetId() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException("Missing required property subnetId in model VolumeProperties"));
         }
@@ -925,5 +1164,10 @@ public final class VolumeProperties {
         if (dataProtection() != null) {
             dataProtection().validate();
         }
+        if (placementRules() != null) {
+            placementRules().forEach(e -> e.validate());
+        }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(VolumeProperties.class);
 }

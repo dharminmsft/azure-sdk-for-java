@@ -31,7 +31,11 @@ public final class PrivateEndpointConnectionsParentType
         return fromString(name, PrivateEndpointConnectionsParentType.class);
     }
 
-    /** @return known PrivateEndpointConnectionsParentType values. */
+    /**
+     * Gets known PrivateEndpointConnectionsParentType values.
+     *
+     * @return known PrivateEndpointConnectionsParentType values.
+     */
     public static Collection<PrivateEndpointConnectionsParentType> values() {
         return values(PrivateEndpointConnectionsParentType.class);
     }

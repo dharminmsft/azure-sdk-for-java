@@ -3,10 +3,12 @@
 
 package com.azure.ai.formrecognizer;
 
-import com.azure.ai.formrecognizer.models.AnalyzeResult;
-import com.azure.ai.formrecognizer.models.AnalyzedDocument;
-import com.azure.ai.formrecognizer.models.DocumentOperationResult;
-import com.azure.ai.formrecognizer.models.DocumentTable;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilder;
+import com.azure.ai.formrecognizer.documentanalysis.models.AnalyzeResult;
+import com.azure.ai.formrecognizer.documentanalysis.models.AnalyzedDocument;
+import com.azure.ai.formrecognizer.documentanalysis.models.DocumentOperationResult;
+import com.azure.ai.formrecognizer.documentanalysis.models.DocumentTable;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.util.polling.SyncPoller;
 
@@ -52,13 +54,13 @@ public class AnalyzeCustomDocumentFromUrl {
 
             // lines
             documentPage.getLines().forEach(documentLine ->
-                System.out.printf("Line %s is within a bounding box %s.%n",
+                System.out.printf("Line '%s' is within a bounding box %s.%n",
                     documentLine.getContent(),
-                    documentLine.getBoundingBox().toString()));
+                    documentLine.getBoundingPolygon().toString()));
 
             // words
             documentPage.getWords().forEach(documentWord ->
-                System.out.printf("Word %s has a confidence score of %.2f%n.",
+                System.out.printf("Word '%s' has a confidence score of %.2f.%n",
                     documentWord.getContent(),
                     documentWord.getConfidence()));
         });

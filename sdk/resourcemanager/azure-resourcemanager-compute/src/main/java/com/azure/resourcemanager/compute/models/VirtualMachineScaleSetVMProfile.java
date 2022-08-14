@@ -5,18 +5,13 @@
 package com.azure.resourcemanager.compute.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Describes a virtual machine scale set virtual machine profile. */
 @Fluent
 public final class VirtualMachineScaleSetVMProfile {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(VirtualMachineScaleSetVMProfile.class);
-
     /*
-     * Specifies the operating system settings for the virtual machines in the
-     * scale set.
+     * Specifies the operating system settings for the virtual machines in the scale set.
      */
     @JsonProperty(value = "osProfile")
     private VirtualMachineScaleSetOSProfile osProfile;
@@ -28,69 +23,60 @@ public final class VirtualMachineScaleSetVMProfile {
     private VirtualMachineScaleSetStorageProfile storageProfile;
 
     /*
-     * Specifies properties of the network interfaces of the virtual machines
-     * in the scale set.
+     * Specifies properties of the network interfaces of the virtual machines in the scale set.
      */
     @JsonProperty(value = "networkProfile")
     private VirtualMachineScaleSetNetworkProfile networkProfile;
 
     /*
-     * Specifies the Security related profile settings for the virtual machines
-     * in the scale set.
+     * Specifies the Security related profile settings for the virtual machines in the scale set.
      */
     @JsonProperty(value = "securityProfile")
     private SecurityProfile securityProfile;
 
     /*
-     * Specifies the boot diagnostic settings state. <br><br>Minimum
-     * api-version: 2015-06-15.
+     * Specifies the boot diagnostic settings state. <br><br>Minimum api-version: 2015-06-15.
      */
     @JsonProperty(value = "diagnosticsProfile")
     private DiagnosticsProfile diagnosticsProfile;
 
     /*
-     * Specifies a collection of settings for extensions installed on virtual
-     * machines in the scale set.
+     * Specifies a collection of settings for extensions installed on virtual machines in the scale set.
      */
     @JsonProperty(value = "extensionProfile")
     private VirtualMachineScaleSetExtensionProfile extensionProfile;
 
     /*
-     * Specifies that the image or disk that is being used was licensed
-     * on-premises. <br><br> Possible values for Windows Server operating
-     * system are: <br><br> Windows_Client <br><br> Windows_Server <br><br>
-     * Possible values for Linux Server operating system are: <br><br>
-     * RHEL_BYOS (for RHEL) <br><br> SLES_BYOS (for SUSE) <br><br> For more
-     * information, see [Azure Hybrid Use Benefit for Windows
-     * Server](https://docs.microsoft.com/azure/virtual-machines/windows/hybrid-use-benefit-licensing)
-     * <br><br> [Azure Hybrid Use Benefit for Linux
-     * Server](https://docs.microsoft.com/azure/virtual-machines/linux/azure-hybrid-benefit-linux)
-     * <br><br> Minimum api-version: 2015-06-15
+     * Specifies that the image or disk that is being used was licensed on-premises. <br><br> Possible values for
+     * Windows Server operating system are: <br><br> Windows_Client <br><br> Windows_Server <br><br> Possible values
+     * for Linux Server operating system are: <br><br> RHEL_BYOS (for RHEL) <br><br> SLES_BYOS (for SUSE) <br><br> For
+     * more information, see [Azure Hybrid Use Benefit for Windows
+     * Server](https://docs.microsoft.com/azure/virtual-machines/windows/hybrid-use-benefit-licensing) <br><br> [Azure
+     * Hybrid Use Benefit for Linux
+     * Server](https://docs.microsoft.com/azure/virtual-machines/linux/azure-hybrid-benefit-linux) <br><br> Minimum
+     * api-version: 2015-06-15
      */
     @JsonProperty(value = "licenseType")
     private String licenseType;
 
     /*
-     * Specifies the priority for the virtual machines in the scale set.
-     * <br><br>Minimum api-version: 2017-10-30-preview
+     * Specifies the priority for the virtual machines in the scale set. <br><br>Minimum api-version:
+     * 2017-10-30-preview
      */
     @JsonProperty(value = "priority")
     private VirtualMachinePriorityTypes priority;
 
     /*
-     * Specifies the eviction policy for the Azure Spot virtual machine and
-     * Azure Spot scale set. <br><br>For Azure Spot virtual machines, both
-     * 'Deallocate' and 'Delete' are supported and the minimum api-version is
-     * 2019-03-01. <br><br>For Azure Spot scale sets, both 'Deallocate' and
-     * 'Delete' are supported and the minimum api-version is
+     * Specifies the eviction policy for the Azure Spot virtual machine and Azure Spot scale set. <br><br>For Azure
+     * Spot virtual machines, both 'Deallocate' and 'Delete' are supported and the minimum api-version is 2019-03-01.
+     * <br><br>For Azure Spot scale sets, both 'Deallocate' and 'Delete' are supported and the minimum api-version is
      * 2017-10-30-preview.
      */
     @JsonProperty(value = "evictionPolicy")
     private VirtualMachineEvictionPolicyTypes evictionPolicy;
 
     /*
-     * Specifies the billing related details of a Azure Spot VMSS.
-     * <br><br>Minimum api-version: 2019-03-01.
+     * Specifies the billing related details of a Azure Spot VMSS. <br><br>Minimum api-version: 2019-03-01.
      */
     @JsonProperty(value = "billingProfile")
     private BillingProfile billingProfile;
@@ -102,26 +88,29 @@ public final class VirtualMachineScaleSetVMProfile {
     private ScheduledEventsProfile scheduledEventsProfile;
 
     /*
-     * UserData for the virtual machines in the scale set, which must be
-     * base-64 encoded. Customer should not pass any secrets in here.
-     * <br><br>Minimum api-version: 2021-03-01
+     * UserData for the virtual machines in the scale set, which must be base-64 encoded. Customer should not pass any
+     * secrets in here. <br><br>Minimum api-version: 2021-03-01
      */
     @JsonProperty(value = "userData")
     private String userData;
 
     /*
-     * Specifies the capacity reservation related details of a scale set.
-     * <br><br>Minimum api-version: 2021-04-01.
+     * Specifies the capacity reservation related details of a scale set. <br><br>Minimum api-version: 2021-04-01.
      */
     @JsonProperty(value = "capacityReservation")
     private CapacityReservationProfile capacityReservation;
 
     /*
-     * Specifies the gallery applications that should be made available to the
-     * VM/VMSS
+     * Specifies the gallery applications that should be made available to the VM/VMSS
      */
     @JsonProperty(value = "applicationProfile")
     private ApplicationProfile applicationProfile;
+
+    /*
+     * Specifies the hardware profile related details of a scale set. <br><br>Minimum api-version: 2022-03-01.
+     */
+    @JsonProperty(value = "hardwareProfile")
+    private VirtualMachineScaleSetHardwareProfile hardwareProfile;
 
     /**
      * Get the osProfile property: Specifies the operating system settings for the virtual machines in the scale set.
@@ -445,6 +434,28 @@ public final class VirtualMachineScaleSetVMProfile {
     }
 
     /**
+     * Get the hardwareProfile property: Specifies the hardware profile related details of a scale set.
+     * &lt;br&gt;&lt;br&gt;Minimum api-version: 2022-03-01.
+     *
+     * @return the hardwareProfile value.
+     */
+    public VirtualMachineScaleSetHardwareProfile hardwareProfile() {
+        return this.hardwareProfile;
+    }
+
+    /**
+     * Set the hardwareProfile property: Specifies the hardware profile related details of a scale set.
+     * &lt;br&gt;&lt;br&gt;Minimum api-version: 2022-03-01.
+     *
+     * @param hardwareProfile the hardwareProfile value to set.
+     * @return the VirtualMachineScaleSetVMProfile object itself.
+     */
+    public VirtualMachineScaleSetVMProfile withHardwareProfile(VirtualMachineScaleSetHardwareProfile hardwareProfile) {
+        this.hardwareProfile = hardwareProfile;
+        return this;
+    }
+
+    /**
      * Validates the instance.
      *
      * @throws IllegalArgumentException thrown if the instance is not valid.
@@ -479,6 +490,9 @@ public final class VirtualMachineScaleSetVMProfile {
         }
         if (applicationProfile() != null) {
             applicationProfile().validate();
+        }
+        if (hardwareProfile() != null) {
+            hardwareProfile().validate();
         }
     }
 }

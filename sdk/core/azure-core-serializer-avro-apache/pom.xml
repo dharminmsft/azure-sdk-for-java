@@ -15,7 +15,7 @@
   <groupId>com.azure</groupId>
   <artifactId>azure-core-serializer-avro-apache</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-beta.16</version> <!-- {x-version-update;com.azure:azure-core-serializer-avro-apache;current} -->
+  <version>1.0.0-beta.28</version> <!-- {x-version-update;com.azure:azure-core-serializer-avro-apache;current} -->
 
   <name>Microsoft Azure Apache Avro Serializer Library</name>
   <description>This package contains the Apache Avro serializer client plugin for azure-core.</description>
@@ -49,9 +49,10 @@
       --add-exports com.azure.core.serializer.avro.apache/com.azure.core.serializer.avro.apache.generatedtestsources=org.apache.avro
       --add-opens com.azure.core.serializer.avro.apache/com.azure.core.serializer.avro.apache=ALL-UNNAMED
     </javaModulesSurefireArgLine>
-    <skipNewCodesnippetTooling>false</skipNewCodesnippetTooling>
-    <javadocDoclet></javadocDoclet>
-    <javadocDocletOptions></javadocDocletOptions>
+    <checkstyle.excludes>**/generatedtestsources/**/*.java</checkstyle.excludes>
+
+    <!-- Enables fail on deprecated API usage. -->
+    <compiler.failondeprecatedstatus/>
   </properties>
 
   <developers>
@@ -65,42 +66,42 @@
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-core</artifactId>
-      <version>1.22.0-beta.1</version> <!-- {x-version-update;com.azure:azure-core;current} -->
+      <version>1.32.0-beta.1</version> <!-- {x-version-update;com.azure:azure-core;current} -->
     </dependency>
     <dependency>
       <groupId>com.azure</groupId>
       <artifactId>azure-core-experimental</artifactId>
-      <version>1.0.0-beta.20</version> <!-- {x-version-update;com.azure:azure-core-experimental;current} -->
+      <version>1.0.0-beta.32</version> <!-- {x-version-update;com.azure:azure-core-experimental;current} -->
     </dependency>
 
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.10.1</version> <!-- {x-version-update;org.apache.avro:avro;external_dependency} -->
+      <version>1.11.0</version> <!-- {x-version-update;org.apache.avro:avro;external_dependency} -->
     </dependency>
 
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-test</artifactId>
-      <version>3.4.10</version> <!-- {x-version-update;io.projectreactor:reactor-test;external_dependency} -->
+      <version>3.4.21</version> <!-- {x-version-update;io.projectreactor:reactor-test;external_dependency} -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.7.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-api;external_dependency} -->
+      <version>5.8.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-api;external_dependency} -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.7.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-engine;external_dependency} -->
+      <version>5.8.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-engine;external_dependency} -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>5.7.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-params;external_dependency} -->
+      <version>5.8.2</version> <!-- {x-version-update;org.junit.jupiter:junit-jupiter-params;external_dependency} -->
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -115,7 +116,7 @@
           <rules>
             <bannedDependencies>
               <includes>
-                <include>org.apache.avro:avro:[1.10.1]</include> <!-- {x-include-update;org.apache.avro:avro;external_dependency} -->
+                <include>org.apache.avro:avro:[1.11.0]</include> <!-- {x-include-update;org.apache.avro:avro;external_dependency} -->
               </includes>
             </bannedDependencies>
           </rules>
@@ -125,7 +126,7 @@
       <plugin>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-maven-plugin</artifactId>
-        <version>1.10.1</version> <!-- {x-version-update;org.apache.avro:avro-maven-plugin;external_dependency} -->
+        <version>1.11.0</version> <!-- {x-version-update;org.apache.avro:avro-maven-plugin;external_dependency} -->
         <executions>
           <execution>
             <phase>generate-test-sources</phase>
@@ -142,17 +143,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version> <!-- {x-version-update;org.apache.maven.plugins:maven-compiler-plugin;external_dependency} -->
-        <configuration>
-          <compilerArgs>
-            <arg>-Xlint:deprecation</arg>
-          </compilerArgs>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -5,15 +5,11 @@
 package com.azure.resourcemanager.cosmos.models;
 
 import com.azure.core.annotation.Fluent;
-import com.azure.core.util.logging.ClientLogger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** IpAddressOrRange object. */
 @Fluent
 public final class IpAddressOrRange {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(IpAddressOrRange.class);
-
     /*
      * A single IPv4 address or a single IPv4 address range in CIDR format.
      * Provided IPs must be well-formatted and cannot be contained in one of

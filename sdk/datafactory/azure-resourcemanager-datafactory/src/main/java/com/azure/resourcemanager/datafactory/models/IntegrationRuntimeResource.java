@@ -46,6 +46,13 @@ public interface IntegrationRuntimeResource {
     String etag();
 
     /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
+
+    /**
      * Gets the inner com.azure.resourcemanager.datafactory.fluent.models.IntegrationRuntimeResourceInner object.
      *
      * @return the inner object.
@@ -200,7 +207,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return detailed status information for an integration runtime.
+     * @return detailed status information for an integration runtime along with {@link Response}.
      */
     Response<IntegrationRuntimeStatusResponse> getStatusWithResponse(Context context);
 
@@ -224,7 +231,7 @@ public interface IntegrationRuntimeResource {
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the on-premises integration runtime connection information for encrypting the on-premises data source
-     *     credentials.
+     *     credentials along with {@link Response}.
      */
     Response<IntegrationRuntimeConnectionInfo> getConnectionInfoWithResponse(Context context);
 
@@ -247,7 +254,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the integration runtime authentication keys.
+     * @return the integration runtime authentication keys along with {@link Response}.
      */
     Response<IntegrationRuntimeAuthKeys> regenerateAuthKeyWithResponse(
         IntegrationRuntimeRegenerateKeyParameters regenerateKeyParameters, Context context);
@@ -268,7 +275,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the integration runtime authentication keys.
+     * @return the integration runtime authentication keys along with {@link Response}.
      */
     Response<IntegrationRuntimeAuthKeys> listAuthKeysWithResponse(Context context);
 
@@ -331,7 +338,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     Response<Void> syncCredentialsWithResponse(Context context);
 
@@ -355,7 +362,7 @@ public interface IntegrationRuntimeResource {
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the integration runtime monitoring data, which includes the monitor data for all the nodes under this
-     *     integration runtime.
+     *     integration runtime along with {@link Response}.
      */
     Response<IntegrationRuntimeMonitoringData> getMonitoringDataWithResponse(Context context);
 
@@ -374,7 +381,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     Response<Void> upgradeWithResponse(Context context);
 
@@ -396,7 +403,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the response.
+     * @return the {@link Response}.
      */
     Response<Void> removeLinksWithResponse(
         LinkedIntegrationRuntimeRequest linkedIntegrationRuntimeRequest, Context context);
@@ -421,7 +428,7 @@ public interface IntegrationRuntimeResource {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws com.azure.core.management.exception.ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return integration runtime status response.
+     * @return integration runtime status response along with {@link Response}.
      */
     Response<IntegrationRuntimeStatusResponse> createLinkedIntegrationRuntimeWithResponse(
         CreateLinkedIntegrationRuntimeRequest createLinkedIntegrationRuntimeRequest, Context context);

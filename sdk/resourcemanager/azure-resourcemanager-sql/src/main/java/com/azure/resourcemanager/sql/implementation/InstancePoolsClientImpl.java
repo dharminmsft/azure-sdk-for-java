@@ -8,6 +8,7 @@ import com.azure.core.annotation.BodyParam;
 import com.azure.core.annotation.Delete;
 import com.azure.core.annotation.ExpectedResponses;
 import com.azure.core.annotation.Get;
+import com.azure.core.annotation.HeaderParam;
 import com.azure.core.annotation.Headers;
 import com.azure.core.annotation.Host;
 import com.azure.core.annotation.HostParam;
@@ -29,7 +30,6 @@ import com.azure.core.management.exception.ManagementException;
 import com.azure.core.management.polling.PollResult;
 import com.azure.core.util.Context;
 import com.azure.core.util.FluxUtil;
-import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollerFlux;
 import com.azure.core.util.polling.SyncPoller;
 import com.azure.resourcemanager.resources.fluentcore.collection.InnerSupportsDelete;
@@ -40,7 +40,6 @@ import com.azure.resourcemanager.sql.fluent.models.InstancePoolInner;
 import com.azure.resourcemanager.sql.models.InstancePoolListResult;
 import com.azure.resourcemanager.sql.models.InstancePoolUpdate;
 import java.nio.ByteBuffer;
-import java.util.Map;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,8 +49,6 @@ public final class InstancePoolsClientImpl
         InnerSupportsListing<InstancePoolInner>,
         InnerSupportsDelete<Void>,
         InstancePoolsClient {
-    private final ClientLogger logger = new ClientLogger(InstancePoolsClientImpl.class);
-
     /** The proxy service used to perform REST calls. */
     private final InstancePoolsService service;
 
@@ -76,7 +73,7 @@ public final class InstancePoolsClientImpl
     @Host("{$host}")
     @ServiceInterface(name = "SqlManagementClientI")
     private interface InstancePoolsService {
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Get(
             "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Sql/instancePools"
                 + "/{instancePoolName}")
@@ -88,9 +85,10 @@ public final class InstancePoolsClientImpl
             @PathParam("instancePoolName") String instancePoolName,
             @PathParam("subscriptionId") String subscriptionId,
             @QueryParam("api-version") String apiVersion,
+            @HeaderParam("Accept") String accept,
             Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Put(
             "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Sql/instancePools"
                 + "/{instancePoolName}")
@@ -103,6 +101,7 @@ public final class InstancePoolsClientImpl
             @PathParam("subscriptionId") String subscriptionId,
             @QueryParam("api-version") String apiVersion,
             @BodyParam("application/json") InstancePoolInner parameters,
+            @HeaderParam("Accept") String accept,
             Context context);
 
         @Headers({"Accept: application/json;q=0.9", "Content-Type: application/json"})
@@ -119,7 +118,7 @@ public final class InstancePoolsClientImpl
             @QueryParam("api-version") String apiVersion,
             Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Patch(
             "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Sql/instancePools"
                 + "/{instancePoolName}")
@@ -132,9 +131,10 @@ public final class InstancePoolsClientImpl
             @PathParam("subscriptionId") String subscriptionId,
             @QueryParam("api-version") String apiVersion,
             @BodyParam("application/json") InstancePoolUpdate parameters,
+            @HeaderParam("Accept") String accept,
             Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Get("/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Sql/instancePools")
         @ExpectedResponses({200})
         @UnexpectedResponseExceptionType(ManagementException.class)
@@ -143,9 +143,10 @@ public final class InstancePoolsClientImpl
             @PathParam("resourceGroupName") String resourceGroupName,
             @PathParam("subscriptionId") String subscriptionId,
             @QueryParam("api-version") String apiVersion,
+            @HeaderParam("Accept") String accept,
             Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Get("/subscriptions/{subscriptionId}/providers/Microsoft.Sql/instancePools")
         @ExpectedResponses({200})
         @UnexpectedResponseExceptionType(ManagementException.class)
@@ -153,21 +154,28 @@ public final class InstancePoolsClientImpl
             @HostParam("$host") String endpoint,
             @PathParam("subscriptionId") String subscriptionId,
             @QueryParam("api-version") String apiVersion,
+            @HeaderParam("Accept") String accept,
             Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Get("{nextLink}")
         @ExpectedResponses({200})
         @UnexpectedResponseExceptionType(ManagementException.class)
         Mono<Response<InstancePoolListResult>> listByResourceGroupNext(
-            @PathParam(value = "nextLink", encoded = true) String nextLink, Context context);
+            @PathParam(value = "nextLink", encoded = true) String nextLink,
+            @HostParam("$host") String endpoint,
+            @HeaderParam("Accept") String accept,
+            Context context);
 
-        @Headers({"Accept: application/json", "Content-Type: application/json"})
+        @Headers({"Content-Type: application/json"})
         @Get("{nextLink}")
         @ExpectedResponses({200})
         @UnexpectedResponseExceptionType(ManagementException.class)
         Mono<Response<InstancePoolListResult>> listNext(
-            @PathParam(value = "nextLink", encoded = true) String nextLink, Context context);
+            @PathParam(value = "nextLink", encoded = true) String nextLink,
+            @HostParam("$host") String endpoint,
+            @HeaderParam("Accept") String accept,
+            Context context);
     }
 
     /**
@@ -179,7 +187,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an instance pool.
+     * @return an instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<InstancePoolInner>> getByResourceGroupWithResponseAsync(
@@ -205,6 +213,7 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         return FluxUtil
             .withContext(
                 context ->
@@ -215,8 +224,9 @@ public final class InstancePoolsClientImpl
                             instancePoolName,
                             this.client.getSubscriptionId(),
                             apiVersion,
+                            accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -229,7 +239,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an instance pool.
+     * @return an instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<InstancePoolInner>> getByResourceGroupWithResponseAsync(
@@ -255,6 +265,7 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
             .getByResourceGroup(
@@ -263,6 +274,7 @@ public final class InstancePoolsClientImpl
                 instancePoolName,
                 this.client.getSubscriptionId(),
                 apiVersion,
+                accept,
                 context);
     }
 
@@ -275,19 +287,12 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an instance pool.
+     * @return an instance pool on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<InstancePoolInner> getByResourceGroupAsync(String resourceGroupName, String instancePoolName) {
         return getByResourceGroupWithResponseAsync(resourceGroupName, instancePoolName)
-            .flatMap(
-                (Response<InstancePoolInner> res) -> {
-                    if (res.getValue() != null) {
-                        return Mono.just(res.getValue());
-                    } else {
-                        return Mono.empty();
-                    }
-                });
+            .flatMap(res -> Mono.justOrEmpty(res.getValue()));
     }
 
     /**
@@ -316,7 +321,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an instance pool.
+     * @return an instance pool along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<InstancePoolInner> getByResourceGroupWithResponse(
@@ -330,11 +335,11 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -365,6 +370,7 @@ public final class InstancePoolsClientImpl
             parameters.validate();
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         return FluxUtil
             .withContext(
                 context ->
@@ -376,8 +382,9 @@ public final class InstancePoolsClientImpl
                             this.client.getSubscriptionId(),
                             apiVersion,
                             parameters,
+                            accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -386,12 +393,12 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> createOrUpdateWithResponseAsync(
@@ -422,6 +429,7 @@ public final class InstancePoolsClientImpl
             parameters.validate();
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
             .createOrUpdate(
@@ -431,6 +439,7 @@ public final class InstancePoolsClientImpl
                 this.client.getSubscriptionId(),
                 apiVersion,
                 parameters,
+                accept,
                 context);
     }
 
@@ -440,13 +449,13 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link PollerFlux} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<InstancePoolInner>, InstancePoolInner> beginCreateOrUpdateAsync(
         String resourceGroupName, String instancePoolName, InstancePoolInner parameters) {
         Mono<Response<Flux<ByteBuffer>>> mono =
@@ -454,7 +463,11 @@ public final class InstancePoolsClientImpl
         return this
             .client
             .<InstancePoolInner, InstancePoolInner>getLroResult(
-                mono, this.client.getHttpPipeline(), InstancePoolInner.class, InstancePoolInner.class, Context.NONE);
+                mono,
+                this.client.getHttpPipeline(),
+                InstancePoolInner.class,
+                InstancePoolInner.class,
+                this.client.getContext());
     }
 
     /**
@@ -463,14 +476,14 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link PollerFlux} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<InstancePoolInner>, InstancePoolInner> beginCreateOrUpdateAsync(
         String resourceGroupName, String instancePoolName, InstancePoolInner parameters, Context context) {
         context = this.client.mergeContext(context);
@@ -488,13 +501,13 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link SyncPoller} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<InstancePoolInner>, InstancePoolInner> beginCreateOrUpdate(
         String resourceGroupName, String instancePoolName, InstancePoolInner parameters) {
         return beginCreateOrUpdateAsync(resourceGroupName, instancePoolName, parameters).getSyncPoller();
@@ -506,14 +519,14 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link SyncPoller} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<InstancePoolInner>, InstancePoolInner> beginCreateOrUpdate(
         String resourceGroupName, String instancePoolName, InstancePoolInner parameters, Context context) {
         return beginCreateOrUpdateAsync(resourceGroupName, instancePoolName, parameters, context).getSyncPoller();
@@ -525,11 +538,11 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<InstancePoolInner> createOrUpdateAsync(
@@ -545,12 +558,12 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<InstancePoolInner> createOrUpdateAsync(
@@ -566,7 +579,7 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -584,7 +597,7 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be created or updated.
-     * @param parameters An Azure SQL instance pool.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
@@ -606,7 +619,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(String resourceGroupName, String instancePoolName) {
@@ -642,7 +655,7 @@ public final class InstancePoolsClientImpl
                             this.client.getSubscriptionId(),
                             apiVersion,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -655,7 +668,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> deleteWithResponseAsync(
@@ -701,14 +714,15 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<Void>, Void> beginDeleteAsync(String resourceGroupName, String instancePoolName) {
         Mono<Response<Flux<ByteBuffer>>> mono = deleteWithResponseAsync(resourceGroupName, instancePoolName);
         return this
             .client
-            .<Void, Void>getLroResult(mono, this.client.getHttpPipeline(), Void.class, Void.class, Context.NONE);
+            .<Void, Void>getLroResult(
+                mono, this.client.getHttpPipeline(), Void.class, Void.class, this.client.getContext());
     }
 
     /**
@@ -721,9 +735,9 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link PollerFlux} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<Void>, Void> beginDeleteAsync(
         String resourceGroupName, String instancePoolName, Context context) {
         context = this.client.mergeContext(context);
@@ -742,9 +756,9 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(String resourceGroupName, String instancePoolName) {
         return beginDeleteAsync(resourceGroupName, instancePoolName).getSyncPoller();
     }
@@ -759,9 +773,9 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return the {@link SyncPoller} for polling of long-running operation.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<Void>, Void> beginDelete(
         String resourceGroupName, String instancePoolName, Context context) {
         return beginDeleteAsync(resourceGroupName, instancePoolName, context).getSyncPoller();
@@ -776,7 +790,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Void> deleteAsync(String resourceGroupName, String instancePoolName) {
@@ -795,7 +809,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the completion.
+     * @return A {@link Mono} that completes when a successful response is received.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Void> deleteAsync(String resourceGroupName, String instancePoolName, Context context) {
@@ -841,15 +855,15 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags) {
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters) {
         if (this.client.getEndpoint() == null) {
             return Mono
                 .error(
@@ -870,9 +884,13 @@ public final class InstancePoolsClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        if (parameters == null) {
+            return Mono.error(new IllegalArgumentException("Parameter parameters is required and cannot be null."));
+        } else {
+            parameters.validate();
+        }
         final String apiVersion = "2018-06-01-preview";
-        InstancePoolUpdate parameters = new InstancePoolUpdate();
-        parameters.withTags(tags);
+        final String accept = "application/json";
         return FluxUtil
             .withContext(
                 context ->
@@ -884,8 +902,9 @@ public final class InstancePoolsClientImpl
                             this.client.getSubscriptionId(),
                             apiVersion,
                             parameters,
+                            accept,
                             context))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -894,16 +913,16 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<Response<Flux<ByteBuffer>>> updateWithResponseAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags, Context context) {
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters, Context context) {
         if (this.client.getEndpoint() == null) {
             return Mono
                 .error(
@@ -924,9 +943,13 @@ public final class InstancePoolsClientImpl
                     new IllegalArgumentException(
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
+        if (parameters == null) {
+            return Mono.error(new IllegalArgumentException("Parameter parameters is required and cannot be null."));
+        } else {
+            parameters.validate();
+        }
         final String apiVersion = "2018-06-01-preview";
-        InstancePoolUpdate parameters = new InstancePoolUpdate();
-        parameters.withTags(tags);
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
             .update(
@@ -936,6 +959,7 @@ public final class InstancePoolsClientImpl
                 this.client.getSubscriptionId(),
                 apiVersion,
                 parameters,
+                accept,
                 context);
     }
 
@@ -945,20 +969,25 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link PollerFlux} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public PollerFlux<PollResult<InstancePoolInner>, InstancePoolInner> beginUpdateAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags) {
-        Mono<Response<Flux<ByteBuffer>>> mono = updateWithResponseAsync(resourceGroupName, instancePoolName, tags);
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters) {
+        Mono<Response<Flux<ByteBuffer>>> mono =
+            updateWithResponseAsync(resourceGroupName, instancePoolName, parameters);
         return this
             .client
             .<InstancePoolInner, InstancePoolInner>getLroResult(
-                mono, this.client.getHttpPipeline(), InstancePoolInner.class, InstancePoolInner.class, Context.NONE);
+                mono,
+                this.client.getHttpPipeline(),
+                InstancePoolInner.class,
+                InstancePoolInner.class,
+                this.client.getContext());
     }
 
     /**
@@ -967,19 +996,19 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link PollerFlux} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     private PollerFlux<PollResult<InstancePoolInner>, InstancePoolInner> beginUpdateAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags, Context context) {
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters, Context context) {
         context = this.client.mergeContext(context);
         Mono<Response<Flux<ByteBuffer>>> mono =
-            updateWithResponseAsync(resourceGroupName, instancePoolName, tags, context);
+            updateWithResponseAsync(resourceGroupName, instancePoolName, parameters, context);
         return this
             .client
             .<InstancePoolInner, InstancePoolInner>getLroResult(
@@ -992,16 +1021,16 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link SyncPoller} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<InstancePoolInner>, InstancePoolInner> beginUpdate(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags) {
-        return beginUpdateAsync(resourceGroupName, instancePoolName, tags).getSyncPoller();
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters) {
+        return beginUpdateAsync(resourceGroupName, instancePoolName, parameters).getSyncPoller();
     }
 
     /**
@@ -1010,17 +1039,17 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return the {@link SyncPoller} for polling of an Azure SQL instance pool.
      */
-    @ServiceMethod(returns = ReturnType.SINGLE)
+    @ServiceMethod(returns = ReturnType.LONG_RUNNING_OPERATION)
     public SyncPoller<PollResult<InstancePoolInner>, InstancePoolInner> beginUpdate(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags, Context context) {
-        return beginUpdateAsync(resourceGroupName, instancePoolName, tags, context).getSyncPoller();
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters, Context context) {
+        return beginUpdateAsync(resourceGroupName, instancePoolName, parameters, context).getSyncPoller();
     }
 
     /**
@@ -1029,16 +1058,16 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<InstancePoolInner> updateAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags) {
-        return beginUpdateAsync(resourceGroupName, instancePoolName, tags)
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters) {
+        return beginUpdateAsync(resourceGroupName, instancePoolName, parameters)
             .last()
             .flatMap(this.client::getLroFinalResultOrError);
     }
@@ -1049,17 +1078,17 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
+     * @return an Azure SQL instance pool on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<InstancePoolInner> updateAsync(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags, Context context) {
-        return beginUpdateAsync(resourceGroupName, instancePoolName, tags, context)
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters, Context context) {
+        return beginUpdateAsync(resourceGroupName, instancePoolName, parameters, context)
             .last()
             .flatMap(this.client::getLroFinalResultOrError);
     }
@@ -1070,17 +1099,15 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
+     * @param parameters The requested instance pool resource state.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return an Azure SQL instance pool.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<InstancePoolInner> updateAsync(String resourceGroupName, String instancePoolName) {
-        final Map<String, String> tags = null;
-        return beginUpdateAsync(resourceGroupName, instancePoolName, tags)
-            .last()
-            .flatMap(this.client::getLroFinalResultOrError);
+    public InstancePoolInner update(String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters) {
+        return updateAsync(resourceGroupName, instancePoolName, parameters).block();
     }
 
     /**
@@ -1089,24 +1116,7 @@ public final class InstancePoolsClientImpl
      * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
      *     from the Azure Resource Manager API or the portal.
      * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws ManagementException thrown if the request is rejected by server.
-     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public InstancePoolInner update(String resourceGroupName, String instancePoolName, Map<String, String> tags) {
-        return updateAsync(resourceGroupName, instancePoolName, tags).block();
-    }
-
-    /**
-     * Updates an instance pool.
-     *
-     * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
-     *     from the Azure Resource Manager API or the portal.
-     * @param instancePoolName The name of the instance pool to be updated.
-     * @param tags Resource tags.
+     * @param parameters The requested instance pool resource state.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
@@ -1115,25 +1125,8 @@ public final class InstancePoolsClientImpl
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public InstancePoolInner update(
-        String resourceGroupName, String instancePoolName, Map<String, String> tags, Context context) {
-        return updateAsync(resourceGroupName, instancePoolName, tags, context).block();
-    }
-
-    /**
-     * Updates an instance pool.
-     *
-     * @param resourceGroupName The name of the resource group that contains the resource. You can obtain this value
-     *     from the Azure Resource Manager API or the portal.
-     * @param instancePoolName The name of the instance pool to be updated.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws ManagementException thrown if the request is rejected by server.
-     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return an Azure SQL instance pool.
-     */
-    @ServiceMethod(returns = ReturnType.SINGLE)
-    public InstancePoolInner update(String resourceGroupName, String instancePoolName) {
-        final Map<String, String> tags = null;
-        return updateAsync(resourceGroupName, instancePoolName, tags).block();
+        String resourceGroupName, String instancePoolName, InstancePoolUpdate parameters, Context context) {
+        return updateAsync(resourceGroupName, instancePoolName, parameters, context).block();
     }
 
     /**
@@ -1144,7 +1137,8 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listByResourceGroupSinglePageAsync(String resourceGroupName) {
@@ -1165,6 +1159,7 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         return FluxUtil
             .withContext(
                 context ->
@@ -1174,6 +1169,7 @@ public final class InstancePoolsClientImpl
                             resourceGroupName,
                             this.client.getSubscriptionId(),
                             apiVersion,
+                            accept,
                             context))
             .<PagedResponse<InstancePoolInner>>map(
                 res ->
@@ -1184,7 +1180,7 @@ public final class InstancePoolsClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1196,7 +1192,8 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group along with {@link PagedResponse} on successful completion
+     *     of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listByResourceGroupSinglePageAsync(
@@ -1218,10 +1215,16 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
             .listByResourceGroup(
-                this.client.getEndpoint(), resourceGroupName, this.client.getSubscriptionId(), apiVersion, context)
+                this.client.getEndpoint(),
+                resourceGroupName,
+                this.client.getSubscriptionId(),
+                apiVersion,
+                accept,
+                context)
             .map(
                 res ->
                     new PagedResponseBase<>(
@@ -1241,7 +1244,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<InstancePoolInner> listByResourceGroupAsync(String resourceGroupName) {
@@ -1259,7 +1262,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<InstancePoolInner> listByResourceGroupAsync(String resourceGroupName, Context context) {
@@ -1276,7 +1279,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<InstancePoolInner> listByResourceGroup(String resourceGroupName) {
@@ -1292,7 +1295,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of instance pools in the resource group.
+     * @return a list of instance pools in the resource group as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<InstancePoolInner> listByResourceGroup(String resourceGroupName, Context context) {
@@ -1304,7 +1307,8 @@ public final class InstancePoolsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listSinglePageAsync() {
@@ -1321,10 +1325,12 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         return FluxUtil
             .withContext(
                 context ->
-                    service.list(this.client.getEndpoint(), this.client.getSubscriptionId(), apiVersion, context))
+                    service
+                        .list(this.client.getEndpoint(), this.client.getSubscriptionId(), apiVersion, accept, context))
             .<PagedResponse<InstancePoolInner>>map(
                 res ->
                     new PagedResponseBase<>(
@@ -1334,7 +1340,7 @@ public final class InstancePoolsClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1344,7 +1350,8 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription along with {@link PagedResponse} on successful
+     *     completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listSinglePageAsync(Context context) {
@@ -1361,9 +1368,10 @@ public final class InstancePoolsClientImpl
                         "Parameter this.client.getSubscriptionId() is required and cannot be null."));
         }
         final String apiVersion = "2018-06-01-preview";
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
-            .list(this.client.getEndpoint(), this.client.getSubscriptionId(), apiVersion, context)
+            .list(this.client.getEndpoint(), this.client.getSubscriptionId(), apiVersion, accept, context)
             .map(
                 res ->
                     new PagedResponseBase<>(
@@ -1380,7 +1388,7 @@ public final class InstancePoolsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedFlux<InstancePoolInner> listAsync() {
@@ -1394,7 +1402,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription as paginated response with {@link PagedFlux}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     private PagedFlux<InstancePoolInner> listAsync(Context context) {
@@ -1407,7 +1415,7 @@ public final class InstancePoolsClientImpl
      *
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<InstancePoolInner> list() {
@@ -1421,7 +1429,7 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of all instance pools in the subscription.
+     * @return a list of all instance pools in the subscription as paginated response with {@link PagedIterable}.
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<InstancePoolInner> list(Context context) {
@@ -1435,15 +1443,24 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of Azure SQL instance pools.
+     * @return a list of Azure SQL instance pools along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listByResourceGroupNextSinglePageAsync(String nextLink) {
         if (nextLink == null) {
             return Mono.error(new IllegalArgumentException("Parameter nextLink is required and cannot be null."));
         }
+        if (this.client.getEndpoint() == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter this.client.getEndpoint() is required and cannot be null."));
+        }
+        final String accept = "application/json";
         return FluxUtil
-            .withContext(context -> service.listByResourceGroupNext(nextLink, context))
+            .withContext(
+                context -> service.listByResourceGroupNext(nextLink, this.client.getEndpoint(), accept, context))
             .<PagedResponse<InstancePoolInner>>map(
                 res ->
                     new PagedResponseBase<>(
@@ -1453,7 +1470,7 @@ public final class InstancePoolsClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1464,7 +1481,8 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of Azure SQL instance pools.
+     * @return a list of Azure SQL instance pools along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listByResourceGroupNextSinglePageAsync(
@@ -1472,9 +1490,16 @@ public final class InstancePoolsClientImpl
         if (nextLink == null) {
             return Mono.error(new IllegalArgumentException("Parameter nextLink is required and cannot be null."));
         }
+        if (this.client.getEndpoint() == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter this.client.getEndpoint() is required and cannot be null."));
+        }
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
-            .listByResourceGroupNext(nextLink, context)
+            .listByResourceGroupNext(nextLink, this.client.getEndpoint(), accept, context)
             .map(
                 res ->
                     new PagedResponseBase<>(
@@ -1493,15 +1518,23 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of Azure SQL instance pools.
+     * @return a list of Azure SQL instance pools along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listNextSinglePageAsync(String nextLink) {
         if (nextLink == null) {
             return Mono.error(new IllegalArgumentException("Parameter nextLink is required and cannot be null."));
         }
+        if (this.client.getEndpoint() == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter this.client.getEndpoint() is required and cannot be null."));
+        }
+        final String accept = "application/json";
         return FluxUtil
-            .withContext(context -> service.listNext(nextLink, context))
+            .withContext(context -> service.listNext(nextLink, this.client.getEndpoint(), accept, context))
             .<PagedResponse<InstancePoolInner>>map(
                 res ->
                     new PagedResponseBase<>(
@@ -1511,7 +1544,7 @@ public final class InstancePoolsClientImpl
                         res.getValue().value(),
                         res.getValue().nextLink(),
                         null))
-            .subscriberContext(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext())));
+            .contextWrite(context -> context.putAll(FluxUtil.toReactorContext(this.client.getContext()).readOnly()));
     }
 
     /**
@@ -1522,16 +1555,24 @@ public final class InstancePoolsClientImpl
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws ManagementException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return a list of Azure SQL instance pools.
+     * @return a list of Azure SQL instance pools along with {@link PagedResponse} on successful completion of {@link
+     *     Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     private Mono<PagedResponse<InstancePoolInner>> listNextSinglePageAsync(String nextLink, Context context) {
         if (nextLink == null) {
             return Mono.error(new IllegalArgumentException("Parameter nextLink is required and cannot be null."));
         }
+        if (this.client.getEndpoint() == null) {
+            return Mono
+                .error(
+                    new IllegalArgumentException(
+                        "Parameter this.client.getEndpoint() is required and cannot be null."));
+        }
+        final String accept = "application/json";
         context = this.client.mergeContext(context);
         return service
-            .listNext(nextLink, context)
+            .listNext(nextLink, this.client.getEndpoint(), accept, context)
             .map(
                 res ->
                     new PagedResponseBase<>(

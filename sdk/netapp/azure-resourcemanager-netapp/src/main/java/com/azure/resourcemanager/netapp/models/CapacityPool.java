@@ -5,6 +5,7 @@
 package com.azure.resourcemanager.netapp.models;
 
 import com.azure.core.management.Region;
+import com.azure.core.management.SystemData;
 import com.azure.core.util.Context;
 import com.azure.resourcemanager.netapp.fluent.models.CapacityPoolInner;
 import java.util.Map;
@@ -54,6 +55,13 @@ public interface CapacityPool {
     String etag();
 
     /**
+     * Gets the systemData property: Azure Resource Manager metadata containing createdBy and modifiedBy information.
+     *
+     * @return the systemData value.
+     */
+    SystemData systemData();
+
+    /**
      * Gets the poolId property: poolId UUID v4 used to identify the Pool.
      *
      * @return the poolId value.
@@ -61,7 +69,7 @@ public interface CapacityPool {
     String poolId();
 
     /**
-     * Gets the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value
+     * Gets the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value
      * must be multiply of 4398046511104).
      *
      * @return the size value.
@@ -83,14 +91,14 @@ public interface CapacityPool {
     String provisioningState();
 
     /**
-     * Gets the totalThroughputMibps property: Total throughput of pool in Mibps.
+     * Gets the totalThroughputMibps property: Total throughput of pool in MiB/s.
      *
      * @return the totalThroughputMibps value.
      */
     Float totalThroughputMibps();
 
     /**
-     * Gets the utilizedThroughputMibps property: Utilized throughput of pool in Mibps.
+     * Gets the utilizedThroughputMibps property: Utilized throughput of pool in MiB/s.
      *
      * @return the utilizedThroughputMibps value.
      */
@@ -131,6 +139,13 @@ public interface CapacityPool {
      * @return the name of the resource region.
      */
     String regionName();
+
+    /**
+     * Gets the name of the resource group.
+     *
+     * @return the name of the resource group.
+     */
+    String resourceGroupName();
 
     /**
      * Gets the inner com.azure.resourcemanager.netapp.fluent.models.CapacityPoolInner object.
@@ -185,10 +200,10 @@ public interface CapacityPool {
         /** The stage of the CapacityPool definition allowing to specify size. */
         interface WithSize {
             /**
-             * Specifies the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB
+             * Specifies the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB
              * chunks (value must be multiply of 4398046511104)..
              *
-             * @param size size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must
+             * @param size size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value must
              *     be multiply of 4398046511104).
              * @return the next definition stage.
              */
@@ -280,7 +295,8 @@ public interface CapacityPool {
     CapacityPool.Update update();
 
     /** The template for CapacityPool update. */
-    interface Update extends UpdateStages.WithTags, UpdateStages.WithSize, UpdateStages.WithQosType {
+    interface Update
+        extends UpdateStages.WithTags, UpdateStages.WithSize, UpdateStages.WithQosType, UpdateStages.WithCoolAccess {
         /**
          * Executes the update request.
          *
@@ -311,10 +327,10 @@ public interface CapacityPool {
         /** The stage of the CapacityPool update allowing to specify size. */
         interface WithSize {
             /**
-             * Specifies the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB
+             * Specifies the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB
              * chunks (value must be multiply of 4398046511104)..
              *
-             * @param size size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must
+             * @param size size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value must
              *     be multiply of 4398046511104).
              * @return the next definition stage.
              */
@@ -329,6 +345,16 @@ public interface CapacityPool {
              * @return the next definition stage.
              */
             Update withQosType(QosType qosType);
+        }
+        /** The stage of the CapacityPool update allowing to specify coolAccess. */
+        interface WithCoolAccess {
+            /**
+             * Specifies the coolAccess property: If enabled (true) the pool can contain cool Access enabled volumes..
+             *
+             * @param coolAccess If enabled (true) the pool can contain cool Access enabled volumes.
+             * @return the next definition stage.
+             */
+            Update withCoolAccess(Boolean coolAccess);
         }
     }
     /**

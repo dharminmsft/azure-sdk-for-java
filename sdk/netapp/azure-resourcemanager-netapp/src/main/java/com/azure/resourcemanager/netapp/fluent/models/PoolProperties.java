@@ -9,14 +9,11 @@ import com.azure.core.util.logging.ClientLogger;
 import com.azure.resourcemanager.netapp.models.EncryptionType;
 import com.azure.resourcemanager.netapp.models.QosType;
 import com.azure.resourcemanager.netapp.models.ServiceLevel;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Pool properties. */
 @Fluent
 public final class PoolProperties {
-    @JsonIgnore private final ClientLogger logger = new ClientLogger(PoolProperties.class);
-
     /*
      * poolId UUID v4 used to identify the Pool
      */
@@ -24,7 +21,7 @@ public final class PoolProperties {
     private String poolId;
 
     /*
-     * size Provisioned size of the pool (in bytes). Allowed values are in 4TiB
+     * size Provisioned size of the pool (in bytes). Allowed values are in 1TiB
      * chunks (value must be multiply of 4398046511104).
      */
     @JsonProperty(value = "size", required = true)
@@ -43,13 +40,13 @@ public final class PoolProperties {
     private String provisioningState;
 
     /*
-     * Total throughput of pool in Mibps
+     * Total throughput of pool in MiB/s
      */
     @JsonProperty(value = "totalThroughputMibps", access = JsonProperty.Access.WRITE_ONLY)
     private Float totalThroughputMibps;
 
     /*
-     * Utilized throughput of pool in Mibps
+     * Utilized throughput of pool in MiB/s
      */
     @JsonProperty(value = "utilizedThroughputMibps", access = JsonProperty.Access.WRITE_ONLY)
     private Float utilizedThroughputMibps;
@@ -84,7 +81,7 @@ public final class PoolProperties {
     }
 
     /**
-     * Get the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value
+     * Get the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value
      * must be multiply of 4398046511104).
      *
      * @return the size value.
@@ -94,7 +91,7 @@ public final class PoolProperties {
     }
 
     /**
-     * Set the size property: size Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value
+     * Set the size property: size Provisioned size of the pool (in bytes). Allowed values are in 1TiB chunks (value
      * must be multiply of 4398046511104).
      *
      * @param size the size value to set.
@@ -135,7 +132,7 @@ public final class PoolProperties {
     }
 
     /**
-     * Get the totalThroughputMibps property: Total throughput of pool in Mibps.
+     * Get the totalThroughputMibps property: Total throughput of pool in MiB/s.
      *
      * @return the totalThroughputMibps value.
      */
@@ -144,7 +141,7 @@ public final class PoolProperties {
     }
 
     /**
-     * Get the utilizedThroughputMibps property: Utilized throughput of pool in Mibps.
+     * Get the utilizedThroughputMibps property: Utilized throughput of pool in MiB/s.
      *
      * @return the utilizedThroughputMibps value.
      */
@@ -221,9 +218,11 @@ public final class PoolProperties {
      */
     public void validate() {
         if (serviceLevel() == null) {
-            throw logger
+            throw LOGGER
                 .logExceptionAsError(
                     new IllegalArgumentException("Missing required property serviceLevel in model PoolProperties"));
         }
     }
+
+    private static final ClientLogger LOGGER = new ClientLogger(PoolProperties.class);
 }

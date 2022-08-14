@@ -13,6 +13,7 @@ import io.opentelemetry.api.trace.TraceId;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.common.InstrumentationLibraryInfo;
+import io.opentelemetry.sdk.common.InstrumentationScopeInfo;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.LinkData;
@@ -52,15 +53,6 @@ public class AzureMonitorTraceExporterTest extends MonitorExporterClientTestBase
         Assertions.assertTrue(export.isSuccess());
     }
 
-    @Test
-    public void testExportRequestDataWithAuthentication() {
-        AzureMonitorTraceExporter azureMonitorTraceExporter = getClientBuilderWithAuthentication()
-            .connectionString("InstrumentationKey=ikey;IngestionEndpoint=https://testendpoint.com")
-            .buildTraceExporter();
-        CompletableResultCode export = azureMonitorTraceExporter.export(Collections.singleton(new RequestSpanData()));
-        Assertions.assertTrue(export.isDone());
-        Assertions.assertTrue(export.isSuccess());
-    }
 
     static class RequestSpanData implements SpanData {
 
@@ -97,6 +89,11 @@ public class AzureMonitorTraceExporterTest extends MonitorExporterClientTestBase
         @Override
         public InstrumentationLibraryInfo getInstrumentationLibraryInfo() {
             return InstrumentationLibraryInfo.create("TestLib", "1");
+        }
+
+        @Override
+        public InstrumentationScopeInfo getInstrumentationScopeInfo() {
+            return InstrumentationScopeInfo.create("TestLib", "1", "2");
         }
 
         @Override

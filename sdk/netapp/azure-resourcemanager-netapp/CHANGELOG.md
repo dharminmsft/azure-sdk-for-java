@@ -1,6 +1,6 @@
 # Release History
 
-## 1.0.0-beta.7 (Unreleased)
+## 1.0.0-beta.11 (Unreleased)
 
 ### Features Added
 
@@ -9,6 +9,358 @@
 ### Bugs Fixed
 
 ### Other Changes
+
+## 1.0.0-beta.10 (2022-07-21)
+
+- Azure Resource Manager NetAppFiles client library for Java. This package contains Microsoft Azure SDK for NetAppFiles Management SDK. Microsoft NetApp Files Azure Resource Provider specification. Package tag package-netapp-2022-03-01. For documentation on how to use this package, please see [Azure Management Libraries for Java](https://aka.ms/azsdk/java/mgmt).
+
+### Features Added
+
+* `models.ReestablishReplicationRequest` was added
+
+#### `models.Volume` was modified
+
+* `reestablishReplication(models.ReestablishReplicationRequest)` was added
+* `keyVaultPrivateEndpointResourceId()` was added
+* `reestablishReplication(models.ReestablishReplicationRequest,com.azure.core.util.Context)` was added
+
+#### `models.Volume$Update` was modified
+
+* `withCoolAccess(java.lang.Boolean)` was added
+* `withCoolnessPeriod(java.lang.Integer)` was added
+
+#### `models.VolumePatch` was modified
+
+* `withCoolnessPeriod(java.lang.Integer)` was added
+* `withCoolAccess(java.lang.Boolean)` was added
+* `coolAccess()` was added
+* `coolnessPeriod()` was added
+
+#### `models.CapacityPool$Update` was modified
+
+* `withCoolAccess(java.lang.Boolean)` was added
+
+#### `models.Volume$Definition` was modified
+
+* `withKeyVaultPrivateEndpointResourceId(java.lang.String)` was added
+
+#### `models.Volumes` was modified
+
+* `reestablishReplication(java.lang.String,java.lang.String,java.lang.String,java.lang.String,models.ReestablishReplicationRequest,com.azure.core.util.Context)` was added
+* `reestablishReplication(java.lang.String,java.lang.String,java.lang.String,java.lang.String,models.ReestablishReplicationRequest)` was added
+
+#### `models.CapacityPoolPatch` was modified
+
+* `coolAccess()` was added
+* `withCoolAccess(java.lang.Boolean)` was added
+
+#### `models.VolumeGroupVolumeProperties` was modified
+
+* `withKeyVaultPrivateEndpointResourceId(java.lang.String)` was added
+* `keyVaultPrivateEndpointResourceId()` was added
+
+## 1.0.0-beta.9 (2022-06-20)
+
+- Azure Resource Manager NetAppFiles client library for Java. This package contains Microsoft Azure SDK for NetAppFiles Management SDK. Microsoft NetApp Files Azure Resource Provider specification. Package tag package-netapp-2022-01-01. For documentation on how to use this package, please see [Azure Management Libraries for Java](https://aka.ms/azsdk/java/mgmt).
+
+### Breaking Changes
+
+#### `models.Volume` was modified
+
+* `java.lang.String encryptionKeySource()` -> `models.EncryptionKeySource encryptionKeySource()`
+
+#### `models.VolumeGroupDetails$Definition` was modified
+
+* `withTags(java.util.Map)` was removed
+
+#### `models.VolumeGroupDetails` was modified
+
+* `tags()` was removed
+
+#### `models.Volume$Definition` was modified
+
+* `withEncryptionKeySource(java.lang.String)` was removed
+
+#### `models.VolumeGroupVolumeProperties` was modified
+
+* `java.lang.String encryptionKeySource()` -> `models.EncryptionKeySource encryptionKeySource()`
+* `withEncryptionKeySource(java.lang.String)` was removed
+
+#### `models.VolumeGroup` was modified
+
+* `tags()` was removed
+
+#### `models.NetAppAccount` was modified
+
+* `systemData()` was removed
+
+#### `models.SubscriptionQuotaItem` was modified
+
+* `systemData()` was removed
+
+### Features Added
+
+* `models.VolumeQuotaRulesList` was added
+
+* `models.VolumeQuotaRules` was added
+
+* `models.EncryptionKeySource` was added
+
+* `models.VolumeQuotaRule$Definition` was added
+
+* `models.VolumeQuotaRule$UpdateStages` was added
+
+* `models.ProvisioningState` was added
+
+* `models.VolumeQuotaRule$Update` was added
+
+* `models.VolumeQuotaRule$DefinitionStages` was added
+
+* `models.Replication` was added
+
+* `models.VolumeQuotaRule` was added
+
+* `models.VolumeQuotaRulePatch` was added
+
+* `models.ListReplications` was added
+
+* `models.Type` was added
+
+#### `models.Volume` was modified
+
+* `listReplications(com.azure.core.util.Context)` was added
+* `resetCifsPassword()` was added
+* `resetCifsPassword(com.azure.core.util.Context)` was added
+* `finalizeRelocation(com.azure.core.util.Context)` was added
+* `revertRelocation(com.azure.core.util.Context)` was added
+* `revertRelocation()` was added
+* `relocate(com.azure.core.util.Context)` was added
+* `resourceGroupName()` was added
+* `encrypted()` was added
+* `finalizeRelocation()` was added
+* `zones()` was added
+* `listReplications()` was added
+* `relocate()` was added
+
+#### `NetAppFilesManager` was modified
+
+* `volumeQuotaRules()` was added
+* `authenticate(com.azure.core.http.HttpPipeline,com.azure.core.management.profile.AzureProfile)` was added
+
+#### `models.Backup` was modified
+
+* `resourceGroupName()` was added
+
+#### `models.CapacityPool` was modified
+
+* `resourceGroupName()` was added
+
+#### `models.Volume$Definition` was modified
+
+* `withEncryptionKeySource(models.EncryptionKeySource)` was added
+* `withZones(java.util.List)` was added
+
+#### `models.Volumes` was modified
+
+* `relocate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was added
+* `revertRelocation(java.lang.String,java.lang.String,java.lang.String,java.lang.String)` was added
+* `resetCifsPassword(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was added
+* `relocate(java.lang.String,java.lang.String,java.lang.String,java.lang.String)` was added
+* `finalizeRelocation(java.lang.String,java.lang.String,java.lang.String,java.lang.String)` was added
+* `finalizeRelocation(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was added
+* `listReplications(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was added
+* `revertRelocation(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was added
+* `listReplications(java.lang.String,java.lang.String,java.lang.String,java.lang.String)` was added
+* `resetCifsPassword(java.lang.String,java.lang.String,java.lang.String,java.lang.String)` was added
+
+#### `models.SubvolumeInfo` was modified
+
+* `resourceGroupName()` was added
+
+#### `models.VolumeGroupVolumeProperties` was modified
+
+* `withEncryptionKeySource(models.EncryptionKeySource)` was added
+* `encrypted()` was added
+
+#### `models.BackupPolicy` was modified
+
+* `resourceGroupName()` was added
+
+#### `NetAppFilesManager$Configurable` was modified
+
+* `withRetryOptions(com.azure.core.http.policy.RetryOptions)` was added
+
+#### `models.NetAppAccount` was modified
+
+* `resourceGroupName()` was added
+
+#### `models.SnapshotPolicy` was modified
+
+* `resourceGroupName()` was added
+
+## 1.0.0-beta.8 (2022-02-15)
+
+- Azure Resource Manager NetAppFiles client library for Java. This package contains Microsoft Azure SDK for NetAppFiles Management SDK. Microsoft NetApp Files Azure Resource Provider specification. Package tag package-netapp-2021-10-01. For documentation on how to use this package, please see [Azure Management Libraries for Java](https://aka.ms/azsdk/java/mgmt).
+
+### Breaking Changes
+
+#### `models.Volumes` was modified
+
+* `deleteByIdWithResponse(java.lang.String,com.azure.core.util.Context)` was removed
+* `delete(java.lang.String,java.lang.String,java.lang.String,java.lang.String,com.azure.core.util.Context)` was removed
+
+### Features Added
+
+* `models.SubvolumeInfo$Update` was added
+
+* `models.SubvolumePatchRequest` was added
+
+* `models.SubvolumeInfo$DefinitionStages` was added
+
+* `models.SubvolumeInfo` was added
+
+* `models.SubvolumeModel` was added
+
+* `models.SnapshotRestoreFiles` was added
+
+* `models.LdapSearchScopeOpt` was added
+
+* `models.EnableSubvolumes` was added
+
+* `models.SubvolumeInfo$Definition` was added
+
+* `models.SubvolumesList` was added
+
+* `models.SubvolumeInfo$UpdateStages` was added
+
+* `models.Subvolumes` was added
+
+#### `models.Volume` was modified
+
+* `maximumNumberOfFiles()` was added
+* `systemData()` was added
+* `enableSubvolumes()` was added
+
+#### `models.Volume$Update` was modified
+
+* `withUnixPermissions(java.lang.String)` was added
+
+#### `models.VolumePatch` was modified
+
+* `unixPermissions()` was added
+* `withUnixPermissions(java.lang.String)` was added
+
+#### `models.ActiveDirectory` was modified
+
+* `withLdapSearchScope(models.LdapSearchScopeOpt)` was added
+* `ldapSearchScope()` was added
+
+#### `NetAppFilesManager` was modified
+
+* `subvolumes()` was added
+
+#### `models.CapacityPool` was modified
+
+* `systemData()` was added
+
+#### `models.Volume$Definition` was modified
+
+* `withEnableSubvolumes(models.EnableSubvolumes)` was added
+
+#### `models.Snapshot` was modified
+
+* `restoreFiles(models.SnapshotRestoreFiles,com.azure.core.util.Context)` was added
+* `restoreFiles(models.SnapshotRestoreFiles)` was added
+
+#### `models.Volumes` was modified
+
+* `deleteByIdWithResponse(java.lang.String,java.lang.Boolean,com.azure.core.util.Context)` was added
+* `delete(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Boolean)` was added
+* `delete(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Boolean,com.azure.core.util.Context)` was added
+
+#### `models.VolumeGroupVolumeProperties` was modified
+
+* `maximumNumberOfFiles()` was added
+* `enableSubvolumes()` was added
+* `withEnableSubvolumes(models.EnableSubvolumes)` was added
+
+#### `models.BackupPolicy` was modified
+
+* `systemData()` was added
+
+#### `models.SnapshotPolicy` was modified
+
+* `systemData()` was added
+
+#### `models.Snapshots` was modified
+
+* `restoreFiles(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,models.SnapshotRestoreFiles)` was added
+* `restoreFiles(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,models.SnapshotRestoreFiles,com.azure.core.util.Context)` was added
+
+## 1.0.0-beta.7 (2021-12-06)
+
+- Azure Resource Manager NetAppFiles client library for Java. This package contains Microsoft Azure SDK for NetAppFiles Management SDK. Microsoft NetApp Files Azure Resource Provider specification. Package tag package-netapp-2021-08-01. For documentation on how to use this package, please see [Azure Management Libraries for Java](https://aka.ms/azsdk/java/mgmt).
+
+### Breaking Changes
+
+#### `models.BackupPolicyPatch` was modified
+
+* `namePropertiesName()` was removed
+
+#### `models.BackupPolicy` was modified
+
+* `namePropertiesName()` was removed
+
+#### `models.SubscriptionQuotaItem` was modified
+
+* `namePropertiesName()` was removed
+
+### Features Added
+
+* `models.VolumeGroupDetails$Definition` was added
+
+* `models.PlacementKeyValuePairs` was added
+
+* `models.VolumeGroupMetadata` was added
+
+* `models.VolumeGroupDetails` was added
+
+* `models.VolumeGroupList` was added
+
+* `models.VolumeGroups` was added
+
+* `models.VolumeGroupVolumeProperties` was added
+
+* `models.VolumeGroup` was added
+
+* `models.VolumeGroupDetails$DefinitionStages` was added
+
+* `models.ApplicationType` was added
+
+#### `models.Volume` was modified
+
+* `proximityPlacementGroup()` was added
+* `capacityPoolResourceId()` was added
+* `placementRules()` was added
+* `volumeSpecName()` was added
+* `volumeGroupName()` was added
+* `t2Network()` was added
+
+#### `models.ActiveDirectory` was modified
+
+* `encryptDCConnections()` was added
+* `withEncryptDCConnections(java.lang.Boolean)` was added
+
+#### `NetAppFilesManager` was modified
+
+* `volumeGroups()` was added
+
+#### `models.Volume$Definition` was modified
+
+* `withVolumeSpecName(java.lang.String)` was added
+* `withCapacityPoolResourceId(java.lang.String)` was added
+* `withPlacementRules(java.util.List)` was added
+* `withProximityPlacementGroup(java.lang.String)` was added
 
 ## 1.0.0-beta.6 (2021-09-22)
 
