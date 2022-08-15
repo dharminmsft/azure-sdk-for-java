@@ -289,6 +289,12 @@
                       </excludes>
                     </filter>
                   </filters>
+<!--                  <artifactSet>-->
+<!--                    <includes>-->
+<!--                      <include>com.azure:azure-storage-common</include>-->
+<!--                      <include>com.azure:azure-storage-internal-avro</include>-->
+<!--                    </includes>-->
+<!--                  </artifactSet>-->
                   <relocations>
                     <relocation>
                       <pattern>io.netty</pattern>
